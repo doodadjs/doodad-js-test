@@ -1,0 +1,17 @@
+#test1 {
+	width: 100px; 
+	height: 50px; 
+	background-color: blue;
+}
+
+#test2 {
+	width: 100px; 
+	height: 50px; 
+	background-color: yellow;
+}
+
+#test3 {
+	width: 100px; 
+	height: 50px; 
+	background-color: lightgray;
+}

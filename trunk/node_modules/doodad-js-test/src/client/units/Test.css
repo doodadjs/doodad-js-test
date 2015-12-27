@@ -1,0 +1,110 @@
+.test {
+	font-family: "Courier New", Courier, monospace;
+	color: black;
+}
+
+.test .unit {
+	border: 5px solid blue;
+	margin: 10px 10px 10px 10px;
+}
+
+.test .unit .name {
+	font-weight: bold;
+}
+
+.test .unit > .name {
+	text-align: center;
+	background-color: blue;
+	color: white;
+}
+
+.test .unit .command {
+	border: 5px solid green;
+	margin: 10px 10px 10px 10px;
+}
+
+.test .unit .command > .name {
+	background-color: green;
+	color: white;
+}
+
+.test .unit .command .run {
+	border: 5px solid yellow;
+	margin: 10px 10px 10px 10px;
+}
+
+.test .unit .command .run:hover[failedIndex],
+.test .unit .command .run[selected="true"] {
+	border: 5px solid black;
+	background-color: rgba(192, 192, 192, 0.3);
+}
+
+.test .unit .command .run:hover[failedIndex] .name,
+.test .unit .command .run[selected="true"] .name {
+	font-weight: bold;
+	background-color: rgba(192, 192, 192, 0.5);
+}
+
+.test .unit .command .run > .name {
+	background-color: yellow;
+	color: black;
+}
+
+.test .unit .command .run > .expected {
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+.test .unit .command .run > .expected.error {
+	color: red;
+}
+
+.test .unit .command .run > .got {
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+.test .unit .command .run > .got.error {
+	color: red;
+}
+
+.test .unit .command .run > .result {
+	margin: 10px 10px 10px 10px;
+}
+
+.test .unit .command .run > .result.error {
+	color: red;
+	font-size: 1.5em;
+}
+
+.test .unit .command .run > .time {
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+.test .unit .command .run > .note {
+	background-color: orange;
+	color: black;
+	margin: 10px 10px 10px 10px;
+	font-size: 1.5em;
+}
+
+.test .unit .failedPopup button {
+	color: white;
+	background-color: black;
+}
+
+.test .unit .failedPopup .failedOf {
+	margin-left: 15px;
+}
+
+.test .bindMe {
+	color: lightgray;
+	background: repeating-linear-gradient(
+	  -45deg,
+	  black,
+	  black 2px,
+	  white 2px,
+	  white 5px
+	);
+};

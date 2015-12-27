@@ -1,5 +1,5 @@
 //! REPLACE_BY("// Copyright 2015 Claude Petit, licensed under Apache License version 2.0\n")
-// dOOdad - Class library for Javascript (BETA) with some extras (ALPHA)
+// dOOdad - Object-oriented programming framework with some extras
 // File: index.js - Test startup file for NodeJs
 // Project home: https://sourceforge.net/projects/doodad-js/
 // Trunk: svn checkout svn://svn.code.sf.net/p/doodad-js/code/trunk doodad-js-code
@@ -25,15 +25,12 @@
 
 "use strict";
 
-const DEV_MODE = (process.env.node_env === 'development'),
-	cluster = require('cluster');
+const cluster = require('cluster');
 
 let root,
 	namespaces;
 	
 function startup() {
-	namespaces.removeEventListener('ready', startup);
-
 	const doodad = root.Doodad,
 		tools = doodad.Tools;
 					
@@ -51,29 +48,23 @@ function startup() {
 	};
 };
 
+const DD_MODULES = {};
 
-DEV_MODE && require("../../core/Debug.js");
-require("../../core/Types.js");
-require("../../core/Tools.js");
-require("../../core/Namespaces.js");
-require("../../server/nodejs/core/NodeJs.js");
-require("../../core/Doodad.js");
+require('doodad-js-locale').add(DD_MODULES);
+require('doodad-js-dates').add(DD_MODULES);
+require('doodad-js-io').add(DD_MODULES);
+require('doodad-js-server').add(DD_MODULES);
+require('doodad-js-ipc').add(DD_MODULES);
+require('doodad-js-cluster').add(DD_MODULES);
 
-root = require("../../core/Bootstrap.js").createRoot(global.DD_MODULES, {startup: {settings: {enableProperties: DEV_MODE}}});
-
-require("../../common/Tools_Locale.js");
-require("../../common/Tools_Dates.js");
-require("../../common/IO.js");
-require("../../server/common/Server.js");
-require("../../server/common/Server_Ipc.js");
-require("../../server/nodejs/NodeJs_IO.js");
-require("../../server/nodejs/NodeJs_Cluster.js");
+root = require('doodad-js').createRoot(DD_MODULES);
 
 namespaces = root.Doodad.Namespaces;
-namespaces.addEventListener('ready', startup);
-namespaces.loadNamespaces(false);
-
-
+namespaces.loadNamespaces(startup, false, null, DD_MODULES)
+	['catch'](function(err) {
+		console.error(err.stack);
+		process.exit(1);
+	});
 
 
 // RPC GET : /rpc?method=%22callService%22&params=[%22MyService%22,%22hello%22]

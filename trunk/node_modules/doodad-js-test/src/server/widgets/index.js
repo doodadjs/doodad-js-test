@@ -1,5 +1,5 @@
 //! REPLACE_BY("// Copyright 2015 Claude Petit, licensed under Apache License version 2.0\n")
-// dOOdad - Class library for Javascript (BETA) with some extras (ALPHA)
+// dOOdad - Object-oriented programming framework with some extras
 // File: index.js - Test startup file for NodeJs
 // Project home: https://sourceforge.net/projects/doodad-js/
 // Trunk: svn checkout svn://svn.code.sf.net/p/doodad-js/code/trunk doodad-js-code
@@ -23,13 +23,20 @@
 //	limitations under the License.
 //! END_REPLACE()
 
-require("../../core/Debug.js");
-require("../../core/Bootstrap.js");
-require("../../core/Types.js");
-require("../../core/Tools.js");
-require("../../core/Namespaces.js");
-require("../../core/Doodad.js");
-require("../../server/nodejs/core/NodeJs.js");
-require("./MyWidget_loader.js");
+"use strict";
 
-require("../../common/Loader.js").onload();
+const DD_MODULES = {};
+require("../../common/widgets/MyWidget_loader.js").add(DD_MODULES);
+require('doodad-js-loader').add(DD_MODULES);
+
+const root = require('doodad-js').createRoot(DD_MODULES),
+	doodad = root.Doodad,
+	namespaces = doodad.Namespaces;
+
+function startup() {
+	doodad.Loader.loadScripts(global.DD_SCRIPTS)
+		['catch'](function(err){console.log(err.stack)});
+};
+
+namespaces.loadNamespaces(startup, false, null, DD_MODULES)
+	['catch'](function(err){console.log(err.stack)});

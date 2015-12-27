@@ -1,18 +1,52 @@
 <!DOCTYPE html>
 <html>
 	<body>
-		<script src="../../core/Debug.js"></script>
-		<script src="../../core/Bootstrap.js"></script>
-		<script src="../../core/Types.js"></script>
-		<script src="../../core/Tools.js"></script>
-		<script src="../../client/core/Client.js"></script>
-		<script src="../../core/Namespaces.js"></script>
-		<script src="../../core/Doodad.js"></script>
-		<script src="../../common/Loader.js"></script> 
+		<script src="../../doodad-js/Bootstrap.js"></script>
+		<script src="../../doodad-js/Debug.js"></script>
+		<script src="../../doodad-js/Types.js"></script>
+		<script src="../../doodad-js/Tools.js"></script>
+		<script src="../../doodad-js/Namespaces.js"></script>
+		<script src="../../doodad-js/Doodad.js"></script>
+		<script src="../../doodad-js/Client.js"></script>
+		<script src="../../doodad-js/Modules.js"></script>
+		<script src="../../doodad-js-loader/index.js"></script> 
 		<script src="./MyWidget_loader.js"></script>
 		<script src="../../lib/es6-promise/es6-promise.min.js"></script>
+		
+		<script>
+			(function() {
+				"use strict";
+			
+				var __prevOnLoad__ = window.onload;
+				window.onload = function onload(ev) {
+					if (__prevOnLoad__) {
+						__prevOnLoad__.call(this, ev);
+					};
+
+					var options = {};
+					options['Doodad.Modules'] = {
+						settings: {
+							modulesUri: '../..',
+						},
+					};
+					
+					var root = window.createRoot(window.DD_MODULES, options),
+						doodad = root.Doodad,
+						namespaces = doodad.Namespaces;
+
+					function startup() {
+						doodad.Loader.loadScripts(window.DD_SCRIPTS);
+					};
+						
+					namespaces.loadNamespaces(startup, false, options, window.DD_MODULES);
+				};
+			})();
+		</script>
+		
 		<div id="test1"></div>
 		<div id="test2"></div>
 		<div id="test3"></div>
+		
+		
 	</body>
 </html>

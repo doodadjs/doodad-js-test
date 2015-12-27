@@ -1,5 +1,5 @@
 //! REPLACE_BY("// Copyright 2015 Claude Petit, licensed under Apache License version 2.0\n")
-// dOOdad - Class library for Javascript (BETA) with some extras (ALPHA)
+// dOOdad - Object-oriented programming framework with some extras
 // File: worker.js - Test startup file for NodeJs
 // Project home: https://sourceforge.net/projects/doodad-js/
 // Trunk: svn checkout svn://svn.code.sf.net/p/doodad-js/code/trunk doodad-js-code
@@ -26,7 +26,8 @@
 "use strict";
 
 const util = require('util'),
-	cluster = require('cluster');
+	cluster = require('cluster'),
+	fs = require('fs');
 
 module.exports = function(root, options) {
 	const doodad = root.Doodad,
@@ -39,8 +40,6 @@ module.exports = function(root, options) {
 		nodejs = doodad.NodeJs;
 
 	function startup() {
-		namespaces.removeEventListener('ready', startup);
-
 		const nodejsCluster = nodejs.Cluster;
 
 		if (!options.noCluster) {
@@ -74,21 +73,37 @@ module.exports = function(root, options) {
 			}),
 		}));
 
-		let filesPath = tools.Path.parse(module.filename, {file: ''})
-		filesPath = filesPath.moveUp(2);
+		let filesPath = [
+			tools.Path.parse(require.resolve('doodad-js')).combine('/dist/', {os: 'linux', dirChar: '/'}),
+			tools.Path.parse(require.resolve('doodad-js-dates')).combine('/dist/', {os: 'linux', dirChar: '/'}),
+			tools.Path.parse(require.resolve('doodad-js-http')).combine('/dist/', {os: 'linux', dirChar: '/'}),
+			tools.Path.parse(require.resolve('doodad-js-io')).combine('/dist/', {os: 'linux', dirChar: '/'}),
+			tools.Path.parse(require.resolve('doodad-js-locale')).combine('/dist/', {os: 'linux', dirChar: '/'}),
+			tools.Path.parse(require.resolve('doodad-js-mime')).combine('/dist/', {os: 'linux', dirChar: '/'}),
+			tools.Path.parse(require.resolve('doodad-js-minifiers')).combine('/dist/', {os: 'linux', dirChar: '/'}),
+			tools.Path.parse(require.resolve('doodad-js-templates')).combine('/dist/', {os: 'linux', dirChar: '/'}),
+			tools.Path.parse(require.resolve('doodad-js-test')).combine('/dist/', {os: 'linux', dirChar: '/'}),
+			tools.Path.parse(require.resolve('doodad-js-widgets')).combine('/dist/', {os: 'linux', dirChar: '/'}),
+			tools.Path.parse(require.resolve('doodad-js-xml')).combine('/dist/', {os: 'linux', dirChar: '/'}),
+			tools.Path.parse(require.resolve('doodad-js-loader')).combine('/dist/', {os: 'linux', dirChar: '/'}),
+		];
 		
 		let saxPath;
 		try {
-			saxPath = tools.Path.parse(require.resolve('sax'), {file: ''})
-			saxPath.combine('./lib', {os: 'linux', isRelative: true})
+			saxPath = tools.Path.parse(require.resolve('sax/package.json'))
+				.set({file: ''})
+				.combine('./lib/', {os: 'linux', isRelative: true});
+			fs.statSync(saxPath.toString());
 		} catch(ex) {
 			console.warn("The library 'sax-js' is not available. Some features, like page templates, will be disabled.");
 		};
 		
 		let promisePath;
 		try {
-			promisePath = tools.Path.parse(require.resolve('es6-promise'), {file: ''})
-			promisePath.combine('./dist', {os: 'linux', isRelative: true})
+			promisePath = tools.Path.parse(require.resolve('es6-promise/package.json'))
+				.set({file: ''})
+				.combine('./dist/', {os: 'linux', isRelative: true});
+			fs.statSync(promisePath.toString());
 		} catch(ex) {
 			console.warn("The library 'es6-promise' is not available. Serving the library to the client browser will be disabled.");
 		};
@@ -96,7 +111,7 @@ module.exports = function(root, options) {
 		const factory = new server.Http.PageFactory({
 			'/': {
 				page: server.Http.RedirectPage,
-				targetUrl: '/nodejs/static/test/widgets/test.html',
+				targetUrl: '/nodejs/static/doodad-js-test/widgets/test.html',
 			},
 			'/rpc': {
 				page: nodejs.Server.Http.JsonRpc.Page,
@@ -108,15 +123,15 @@ module.exports = function(root, options) {
 					page: nodejs.Server.Http.StaticPage,
 					path: filesPath,
 					showFolders: true,
-					templateFolder: filesPath.combine("./server/common/res/templates/Folder.ddt", {isRelative: true, os: 'linux'}),
+					folderTemplate: tools.Path.parse(require.resolve('doodad-js-templates')).combine("./res/templates/Folder.ddt", {isRelative: true, os: 'linux'}),
 				},
-				{
-					page: nodejs.Server.Http.JavascriptPage,
-					path: filesPath,
-					mimeTypes: ['application/javascript', 'application/x-javascript'],
-					cachePath: options.jsCachePath,
-					//directives: ["DEFINE('NO_DOC')"],
-				},
+				//{
+				//	page: nodejs.Server.Http.JavascriptPage,
+				//	path: filesPath,
+				//	mimeTypes: ['application/javascript', 'application/x-javascript'],
+				//	cachePath: options.jsCachePath,
+				//	//directives: ["DEFINE('NO_DOC')"],
+				//},
 			],
 			'/nodejs/static/lib/sax/': saxPath && {
 					page: nodejs.Server.Http.JavascriptPage,
@@ -128,22 +143,22 @@ module.exports = function(root, options) {
 					page: nodejs.Server.Http.StaticPage,
 					path: promisePath,
 			},
-			'/nodejs/static/server/': {
-				page: server.Http.StatusPage,
-				status: server.Http.StatusCodes.NotFound,
-			},
-			'/nodejs/static/test/units/www.doodad-js.local.key': {
-				page: server.Http.StatusPage,
-				status: server.Http.StatusCodes.NotFound,
-			},
-			'/nodejs/static/test/widgets/': {
+			//'/nodejs/static/server/': {
+			//	page: server.Http.StatusPage,
+			//	status: server.Http.StatusCodes.NotFound,
+			//},
+			//'/nodejs/static/test/units/www.doodad-js.local.key': {
+			//	page: server.Http.StatusPage,
+			//	status: server.Http.StatusCodes.NotFound,
+			//},
+			'/nodejs/static/doodad-js-test/widgets/': {
 				page: server.Http.RedirectPage,
-				targetUrl: '/nodejs/static/test/widgets/test.html',
+				targetUrl: '/nodejs/static/doodad-js-test/widgets/test.html',
 				depth: 0,
 			},
-			'/nodejs/static/test/units/': {
+			'/nodejs/static/doodad-js-test/units/': {
 				page: server.Http.RedirectPage,
-				targetUrl: '/nodejs/static/test/units/Test.html',
+				targetUrl: '/nodejs/static/doodad-js-test/units/Test.html',
 				depth: 0,
 			},
 			
@@ -196,18 +211,19 @@ module.exports = function(root, options) {
 		});
 	};
 	
-	require("../../common/Widgets.js");
-	require("../../common/Tools_Mime.js");
-	require("../../common/Tools_Xml.js");
-	require("../../common/Tools_Xml_Parsers_Sax.js");
-	require("../../server/nodejs/Tools_Xml_Parsers_Sax_Loader.js");
-	require("../../common/Templates_Html.js");
-	require("../../server/common/IO_Minifiers.js");
-	require("../../server/common/Server_Http.js");
-	require("../../server/common/Server_Http_JsonRpc.js");
-	require("../../server/nodejs/NodeJs_Server_Http.js");
-	require("../../server/nodejs/NodeJs_Server_Http_JsonRpc.js");
+	const DD_MODULES = {};
 	
-	namespaces.addEventListener('ready', startup);
-	namespaces.loadNamespaces(false);
+	require('doodad-js-widgets').add(DD_MODULES);
+	require('doodad-js-mime').add(DD_MODULES);
+	require('doodad-js-xml').add(DD_MODULES);
+	require('doodad-js-templates').add(DD_MODULES);
+	require('doodad-js-minifiers').add(DD_MODULES);
+	require('doodad-js-http').add(DD_MODULES);
+	require('doodad-js-http_jsonrpc').add(DD_MODULES);
+	
+	namespaces.loadNamespaces(startup, false, null, DD_MODULES)
+		['catch'](function(err) {
+			console.error(err.stack);
+			//process.exit(1);
+		});
 };

@@ -1,5 +1,5 @@
 //! REPLACE_BY("// Copyright 2015 Claude Petit, licensed under Apache License version 2.0\n")
-// dOOdad - Class library for Javascript (BETA) with some extras (ALPHA)
+// dOOdad - Object-oriented programming framework with some extras
 // File: Unit_Types_ToSource.js - Unit testing module file
 // Project home: https://sourceforge.net/projects/doodad-js/
 // Trunk: svn checkout svn://svn.code.sf.net/p/doodad-js/code/trunk doodad-js-code
@@ -26,85 +26,99 @@
 (function() {
 	var global = this;
 
-	global.DD_MODULES = (global.DD_MODULES || {});
-	global.DD_MODULES['Doodad.Test.Types.ToSource'] = {
-		type: 'TestUnit',
-		version: '0d',
-		namespaces: null,
-		dependencies: ['Doodad.Test.Types'],
+	var exports = {};
+	if (global.process) {
+		module.exports = exports;
+	};
+	
+	exports.add = function add(DD_MODULES) {
+		DD_MODULES = (DD_MODULES || {});
+		DD_MODULES['Doodad.Test.Types.ToSource'] = {
+			type: 'TestUnit',
+			version: '0d',
+			namespaces: null,
+			dependencies: ['Doodad.Test.Types'],
 
-		// Unit
-		priority: null,
-			proto: {
-			run: null,
-		},
-
-		proto: {
-			run: function run(entry, /*optional*/options) {
-				"use strict";
-
-				var root = entry.root,
-					doodad = root.Doodad,
-					namespaces = doodad.Namespaces,
-					test = doodad.Test,
-					unit = test.Types.Is,
-					types = doodad.Types,
-					io = doodad.IO,
-					newTypes = test.NewRoot.Doodad.Types;
-
-					
-				var command = test.prepareCommand(newTypes.toSource, "Doodad.Types.toSource");
-				command.run("undefined",                                       {}, /**/  undefined);
-				command.run("null",                                            {}, /**/  null);
-				command.run("NaN",                                             {}, /**/  NaN);
-				command.run("Infinity",                                        {}, /**/  Infinity);
-				command.run("-Infinity",                                       {}, /**/  -Infinity);
-				command.run("0",                                               {}, /**/  0);
-				command.run("1",                                               {}, /**/  1);
-				command.run("0.1",                                             {}, /**/  0.1);
-				command.run("-0.1",                                            {}, /**/  -0.1);
-				command.run("1.1415",                                          {}, /**/  1.1415);
-				command.run("true",                                            {}, /**/  true);
-				command.run("false",                                           {}, /**/  false);
-				command.run("''",                                              {}, /**/  "");
-				command.run("'hello'",                                         {}, /**/  "hello");
-				command.run("'hello\\n'",                                      {}, /**/  "hello\n");
-				command.run("'\\'hello\\''",                                   {}, /**/  "'hello'");
-				command.run("(new Number(0))",                                 {}, /**/  Object(0));
-				command.run("(new Number(1))",                                 {}, /**/  Object(1));
-				command.run("(new Number(0.1))",                               {}, /**/  Object(0.1));
-				command.run("(new Number(-0.1))",                              {}, /**/  Object(-0.1));
-				command.run("(new Number(1.1415))",                            {}, /**/  Object(1.1415));
-				command.run("(new Boolean(true))",                             {}, /**/  Object(true));
-				command.run("(new Boolean(false))",                            {}, /**/  Object(false));
-				command.run("(new String(''))",                                {}, /**/  Object(""));
-				command.run("(new String('hello'))",                           {}, /**/  Object("hello"));
-				command.run("(new String('hello\\n'))",                        {}, /**/  Object("hello\n"));
-				command.run("(new String('\\'hello\\''))",                     {}, /**/  Object("'hello'"));
-				command.run("{}",                                              {}, /**/  {});
-				command.run("{'a': 1}",                                        {}, /**/  {a: 1});
-				command.run("{'a': 1, 'b': 2}",                                {}, /**/  {a: 1, b: 2});
-				command.run("[]",                                              {}, /**/  []);
-				command.run("[1]",                                             {}, /**/  [1]);
-				command.run("[1, 2]",                                          {}, /**/  [1, 2]);
-				command.run("[, 2]",                                           {}, /**/  [, 2]); // empty slot
-				command.run("{'a': 1, 'b': (new Object())}",                   {depth: 2}, /**/  {a: 1, b: {c: {d: 4}}});
-				command.run("{'a': 1, 'b': (new Object())}",                   {depth: 2}, /**/  {a: 1, b: {c: {d: 4}}}, 0);
-				command.run("{'a': 1, 'b': {'c': (new Object())}}",            {depth: 2}, /**/  {a: 1, b: {c: {d: 4}}}, 1);
-				command.run("{'a': 1, 'b': {'c': {'d': 4}}}",                  {depth: 2}, /**/  {a: 1, b: {c: {d: 4}}}, 2);
-				command.run("[1, (new Array(2))]",                             {depth: 2}, /**/  [1, [2, [3]]]);
-				command.run("[1, (new Array(2))]",                             {depth: 2}, /**/  [1, [2, [3]]], 0);
-				command.run("[1, [2, (new Array(1))]]",                        {depth: 2}, /**/  [1, [2, [3]]], 1);
-				command.run("[1, [2, [3]]]",                                   {depth: 2}, /**/  [1, [2, [3]]], 2);
-				command.run("(new Date(2015, 8, 15, 9, 32, 52, 140))",         {}, /**/  new Date(2015, 8, 15, 9, 32, 52, 140));
-				command.run("(new Error('error'))",                            {}, /**/  (new Error("error")));
-				command.run("(new Function())",                                {}, /**/  Object.prototype.toString);
-				// NOTE: Disabled because I get different results
-				//command.run("function () {return \"hello\";}",                    {note: "May fail under Firefox because it injects the \"use strict\" sentence and it does make sense."},      /**/  (function() {return "hello";}));
-				//command.run("function () {\n\"use strict\";\nreturn \"hello\";}", {note: "May fail under browsers other than Firefox because the \"use strict\" sentence is not injected."},    /**/  (function() {return "hello";}));
-				command.end();
-				
+			// Unit
+			priority: null,
+				proto: {
+				run: null,
 			},
-		},
+
+			proto: {
+				run: function run(entry, /*optional*/options) {
+					"use strict";
+
+					var root = entry.root,
+						doodad = root.Doodad,
+						namespaces = doodad.Namespaces,
+						test = doodad.Test,
+						unit = test.Types.Is,
+						types = doodad.Types,
+						io = doodad.IO,
+						newTypes = test.NewRoot.Doodad.Types;
+
+						
+					var command = test.prepareCommand(newTypes.toSource, "Doodad.Types.toSource");
+					command.run("undefined",                                       {}, /**/  undefined);
+					command.run("null",                                            {}, /**/  null);
+					command.run("NaN",                                             {}, /**/  NaN);
+					command.run("Infinity",                                        {}, /**/  Infinity);
+					command.run("-Infinity",                                       {}, /**/  -Infinity);
+					command.run("0",                                               {}, /**/  0);
+					command.run("1",                                               {}, /**/  1);
+					command.run("0.1",                                             {}, /**/  0.1);
+					command.run("-0.1",                                            {}, /**/  -0.1);
+					command.run("1.1415",                                          {}, /**/  1.1415);
+					command.run("true",                                            {}, /**/  true);
+					command.run("false",                                           {}, /**/  false);
+					command.run("''",                                              {}, /**/  "");
+					command.run("'hello'",                                         {}, /**/  "hello");
+					command.run("'hello\\n'",                                      {}, /**/  "hello\n");
+					command.run("'\\'hello\\''",                                   {}, /**/  "'hello'");
+					command.run("(new Number(0))",                                 {}, /**/  Object(0));
+					command.run("(new Number(1))",                                 {}, /**/  Object(1));
+					command.run("(new Number(0.1))",                               {}, /**/  Object(0.1));
+					command.run("(new Number(-0.1))",                              {}, /**/  Object(-0.1));
+					command.run("(new Number(1.1415))",                            {}, /**/  Object(1.1415));
+					command.run("(new Boolean(true))",                             {}, /**/  Object(true));
+					command.run("(new Boolean(false))",                            {}, /**/  Object(false));
+					command.run("(new String(''))",                                {}, /**/  Object(""));
+					command.run("(new String('hello'))",                           {}, /**/  Object("hello"));
+					command.run("(new String('hello\\n'))",                        {}, /**/  Object("hello\n"));
+					command.run("(new String('\\'hello\\''))",                     {}, /**/  Object("'hello'"));
+					command.run("{}",                                              {}, /**/  {});
+					command.run("{'a': 1}",                                        {}, /**/  {a: 1});
+					command.run("{'a': 1, 'b': 2}",                                {}, /**/  {a: 1, b: 2});
+					command.run("[]",                                              {}, /**/  []);
+					command.run("[1]",                                             {}, /**/  [1]);
+					command.run("[1, 2]",                                          {}, /**/  [1, 2]);
+					command.run("[, 2]",                                           {}, /**/  [, 2]); // empty slot
+					command.run("{'a': 1, 'b': (new Object())}",                   {depth: 2}, /**/  {a: 1, b: {c: {d: 4}}});
+					command.run("{'a': 1, 'b': (new Object())}",                   {depth: 2}, /**/  {a: 1, b: {c: {d: 4}}}, 0);
+					command.run("{'a': 1, 'b': {'c': (new Object())}}",            {depth: 2}, /**/  {a: 1, b: {c: {d: 4}}}, 1);
+					command.run("{'a': 1, 'b': {'c': {'d': 4}}}",                  {depth: 2}, /**/  {a: 1, b: {c: {d: 4}}}, 2);
+					command.run("[1, (new Array(2))]",                             {depth: 2}, /**/  [1, [2, [3]]]);
+					command.run("[1, (new Array(2))]",                             {depth: 2}, /**/  [1, [2, [3]]], 0);
+					command.run("[1, [2, (new Array(1))]]",                        {depth: 2}, /**/  [1, [2, [3]]], 1);
+					command.run("[1, [2, [3]]]",                                   {depth: 2}, /**/  [1, [2, [3]]], 2);
+					command.run("(new Date(2015, 8, 15, 9, 32, 52, 140))",         {}, /**/  new Date(2015, 8, 15, 9, 32, 52, 140));
+					command.run("(new Error('error'))",                            {}, /**/  (new Error("error")));
+					command.run("(new Function())",                                {}, /**/  Object.prototype.toString);
+					// NOTE: Disabled because I get different results
+					//command.run("function () {return \"hello\";}",                    {note: "May fail under Firefox because it injects the \"use strict\" sentence and it does make sense."},      /**/  (function() {return "hello";}));
+					//command.run("function () {\n\"use strict\";\nreturn \"hello\";}", {note: "May fail under browsers other than Firefox because the \"use strict\" sentence is not injected."},    /**/  (function() {return "hello";}));
+					command.end();
+					
+				},
+			},
+		};
+		
+		return DD_MODULES;
+	};
+	
+	if (!global.process) {
+		// <PRB> export/import are not yet supported in browsers
+		global.DD_MODULES = exports.add(global.DD_MODULES);
 	};
 })();

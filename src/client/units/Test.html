@@ -1,57 +1,73 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<link rel="stylesheet" href="Test.css" />
+		<link rel="stylesheet" href="../../doodad-js-test/units/Test.css" />
 	</head>
 	<body>
-		<script src="../../core/Bootstrap.js"></script>
-		<script src="../../core/Debug.js"></script>
-		<script src="../../core/Types.js"></script>
-		<script src="../../core/Tools.js"></script>
-		<script src="../../core/Namespaces.js"></script>
-		<script src="../../core/Doodad.js"></script>
-		<script src="../../client/core/Client.js"></script>
-		<script src="../../common/Tools_Locale.js"></script>
-		<script src="../../common/Tools_Dates.js"></script>
-		<script src="../../common/IO.js"></script>
-		<script src="../../client/Client_IO.js"></script>
-		<script src="../Test.js"></script>
-		<script src="./Unit_Types.js"></script>
-		<script src="./Unit_Types_Is.js"></script>
-		<script src="./Unit_Types_Type.js"></script>
-		<script src="./Unit_Types_Conversion.js"></script>
-		<script src="./Unit_Types_Dictionary.js"></script>
-		<script src="./Unit_Types_Array.js"></script>
-		<script src="./Unit_Types_ToSource.js"></script>
-		<script src="./Unit_Tools.js"></script>
-		<!--<script src="./Unit_Tools_SafeEval.js"></script>-->
-		<script src="./Unit_Tools_Path.js"></script>
-		<script src="./Unit_Tools_Urls.js"></script>
-		<script src="./Unit_Tools_String.js"></script>
-		<script src="./Unit_Tools_Array.js"></script>
-		<script src="./Unit_Tools_Dictionary.js"></script>
-		<script src="./Unit_Tools_Misc.js"></script>
+		<script src="../../doodad-js/Bootstrap.js"></script>
+		<script src="../../doodad-js/Debug.js"></script>
+		<script src="../../doodad-js/Types.js"></script>
+		<script src="../../doodad-js/Tools.js"></script>
+		<script src="../../doodad-js/Namespaces.js"></script>
+		<script src="../../doodad-js/Doodad.js"></script>
+		<script src="../../doodad-js/Client.js"></script>
+		<script src="../../doodad-js/Modules.js"></script>
+		<!--<script src="../../doodad-js-locale/Tools_Locale.js"></script>-->
+		<script src="../../doodad-js-locale/index.js"></script>
+		<!--<script src="../../doodad-js-dates/Tools_Dates.js"></script>-->
+		<script src="../../doodad-js-dates/index.js"></script>
+		<!--<script src="../../doodad-js-io/IO.js"></script>-->
+		<!--<script src="../../doodad-js-io/Client_IO.js"></script>-->
+		<script src="../../doodad-js-io/index.js"></script>
+		<script src="../../doodad-js-test/Test.js"></script>
+		<script src="../../doodad-js-test/units/Unit_Types.js"></script>
+		<script src="../../doodad-js-test/units/Unit_Types_Is.js"></script>
+		<script src="../../doodad-js-test/units/Unit_Types_Type.js"></script>
+		<script src="../../doodad-js-test/units/Unit_Types_Conversion.js"></script>
+		<script src="../../doodad-js-test/units/Unit_Types_Dictionary.js"></script>
+		<script src="../../doodad-js-test/units/Unit_Types_Array.js"></script>
+		<script src="../../doodad-js-test/units/Unit_Types_ToSource.js"></script>
+		<script src="../../doodad-js-test/units/Unit_Tools.js"></script>
+		<!--<script src="../../doodad-js-test/units/Unit_Tools_SafeEval.js"></script>-->
+		<script src="../../doodad-js-test/units/Unit_Tools_Path.js"></script>
+		<script src="../../doodad-js-test/units/Unit_Tools_Urls.js"></script>
+		<script src="../../doodad-js-test/units/Unit_Tools_String.js"></script>
+		<script src="../../doodad-js-test/units/Unit_Tools_Array.js"></script>
+		<script src="../../doodad-js-test/units/Unit_Tools_Dictionary.js"></script>
+		<script src="../../doodad-js-test/units/Unit_Tools_Misc.js"></script>
 		<script src="../../lib/sax/sax.js"></script>
 		<script src="../../lib/es6-promise/es6-promise.min.js"></script>
 		<script>
 			(function() {
+				"use strict";
+			
 				var	__prevOnLoad__ = window.onload;
 				window.onload = function testWindowOnLoad(ev) {
 					if (__prevOnLoad__) {
 						__prevOnLoad__.call(this, ev);
 					};
 					
-					var global = window;
-					
-					var root = global.createRoot(global.DD_MODULES),
-						namespaces = root.Doodad.Namespaces;
-					
-					namespaces.addEventListener('ready', function() {
+					function startup() {
 						var test = root.Doodad.Test;
 						test.run();
-					});
+					};
 					
-					namespaces.loadNamespaces();
+					var global = window;
+					
+					var options = {};
+					options['Doodad.Modules'] = {
+						settings: {
+							modulesUri: '../..',
+						},
+					};
+
+					var root = global.createRoot(global.DD_MODULES, options),
+						namespaces = root.Doodad.Namespaces;
+					
+					namespaces.loadNamespaces(startup, false, options)
+						['catch'](function(err) {
+							alert(err);
+						});
 				};
 			})();
 		</script>

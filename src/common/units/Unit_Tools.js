@@ -1,5 +1,5 @@
 //! REPLACE_BY("// Copyright 2015 Claude Petit, licensed under Apache License version 2.0\n")
-// dOOdad - Class library for Javascript (BETA) with some extras (ALPHA)
+// dOOdad - Object-oriented programming framework with some extras
 // File: Unit_Tools.js - Unit testing module file
 // Project home: https://sourceforge.net/projects/doodad-js/
 // Trunk: svn checkout svn://svn.code.sf.net/p/doodad-js/code/trunk doodad-js-code
@@ -26,18 +26,32 @@
 (function() {
 	var global = this;
 
-	global.DD_MODULES = (global.DD_MODULES || {});
-	global.DD_MODULES['Doodad.Test.Tools'] = {
-		type: 'TestUnit',
-		version: '0d',
-		namespaces: [],
-		dependencies: ['Doodad.Test'],
+	var exports = {};
+	if (global.process) {
+		module.exports = exports;
+	};
+	
+	exports.add = function add(DD_MODULES) {
+		DD_MODULES = (DD_MODULES || {});
+		DD_MODULES['Doodad.Test.Tools'] = {
+			type: 'TestUnit',
+			version: '0d',
+			namespaces: [],
+			dependencies: ['Doodad.Test'],
+			
+			// Unit
+			priority: null,
+			
+			proto: {
+				run: null,
+			},
+		};
 		
-		// Unit
-		priority: null,
-		
-		proto: {
-			run: null,
-		},
+		return DD_MODULES;
+	};
+	
+	if (!global.process) {
+		// <PRB> export/import are not yet supported in browsers
+		global.DD_MODULES = exports.add(global.DD_MODULES);
 	};
 })();

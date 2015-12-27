@@ -1,5 +1,5 @@
 //! REPLACE_BY("// Copyright 2015 Claude Petit, licensed under Apache License version 2.0\n")
-// dOOdad - Class library for Javascript (BETA) with some extras (ALPHA)
+// dOOdad - Object-oriented programming framework with some extras
 // File: Unit_Tools_Misc.js - Unit testing module file
 // Project home: https://sourceforge.net/projects/doodad-js/
 // Trunk: svn checkout svn://svn.code.sf.net/p/doodad-js/code/trunk doodad-js-code
@@ -26,76 +26,90 @@
 (function() {
 	var global = this;
 
-	global.DD_MODULES = (global.DD_MODULES || {});
-	global.DD_MODULES['Doodad.Test.Tools.Misc'] = {
-		type: 'TestUnit',
-		version: '0d',
-		namespaces: null,
-		dependencies: ['Doodad.Test.Tools'],
+	var exports = {};
+	if (global.process) {
+		module.exports = exports;
+	};
+	
+	exports.add = function add(DD_MODULES) {
+		DD_MODULES = (DD_MODULES || {});
+		DD_MODULES['Doodad.Test.Tools.Misc'] = {
+			type: 'TestUnit',
+			version: '0d',
+			namespaces: null,
+			dependencies: ['Doodad.Test.Tools'],
 
-		// Unit
-		priority: null,
-			proto: {
-			run: null,
-		},
-
-		proto: {
-			run: function run(entry, /*optional*/options) {
-				"use strict";
-
-				var root = entry.root,
-					doodad = root.Doodad,
-					namespaces = doodad.Namespaces,
-					test = doodad.Test,
-					unit = test.Types.Is,
-					types = doodad.Types,
-					io = doodad.IO,
-					newRoot = test.NewRoot,
-					newTypes = newRoot.Doodad.Types,
-					newTools = newRoot.Doodad.Tools;
-
-					
-				if (!options) {
-					options = {};
-				};
-				
-				
-				var command = test.prepareCommand(newTools.escapeHtml, "Doodad.Tools.escapeHtml");
-				
-				command.run(undefined,                                       {repetitions: 100}  /**/);
-				command.run(newTypes.AssertionFailed,                        {mode: 'isinstance'}, /**/ 1);
-				command.run("",                                              {repetitions: 100}, /**/ "");
-				command.run("&lt;script onload=&quot;go(&#39;&amp;#20&#39;)&quot;&gt;", {repetitions: 100}, /**/ '<script onload="go(\'&#20\')">');
-
-				command.end();
-				
-			
-				var command = test.prepareCommand(newTools.escapeRegExp, "Doodad.Tools.escapeRegExp");
-				
-				command.run(undefined,                                       {repetitions: 100}  /**/);
-				command.run(newTypes.AssertionFailed,                        {mode: 'isinstance'}, /**/ 1);
-				command.run("",                                              {repetitions: 100}, /**/ "");
-				command.run("\\[\\(\\$1\\+\\$2\\)\\|\\(\\^\\$3\\)\\]",       {repetitions: 100}, /**/ '[($1+$2)|(^$3)]');
-
-				command.end();
-				
-			
-				var command = test.prepareCommand(newTools.sign, "Doodad.Tools.sign");
-				
-				command.run(NaN,                                             {repetitions: 100}  /**/);
-				command.run(0,                                               {repetitions: 100}, /**/ null);
-				command.run(NaN,                                             {repetitions: 100}, /**/ NaN);
-				command.run(1,                                               {repetitions: 100}, /**/ Infinity);
-				command.run(-1,                                              {repetitions: 100}, /**/ -Infinity);
-				command.run(0,                                               {repetitions: 100}, /**/ 0);
-				command.run(-0,                                              {repetitions: 100}, /**/ -0);
-				command.run(1,                                               {repetitions: 100}, /**/ 2);
-				command.run(-1,                                              {repetitions: 100}, /**/ -2);
-
-				command.end();
-				
-			
+			// Unit
+			priority: null,
+				proto: {
+				run: null,
 			},
-		},
+
+			proto: {
+				run: function run(entry, /*optional*/options) {
+					"use strict";
+
+					var root = entry.root,
+						doodad = root.Doodad,
+						namespaces = doodad.Namespaces,
+						test = doodad.Test,
+						unit = test.Types.Is,
+						types = doodad.Types,
+						io = doodad.IO,
+						newRoot = test.NewRoot,
+						newTypes = newRoot.Doodad.Types,
+						newTools = newRoot.Doodad.Tools;
+
+						
+					if (!options) {
+						options = {};
+					};
+					
+					
+					var command = test.prepareCommand(newTools.escapeHtml, "Doodad.Tools.escapeHtml");
+					
+					command.run(undefined,                                       {repetitions: 100}  /**/);
+					command.run(newTypes.AssertionFailed,                        {mode: 'isinstance'}, /**/ 1);
+					command.run("",                                              {repetitions: 100}, /**/ "");
+					command.run("&lt;script onload=&quot;go(&#39;&amp;#20&#39;)&quot;&gt;", {repetitions: 100}, /**/ '<script onload="go(\'&#20\')">');
+
+					command.end();
+					
+				
+					var command = test.prepareCommand(newTools.escapeRegExp, "Doodad.Tools.escapeRegExp");
+					
+					command.run(undefined,                                       {repetitions: 100}  /**/);
+					command.run(newTypes.AssertionFailed,                        {mode: 'isinstance'}, /**/ 1);
+					command.run("",                                              {repetitions: 100}, /**/ "");
+					command.run("\\[\\(\\$1\\+\\$2\\)\\|\\(\\^\\$3\\)\\]",       {repetitions: 100}, /**/ '[($1+$2)|(^$3)]');
+
+					command.end();
+					
+				
+					var command = test.prepareCommand(newTools.sign, "Doodad.Tools.sign");
+					
+					command.run(NaN,                                             {repetitions: 100}  /**/);
+					command.run(0,                                               {repetitions: 100}, /**/ null);
+					command.run(NaN,                                             {repetitions: 100}, /**/ NaN);
+					command.run(1,                                               {repetitions: 100}, /**/ Infinity);
+					command.run(-1,                                              {repetitions: 100}, /**/ -Infinity);
+					command.run(0,                                               {repetitions: 100}, /**/ 0);
+					command.run(-0,                                              {repetitions: 100}, /**/ -0);
+					command.run(1,                                               {repetitions: 100}, /**/ 2);
+					command.run(-1,                                              {repetitions: 100}, /**/ -2);
+
+					command.end();
+					
+				
+				},
+			},
+		};
+		
+		return DD_MODULES;
+	};
+	
+	if (!global.process) {
+		// <PRB> export/import are not yet supported in browsers
+		global.DD_MODULES = exports.add(global.DD_MODULES);
 	};
 })();

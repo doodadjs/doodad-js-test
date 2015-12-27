@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="Test.css" />
+	</head>
+	<body>
+		<script src="../../core/Bootstrap.js"></script>
+		<script src="../../core/Debug.js"></script>
+		<script src="../../core/Types.js"></script>
+		<script src="../../core/Tools.js"></script>
+		<script src="../../core/Namespaces.js"></script>
+		<script src="../../core/Doodad.js"></script>
+		<script src="../../client/core/Client.js"></script>
+		<script src="../../common/Tools_Locale.js"></script>
+		<script src="../../common/Tools_Dates.js"></script>
+		<script src="../../common/IO.js"></script>
+		<script src="../../client/Client_IO.js"></script>
+		<script src="../Test.js"></script>
+		<script src="./Unit_Types.js"></script>
+		<script src="./Unit_Types_Is.js"></script>
+		<script src="./Unit_Types_Type.js"></script>
+		<script src="./Unit_Types_Conversion.js"></script>
+		<script src="./Unit_Types_Dictionary.js"></script>
+		<script src="./Unit_Types_Array.js"></script>
+		<script src="./Unit_Types_ToSource.js"></script>
+		<script src="./Unit_Tools.js"></script>
+		<!--<script src="./Unit_Tools_SafeEval.js"></script>-->
+		<script src="./Unit_Tools_Path.js"></script>
+		<script src="./Unit_Tools_Urls.js"></script>
+		<script src="./Unit_Tools_String.js"></script>
+		<script src="./Unit_Tools_Array.js"></script>
+		<script src="./Unit_Tools_Dictionary.js"></script>
+		<script src="./Unit_Tools_Misc.js"></script>
+		<script src="../../lib/sax/sax.js"></script>
+		<script src="../../lib/es6-promise/es6-promise.min.js"></script>
+		<script>
+			(function() {
+				var	__prevOnLoad__ = window.onload;
+				window.onload = function testWindowOnLoad(ev) {
+					if (__prevOnLoad__) {
+						__prevOnLoad__.call(this, ev);
+					};
+					
+					var global = window;
+					
+					var root = global.createRoot(global.DD_MODULES),
+						namespaces = root.Doodad.Namespaces;
+					
+					namespaces.addEventListener('ready', function() {
+						var test = root.Doodad.Test;
+						test.run();
+					});
+					
+					namespaces.loadNamespaces();
+				};
+			})();
+		</script>
+	</body>
+</html>

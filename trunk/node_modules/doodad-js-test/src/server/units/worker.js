@@ -123,7 +123,7 @@ module.exports = function(root, options) {
 					page: nodejs.Server.Http.StaticPage,
 					path: filesPath,
 					showFolders: true,
-					folderTemplate: tools.Path.parse(require.resolve('doodad-js-templates')).combine("./res/templates/Folder.ddt", {isRelative: true, os: 'linux'}),
+					folderTemplate: tools.Path.parse(require.resolve('doodad-js-http')).combine("./res/templates/Folder.ddt", {isRelative: true, os: 'linux'}),
 				},
 				//{
 				//	page: nodejs.Server.Http.JavascriptPage,

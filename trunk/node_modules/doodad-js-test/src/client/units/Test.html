@@ -12,29 +12,11 @@
 		<script src="../../doodad-js/Doodad.js"></script>
 		<script src="../../doodad-js/Client.js"></script>
 		<script src="../../doodad-js/Modules.js"></script>
-		<!--<script src="../../doodad-js-locale/Tools_Locale.js"></script>-->
 		<script src="../../doodad-js-locale/index.js"></script>
-		<!--<script src="../../doodad-js-dates/Tools_Dates.js"></script>-->
 		<script src="../../doodad-js-dates/index.js"></script>
-		<!--<script src="../../doodad-js-io/IO.js"></script>-->
-		<!--<script src="../../doodad-js-io/Client_IO.js"></script>-->
 		<script src="../../doodad-js-io/index.js"></script>
 		<script src="../../doodad-js-test/Test.js"></script>
-		<script src="../../doodad-js-test/units/Unit_Types.js"></script>
-		<script src="../../doodad-js-test/units/Unit_Types_Is.js"></script>
-		<script src="../../doodad-js-test/units/Unit_Types_Type.js"></script>
-		<script src="../../doodad-js-test/units/Unit_Types_Conversion.js"></script>
-		<script src="../../doodad-js-test/units/Unit_Types_Dictionary.js"></script>
-		<script src="../../doodad-js-test/units/Unit_Types_Array.js"></script>
-		<script src="../../doodad-js-test/units/Unit_Types_ToSource.js"></script>
-		<script src="../../doodad-js-test/units/Unit_Tools.js"></script>
-		<!--<script src="../../doodad-js-test/units/Unit_Tools_SafeEval.js"></script>-->
-		<script src="../../doodad-js-test/units/Unit_Tools_Path.js"></script>
-		<script src="../../doodad-js-test/units/Unit_Tools_Urls.js"></script>
-		<script src="../../doodad-js-test/units/Unit_Tools_String.js"></script>
-		<script src="../../doodad-js-test/units/Unit_Tools_Array.js"></script>
-		<script src="../../doodad-js-test/units/Unit_Tools_Dictionary.js"></script>
-		<script src="../../doodad-js-test/units/Unit_Tools_Misc.js"></script>
+		<script src="../../doodad-js-test/units/index.js"></script>
 		<script src="../../lib/sax/sax.js"></script>
 		<script src="../../lib/es6-promise/es6-promise.min.js"></script>
 		<script>
@@ -69,7 +51,7 @@
 							alert(err);
 						});
 				};
-			})();
+			}).call((typeof global !== 'undefined') ? global : ((typeof window !== 'undefined') ? window : this));
 		</script>
 	</body>
 </html>

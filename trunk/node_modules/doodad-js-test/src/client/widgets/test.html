@@ -40,7 +40,7 @@
 						
 					namespaces.loadNamespaces(startup, false, options, window.DD_MODULES);
 				};
-			})();
+			}).call((typeof global !== 'undefined') ? global : ((typeof window !== 'undefined') ? window : this));
 		</script>
 		
 		<div id="test1"></div>

@@ -1,5 +1,5 @@
-//! REPLACE_BY("// Copyright 2015 Claude Petit, licensed under Apache License version 2.0\n")
-// dOOdad - Object-oriented programming framework with some extras
+//! REPLACE_BY("// Copyright 2016 Claude Petit, licensed under Apache License version 2.0\n")
+// dOOdad - Object-oriented programming framework
 // File: index.js - Test startup file for NodeJs
 // Project home: https://sourceforge.net/projects/doodad-js/
 // Trunk: svn checkout svn://svn.code.sf.net/p/doodad-js/code/trunk doodad-js-code
@@ -8,7 +8,7 @@
 // Note: I'm still in alpha-beta stage, so expect to find some bugs or incomplete parts !
 // License: Apache V2
 //
-//	Copyright 2015 Claude Petit
+//	Copyright 2016 Claude Petit
 //
 //	Licensed under the Apache License, Version 2.0 (the "License");
 //	you may not use this file except in compliance with the License.
@@ -34,11 +34,11 @@ function startup() {
 	const doodad = root.Doodad,
 		tools = doodad.Tools;
 					
-	const cachePath = tools.Path.parse(tools.Files.getTempFolder()).combine('/nodesjs/doodad-js/', {os: 'linux'});
+	const cachePath = tools.Path.parse(tools.Files.getTempFolder()).combine('./nodesjs/doodad-js/', {os: 'linux'});
 	tools.Files.mkdir(cachePath, {makeParents: true});
 	
 	const options = {
-		jsCachePath: cachePath.combine('/jsCache/', {os: 'linux'}),
+		jsCachePath: cachePath.combine('./jsCache/', {os: 'linux'}),
 	};
 	
 	if (cluster.isMaster) {
@@ -60,11 +60,14 @@ require('doodad-js-cluster').add(DD_MODULES);
 root = require('doodad-js').createRoot(DD_MODULES);
 
 namespaces = root.Doodad.Namespaces;
-namespaces.loadNamespaces(startup, false, null, DD_MODULES)
-	['catch'](function(err) {
-		console.error(err.stack);
-		process.exit(1);
-	});
+return namespaces.loadNamespaces(startup, false, null, DD_MODULES)
+		['catch'](function (err) {
+			console.error(err.stack);
+			process.exit(1);
+		});
+
+
+
 
 
 // RPC GET : /rpc?method=%22callService%22&params=[%22MyService%22,%22hello%22]

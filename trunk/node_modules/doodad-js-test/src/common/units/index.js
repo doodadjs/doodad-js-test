@@ -1,6 +1,5 @@
-//! REPLACE_BY("// Copyright 2016 Claude Petit, licensed under Apache License version 2.0\n")
 // dOOdad - Object-oriented programming framework
-// File: Unit_Types.js - Unit testing module file
+// File: index.js - Loader module startup file
 // Project home: https://sourceforge.net/projects/doodad-js/
 // Trunk: svn checkout svn://svn.code.sf.net/p/doodad-js/code/trunk doodad-js-code
 // Author: Claude Petit, Quebec city
@@ -21,7 +20,6 @@
 //	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //	See the License for the specific language governing permissions and
 //	limitations under the License.
-//! END_REPLACE()
 
 (function() {
 	var global = this;
@@ -31,22 +29,45 @@
 		module.exports = exports;
 	};
 	
+	var MODULE_NAME = 'doodad-js-test';
+	
 	exports.add = function add(DD_MODULES) {
 		DD_MODULES = (DD_MODULES || {});
-		DD_MODULES['Doodad.Test.Types'] = {
-			type: 'TestUnit',
-			version: '0d',
+		DD_MODULES[MODULE_NAME + '.units'] = {
+			type: null,
+			version: '0b',
 			namespaces: null,
-			dependencies: ['Doodad.Test'],
+			dependencies: ['Doodad.Modules'],
+			exports: exports,
 			
-			// Unit
-			priority: null,
-			
-			proto: {
-				run: null,
+			create: function create(root, /*optional*/_options) {
+				"use strict";
+				
+				var doodad = root.Doodad,
+					modules = doodad.Modules;
+				
+				//var fromSource = root.getOptions().settings.fromSource;
+				var path = (global.process ? '/src/common/units/' : '/units/');
+				
+				return modules.load(MODULE_NAME, [
+						path + "Unit_Types.js",
+						path + "Unit_Types_Is.js",
+						path + "Unit_Types_Type.js",
+						path + "Unit_Types_Conversion.js",
+						path + "Unit_Types_Dictionary.js",
+						path + "Unit_Types_Array.js",
+						path + "Unit_Types_ToSource.js",
+						path + "Unit_Tools.js",
+						path + "Unit_Tools_SafeEval.js",
+						path + "Unit_Tools_Path.js",
+						path + "Unit_Tools_Urls.js",
+						path + "Unit_Tools_String.js",
+						path + "Unit_Tools_Array.js",
+						path + "Unit_Tools_Dictionary.js",
+						path + "Unit_Tools_Misc.js",
+					], _options);
 			},
 		};
-		
 		return DD_MODULES;
 	};
 	

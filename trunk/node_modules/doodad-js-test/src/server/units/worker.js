@@ -1,5 +1,5 @@
-//! REPLACE_BY("// Copyright 2015 Claude Petit, licensed under Apache License version 2.0\n")
-// dOOdad - Object-oriented programming framework with some extras
+//! REPLACE_BY("// Copyright 2016 Claude Petit, licensed under Apache License version 2.0\n")
+// dOOdad - Object-oriented programming framework
 // File: worker.js - Test startup file for NodeJs
 // Project home: https://sourceforge.net/projects/doodad-js/
 // Trunk: svn checkout svn://svn.code.sf.net/p/doodad-js/code/trunk doodad-js-code
@@ -8,7 +8,7 @@
 // Note: I'm still in alpha-beta stage, so expect to find some bugs or incomplete parts !
 // License: Apache V2
 //
-//	Copyright 2015 Claude Petit
+//	Copyright 2016 Claude Petit
 //
 //	Licensed under the Apache License, Version 2.0 (the "License");
 //	you may not use this file except in compliance with the License.
@@ -52,11 +52,15 @@ module.exports = function(root, options) {
 				con[name].call(con, '<W:' + cluster.worker.id + '>  ' + args[0]);
 			});
 			
-			tools.options.hooks.console = function consoleHook(fn, message) {
-				// TODO: Do like "Terminal.consoleWrite"
-				const con = messenger.getInterface(ioInterfaces.IConsole);
-				con[fn].call(con, '<W:' + cluster.worker.id + '>  ' + message);
-			};
+			tools.setOptions({
+				hooks: {
+					console: function consoleHook(fn, message) {
+						// TODO: Do like "Terminal.consoleWrite"
+						const con = messenger.getInterface(ioInterfaces.IConsole);
+						con[fn].call(con, '<W:' + cluster.worker.id + '>  ' + message);
+					},
+				},
+			});
 		};
 
 		root.REGISTER(doodad.Object.$extend(
@@ -73,20 +77,24 @@ module.exports = function(root, options) {
 			}),
 		}));
 
-		let filesPath = [
-			tools.Path.parse(require.resolve('doodad-js')).combine('/dist/', {os: 'linux', dirChar: '/'}),
-			tools.Path.parse(require.resolve('doodad-js-dates')).combine('/dist/', {os: 'linux', dirChar: '/'}),
-			tools.Path.parse(require.resolve('doodad-js-http')).combine('/dist/', {os: 'linux', dirChar: '/'}),
-			tools.Path.parse(require.resolve('doodad-js-io')).combine('/dist/', {os: 'linux', dirChar: '/'}),
-			tools.Path.parse(require.resolve('doodad-js-locale')).combine('/dist/', {os: 'linux', dirChar: '/'}),
-			tools.Path.parse(require.resolve('doodad-js-mime')).combine('/dist/', {os: 'linux', dirChar: '/'}),
-			tools.Path.parse(require.resolve('doodad-js-minifiers')).combine('/dist/', {os: 'linux', dirChar: '/'}),
-			tools.Path.parse(require.resolve('doodad-js-templates')).combine('/dist/', {os: 'linux', dirChar: '/'}),
-			tools.Path.parse(require.resolve('doodad-js-test')).combine('/dist/', {os: 'linux', dirChar: '/'}),
-			tools.Path.parse(require.resolve('doodad-js-widgets')).combine('/dist/', {os: 'linux', dirChar: '/'}),
-			tools.Path.parse(require.resolve('doodad-js-xml')).combine('/dist/', {os: 'linux', dirChar: '/'}),
-			tools.Path.parse(require.resolve('doodad-js-loader')).combine('/dist/', {os: 'linux', dirChar: '/'}),
+		const filesModules = [
+			'doodad-js',
+			'doodad-js-dates',
+			'doodad-js-http',
+			'doodad-js-io',
+			'doodad-js-locale',
+			'doodad-js-mime',
+			'doodad-js-minifiers',
+			'doodad-js-templates',
+			'doodad-js-test',
+			'doodad-js-widgets',
+			'doodad-js-xml',
+			'doodad-js-loader',
 		];
+		
+		const filesPath = tools.map(filesModules, function(mod) {
+			return tools.Path.parse(require.resolve(mod)).set({file: null}).combine('./dist/', {os: 'linux', dirChar: '/'});
+		});
 		
 		let saxPath;
 		try {
@@ -123,7 +131,7 @@ module.exports = function(root, options) {
 					page: nodejs.Server.Http.StaticPage,
 					path: filesPath,
 					showFolders: true,
-					folderTemplate: tools.Path.parse(require.resolve('doodad-js-http')).combine("./res/templates/Folder.ddt", {isRelative: true, os: 'linux'}),
+					folderTemplate: tools.Path.parse(require.resolve('doodad-js-http')).set({file: null}).combine("./res/templates/Folder.ddt", {isRelative: true, os: 'linux'}),
 				},
 				//{
 				//	page: nodejs.Server.Http.JavascriptPage,
@@ -131,6 +139,7 @@ module.exports = function(root, options) {
 				//	mimeTypes: ['application/javascript', 'application/x-javascript'],
 				//	cachePath: options.jsCachePath,
 				//	//directives: ["DEFINE('NO_DOC')"],
+				//	runDirectives: true,
 				//},
 			],
 			'/nodejs/static/lib/sax/': saxPath && {
@@ -143,14 +152,6 @@ module.exports = function(root, options) {
 					page: nodejs.Server.Http.StaticPage,
 					path: promisePath,
 			},
-			//'/nodejs/static/server/': {
-			//	page: server.Http.StatusPage,
-			//	status: server.Http.StatusCodes.NotFound,
-			//},
-			//'/nodejs/static/test/units/www.doodad-js.local.key': {
-			//	page: server.Http.StatusPage,
-			//	status: server.Http.StatusCodes.NotFound,
-			//},
 			'/nodejs/static/doodad-js-test/widgets/': {
 				page: server.Http.RedirectPage,
 				targetUrl: '/nodejs/static/doodad-js-test/widgets/test.html',
@@ -161,6 +162,11 @@ module.exports = function(root, options) {
 				targetUrl: '/nodejs/static/doodad-js-test/units/Test.html',
 				depth: 0,
 			},
+			'/nodejs/static/doodad-js-test/browserify/': {
+				page: server.Http.RedirectPage,
+				targetUrl: '/nodejs/static/doodad-js-test/browserify/index.html',
+				depth: 0,
+			},
 			
 			//  Test infinite redirects
 			//'/favicon.ico': {
@@ -169,7 +175,7 @@ module.exports = function(root, options) {
 			//},
 			'/favicon.ico': {
 				page: server.Http.StatusPage,
-				status: server.Http.StatusCodes.NotFound,
+				status: types.HttpStatus.NotFound,
 			},
 		});
 
@@ -181,7 +187,7 @@ module.exports = function(root, options) {
 			const request = ev.obj,
 				status = request.responseStatus;
 			if (status >= 300) {
-				request.responseStream.write(status.toString());
+				request.getResponseStream().write(String(status));
 			};
 		};
 

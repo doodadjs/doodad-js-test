@@ -1,6 +1,5 @@
-//! REPLACE_BY("// Copyright 2016 Claude Petit, licensed under Apache License version 2.0\n")
 // dOOdad - Object-oriented programming framework
-// File: index.js - Test startup file for NodeJs
+// File: main.js - Module startup file for 'browserify'.
 // Project home: https://sourceforge.net/projects/doodad-js/
 // Trunk: svn checkout svn://svn.code.sf.net/p/doodad-js/code/trunk doodad-js-code
 // Author: Claude Petit, Quebec city
@@ -21,22 +20,5 @@
 //	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //	See the License for the specific language governing permissions and
 //	limitations under the License.
-//! END_REPLACE()
 
-"use strict";
-
-const DD_MODULES = {};
-require("../../common/widgets/MyWidget_loader.js").add(DD_MODULES);
-require('doodad-js-loader').add(DD_MODULES);
-
-const root = require('doodad-js').createRoot(DD_MODULES),
-	doodad = root.Doodad,
-	namespaces = doodad.Namespaces;
-
-function startup() {
-	doodad.Loader.loadScripts(global.DD_SCRIPTS)
-		['catch'](function(err){console.log(err.stack)});
-};
-
-namespaces.loadNamespaces(startup, false, null, DD_MODULES)
-	['catch'](function(err){console.log(err.stack)});
+throw new Error("This module is server-side only and can't be used with 'browserify'.");

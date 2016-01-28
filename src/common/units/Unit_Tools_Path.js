@@ -1,5 +1,5 @@
-//! REPLACE_BY("// Copyright 2015 Claude Petit, licensed under Apache License version 2.0\n")
-// dOOdad - Object-oriented programming framework with some extras
+//! REPLACE_BY("// Copyright 2016 Claude Petit, licensed under Apache License version 2.0\n")
+// dOOdad - Object-oriented programming framework
 // File: Unit_Tools_Path.js - Unit testing module file
 // Project home: https://sourceforge.net/projects/doodad-js/
 // Trunk: svn checkout svn://svn.code.sf.net/p/doodad-js/code/trunk doodad-js-code
@@ -8,7 +8,7 @@
 // Note: I'm still in alpha-beta stage, so expect to find some bugs or incomplete parts !
 // License: Apache V2
 //
-//	Copyright 2015 Claude Petit
+//	Copyright 2016 Claude Petit
 //
 //	Licensed under the Apache License, Version 2.0 (the "License");
 //	you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@
 	var global = this;
 
 	var exports = {};
-	if (global.process) {
+	if (typeof process === 'object') {
 		module.exports = exports;
 	};
 	
@@ -76,6 +76,19 @@
 								os: osType,
 								dirChar: '\\',
 								root: [],
+								drive: '',
+								path: [],
+								file: null,
+								quote: '',
+								isRelative: true,
+								noEscapes: false,
+								shell: 'api',
+							}, {depth: 1}, /**/ "", options);
+
+							command.run({
+								os: osType,
+								dirChar: '\\',
+								root: [],
 								drive: 'C',
 								path: [],
 								file: null,
@@ -83,7 +96,6 @@
 								isRelative: false,
 								noEscapes: false,
 								shell: 'api',
-								changed: false,
 							}, {depth: 1}, /**/ "C:\\", options);
 
 							command.run({
@@ -97,7 +109,6 @@
 								isRelative: false,
 								noEscapes: false,
 								shell: 'api',
-								changed: false,
 							}, {depth: 1}, /**/ "C:\\Temp\\", options);
 							
 							command.run({
@@ -111,7 +122,6 @@
 								isRelative: false,
 								noEscapes: false,
 								shell: 'api',
-								changed: false,
 							}, {depth: 1}, /**/ "C:\\Temp\\SubFolder\\", options);
 							
 							command.run({
@@ -125,7 +135,6 @@
 								isRelative: false,
 								noEscapes: false,
 								shell: 'api',
-								changed: false,
 							}, {depth: 1}, /**/ "C:\\Temp\\SubFolder\\File.txt", options);
 							
 							command.run({
@@ -139,7 +148,6 @@
 								isRelative: false,
 								noEscapes: false,
 								shell: 'api',
-								changed: false,
 							}, {depth: 1}, /**/ '"C:\\Temp\\SubFolder\\File.txt"', options);
 							
 						} else {
@@ -154,7 +162,6 @@
 								isRelative: false,
 								noEscapes: false,
 								shell: 'api',
-								changed: false,
 							}, {depth: 1}, /**/ "/", options);
 
 							command.run({
@@ -168,7 +175,6 @@
 								isRelative: false,
 								noEscapes: false,
 								shell: 'api',
-								changed: false,
 							}, {depth: 1}, /**/ "/tmp/", options);
 							
 							command.run({
@@ -182,7 +188,6 @@
 								isRelative: false,
 								noEscapes: false,
 								shell: 'api',
-								changed: false,
 							}, {depth: 1}, /**/ "/tmp/subfolder/", options);
 							
 							command.run({
@@ -196,7 +201,6 @@
 								isRelative: false,
 								noEscapes: false,
 								shell: 'api',
-								changed: false,
 							}, {depth: 1}, /**/ "/tmp/subfolder/file.txt", options);
 							
 							command.run({
@@ -210,7 +214,6 @@
 								isRelative: false,
 								noEscapes: false,
 								shell: 'api',
-								changed: false,
 							}, {depth: 1}, /**/ '"/tmp/subfolder/file.txt"', options);
 							
 							command.run({
@@ -224,7 +227,6 @@
 								isRelative: true,
 								noEscapes: false,
 								shell: 'api',
-								changed: false,
 							}, {depth: 1}, /**/ "C:\\SubFolder\\File.txt", options);
 							
 						};
@@ -271,7 +273,7 @@
 							command.run(newTypes.PathError,                              {mode: 'isinstance'}, /**/ "..\\File.txt", types.extend({}, options, {isRelative: false}));
 							command.run("..\\File.txt",                                  {repetitions: 100}, /**/ "..\\File.txt", types.extend({}, options, {isRelative: true}));
 							command.run(newTypes.PathError,                              {mode: 'isinstance'}, /**/ "\\..\\File.txt", types.extend({}, options, {isRelative: false}));
-							command.run("C:\\..\\File.txt",                              {repetitions: 100}, /**/ "C:..\\File.txt", types.extend({}, options, {isRelative: true}));
+							command.run("C:..\\File.txt",                                {repetitions: 100}, /**/ "C:..\\File.txt", types.extend({}, options, {isRelative: true}));
 							command.run("C:\\..\\File.txt",                              {repetitions: 100}, /**/ "C:\\..\\File.txt", types.extend({}, options, {isRelative: true}));
 							command.run("\\File.txt",                                    {repetitions: 100}, /**/ "\\SubFolder\\..\\File.txt", types.extend({}, options, {isRelative: false}));
 							command.run("\\SubFolder\\File.txt",                         {repetitions: 100}, /**/ "\\SubFolder\\.\\File.txt", types.extend({}, options, {isRelative: false}));
@@ -366,10 +368,10 @@
 					command.run(newTypes.PathError,                                      {mode: 'isinstance'}, /**/ "C:\\SubFolder\\", "..\\File.txt", {os: 'windows'}, {os: 'windows'});
 					command.run(newTypes.PathError,                                      {mode: 'isinstance'}, /**/ "C:\\SubFolder\\", "\\..\\File.txt", {os: 'windows'}, {os: 'windows'});
 					command.run("C:\\File.txt",                                          {repetitions: 100}, /**/ "C:\\", "SubFolder\\..\\File.txt", {os: 'windows'}, {os: 'windows'});
-					command.run("C:\\File2.txt",                                         {repetitions: 100}, /**/ "C:\\File1.txt", "File2.txt", {os: 'windows'}, {os: 'windows'});
-					command.run("C:\\SubFolder\\File2.txt",                              {repetitions: 100}, /**/ "C:\\SubFolder\\File1.txt", "File2.txt", {os: 'windows'}, {os: 'windows'});
-					command.run("C:\\SubFolder\\File2.txt",                              {repetitions: 100}, /**/ "C:\\File1.txt", "SubFolder\\File2.txt", {os: 'windows'}, {os: 'windows'});
-					command.run("C:\\SubFolder1\\SubFolder2\\File2.txt",                 {repetitions: 100}, /**/ "C:\\SubFolder1\\File1.txt", "SubFolder2\\File2.txt", {os: 'windows'}, {os: 'windows'});
+					command.run("C:\\File1.txt\\File2.txt",                              {repetitions: 100}, /**/ "C:\\File1.txt", "File2.txt", {os: 'windows'}, {os: 'windows'});
+					command.run("C:\\SubFolder\\File1.txt\\File2.txt",                   {repetitions: 100}, /**/ "C:\\SubFolder\\File1.txt", "File2.txt", {os: 'windows'}, {os: 'windows'});
+					command.run("C:\\File1.txt\\SubFolder\\File2.txt",                   {repetitions: 100}, /**/ "C:\\File1.txt", "SubFolder\\File2.txt", {os: 'windows'}, {os: 'windows'});
+					command.run("C:\\SubFolder1\\File1.txt\\SubFolder2\\File2.txt",      {repetitions: 100}, /**/ "C:\\SubFolder1\\File1.txt", "SubFolder2\\File2.txt", {os: 'windows'}, {os: 'windows'});
 					
 					command.run("/",                                                     {repetitions: 100}, /**/ "/", "/", {os: 'linux'}, {os: 'linux'});
 					command.run("/SubFolder/",                                           {repetitions: 100}, /**/ "/", "/SubFolder/", {os: 'linux'}, {os: 'linux'});
@@ -382,17 +384,17 @@
 					command.run(newTypes.PathError,                                      {mode: 'isinstance'}, /**/ "/SubFolder/", "../File.txt", {os: 'linux'}, {os: 'linux'});
 					command.run(newTypes.PathError,                                      {mode: 'isinstance'}, /**/ "/SubFolder/", "/../File.txt", {os: 'linux'}, {os: 'linux'});
 					command.run("/File.txt",                                             {repetitions: 100}, /**/ "/", "SubFolder/../File.txt", {os: 'linux'}, {os: 'linux'});
-					command.run("/File2.txt",                                            {repetitions: 100}, /**/ "/File1.txt", "File2.txt", {os: 'linux'}, {os: 'linux'});
-					command.run("/SubFolder/File2.txt",                                  {repetitions: 100}, /**/ "/SubFolder/File1.txt", "File2.txt", {os: 'linux'}, {os: 'linux'});
-					command.run("/SubFolder/File2.txt",                                  {repetitions: 100}, /**/ "/File1.txt", "SubFolder/File2.txt", {os: 'linux'}, {os: 'linux'});
-					command.run("/SubFolder1/SubFolder2/File2.txt",                      {repetitions: 100}, /**/ "/SubFolder1/File1.txt", "SubFolder2/File2.txt", {os: 'linux'}, {os: 'linux'});
+					command.run("/File1.txt/File2.txt",                                  {repetitions: 100}, /**/ "/File1.txt", "File2.txt", {os: 'linux'}, {os: 'linux'});
+					command.run("/SubFolder/File1.txt/File2.txt",                        {repetitions: 100}, /**/ "/SubFolder/File1.txt", "File2.txt", {os: 'linux'}, {os: 'linux'});
+					command.run("/File1.txt/SubFolder/File2.txt",                        {repetitions: 100}, /**/ "/File1.txt", "SubFolder/File2.txt", {os: 'linux'}, {os: 'linux'});
+					command.run("/SubFolder1/File1.txt/SubFolder2/File2.txt",            {repetitions: 100}, /**/ "/SubFolder1/File1.txt", "SubFolder2/File2.txt", {os: 'linux'}, {os: 'linux'});
 					
-					command.run("C:\\SubFolder1\\SubFolder2\\File2.txt",                 {repetitions: 100}, /**/ "C:\\SubFolder1\\File1.txt", "SubFolder2/File2.txt", {os: 'windows'}, {os: 'linux'});
-					command.run("/SubFolder1/SubFolder2/File2.txt",                      {repetitions: 100}, /**/ "/SubFolder1/File1.txt", "SubFolder2\\File2.txt", {os: 'linux'}, {os: 'windows'});
+					command.run("C:\\SubFolder1\\File1.txt\\SubFolder2\\File2.txt",      {repetitions: 100}, /**/ "C:\\SubFolder1\\File1.txt", "SubFolder2/File2.txt", {os: 'windows'}, {os: 'linux'});
+					command.run("/SubFolder1/File1.txt/SubFolder2/File2.txt",            {repetitions: 100}, /**/ "/SubFolder1/File1.txt", "SubFolder2\\File2.txt", {os: 'linux'}, {os: 'windows'});
 
 					command.run(newTypes.ParseError,                                     {mode: 'isinstance'}, /**/ "/SubFolder1/File1.txt", "C:\\SubFolder2\\File2.txt", {os: 'linux'}, {os: 'windows'});
-					command.run("/SubFolder1/C:/SubFolder2/File2.txt",                   {repetitions: 100}, /**/ "/SubFolder1/File1.txt", "C:\\SubFolder2\\File2.txt", {os: 'linux'}, {os: 'windows', drive: ''});
-					command.run("/SubFolder1/SubFolder2/File2.txt",                      {repetitions: 100}, /**/ "/SubFolder1/File1.txt", "C:\\SubFolder2\\File2.txt", {os: 'linux'}, {os: 'windows'}, {drive: ''});
+					command.run("/SubFolder1/File1.txt/C:/SubFolder2/File2.txt",         {repetitions: 100}, /**/ "/SubFolder1/File1.txt", "C:\\SubFolder2\\File2.txt", {os: 'linux'}, {os: 'windows', drive: ''});
+					command.run("/SubFolder1/File1.txt/SubFolder2/File2.txt",            {repetitions: 100}, /**/ "/SubFolder1/File1.txt", "C:\\SubFolder2\\File2.txt", {os: 'linux'}, {os: 'windows'}, {drive: ''});
 					
 					command.end();
 					
@@ -428,10 +430,10 @@
 					command.run(newTypes.PathError,                                      {mode: 'isinstance'}, /**/ "C:\\SubFolder\\", "file://../File.txt", {os: 'windows'}, {isRelative: true});
 					command.run(newTypes.PathError,                                      {mode: 'isinstance'}, /**/ "C:\\SubFolder\\", "file:///../File.txt", {os: 'windows'}, {isRelative: true});
 					command.run("C:\\File.txt",                                          {repetitions: 100}, /**/ "C:\\", "file://SubFolder/../File.txt", {os: 'windows'});
-					command.run("C:\\File2.txt",                                         {repetitions: 100}, /**/ "C:\\File1.txt", "file:///File2.txt", {os: 'windows'});
-					command.run("C:\\SubFolder\\File2.txt",                              {repetitions: 100}, /**/ "C:\\SubFolder\\File1.txt", "file:///File2.txt", {os: 'windows'});
-					command.run("C:\\SubFolder\\File2.txt",                              {repetitions: 100}, /**/ "C:\\File1.txt", "file://SubFolder/File2.txt", {os: 'windows'});
-					command.run("C:\\SubFolder1\\SubFolder2\\File2.txt",                 {repetitions: 100}, /**/ "C:\\SubFolder1\\File1.txt", "file://SubFolder2/File2.txt", {os: 'windows'});
+					command.run("C:\\File1.txt\\File2.txt",                              {repetitions: 100}, /**/ "C:\\File1.txt", "file:///File2.txt", {os: 'windows'});
+					command.run("C:\\SubFolder\\File1.txt\\File2.txt",                   {repetitions: 100}, /**/ "C:\\SubFolder\\File1.txt", "file:///File2.txt", {os: 'windows'});
+					command.run("C:\\File1.txt\\SubFolder\\File2.txt",                   {repetitions: 100}, /**/ "C:\\File1.txt", "file://SubFolder/File2.txt", {os: 'windows'});
+					command.run("C:\\SubFolder1\\File1.txt\\SubFolder2\\File2.txt",      {repetitions: 100}, /**/ "C:\\SubFolder1\\File1.txt", "file://SubFolder2/File2.txt", {os: 'windows'});
 					
 					command.run("/",                                                     {repetitions: 100}, /**/ "/", "file:///", {os: 'linux'});
 					command.run("/SubFolder/",                                           {repetitions: 100}, /**/ "/", "file:///SubFolder/", {os: 'linux'});
@@ -443,10 +445,10 @@
 					command.run(newTypes.PathError,                                      {mode: 'isinstance'}, /**/ "/SubFolder/", "file://../File.txt", {os: 'linux'}, {isRelative: true});
 					command.run(newTypes.PathError,                                      {mode: 'isinstance'}, /**/ "/SubFolder/", "file:///../File.txt", {os: 'linux'}, {isRelative: true});
 					command.run("/File.txt",                                             {repetitions: 100}, /**/ "/", "file://SubFolder/../File.txt", {os: 'linux'});
-					command.run("/File2.txt",                                            {repetitions: 100}, /**/ "/File1.txt", "file:///File2.txt", {os: 'linux'});
-					command.run("/SubFolder/File2.txt",                                  {repetitions: 100}, /**/ "/SubFolder/File1.txt", "file:///File2.txt", {os: 'linux'});
-					command.run("/SubFolder/File2.txt",                                  {repetitions: 100}, /**/ "/File1.txt", "file://SubFolder/File2.txt", {os: 'linux'});
-					command.run("/SubFolder1/SubFolder2/File2.txt",                      {repetitions: 100}, /**/ "/SubFolder1/File1.txt", "file://SubFolder2/File2.txt", {os: 'linux'});
+					command.run("/File1.txt/File2.txt",                                  {repetitions: 100}, /**/ "/File1.txt", "file:///File2.txt", {os: 'linux'});
+					command.run("/SubFolder/File1.txt/File2.txt",                        {repetitions: 100}, /**/ "/SubFolder/File1.txt", "file:///File2.txt", {os: 'linux'});
+					command.run("/File1.txt/SubFolder/File2.txt",                        {repetitions: 100}, /**/ "/File1.txt", "file://SubFolder/File2.txt", {os: 'linux'});
+					command.run("/SubFolder1/File1.txt/SubFolder2/File2.txt",            {repetitions: 100}, /**/ "/SubFolder1/File1.txt", "file://SubFolder2/File2.txt", {os: 'linux'});
 					
 					command.run(newTypes.ParseError,                                     {mode: 'isinstance'}, /**/ "/SubFolder/", "http://www.doodad-js.local/File.txt", {os: 'linux'});
 
@@ -460,8 +462,8 @@
 		return DD_MODULES;
 	};
 	
-	if (!global.process) {
+	if (typeof process !== 'object') {
 		// <PRB> export/import are not yet supported in browsers
 		global.DD_MODULES = exports.add(global.DD_MODULES);
 	};
-})();
+}).call((typeof global !== 'undefined') ? global : ((typeof window !== 'undefined') ? window : this));

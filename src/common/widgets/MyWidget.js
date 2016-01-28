@@ -1,5 +1,5 @@
-//! REPLACE_BY("// Copyright 2015 Claude Petit, licensed under Apache License version 2.0\n")
-// dOOdad - Object-oriented programming framework with some extras
+//! REPLACE_BY("// Copyright 2016 Claude Petit, licensed under Apache License version 2.0\n")
+// dOOdad - Object-oriented programming framework
 // File: MyWidget.js - Test file
 // Project home: https://sourceforge.net/projects/doodad-js/
 // Trunk: svn checkout svn://svn.code.sf.net/p/doodad-js/code/trunk doodad-js-code
@@ -8,7 +8,7 @@
 // Note: I'm still in alpha-beta stage, so expect to find some bugs or incomplete parts !
 // License: Apache V2
 //
-//	Copyright 2015 Claude Petit
+//	Copyright 2016 Claude Petit
 //
 //	Licensed under the Apache License, Version 2.0 (the "License");
 //	you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@
 	var global = this;
 
 	var exports = {};
-	if (global.process) {
+	if (typeof process === 'object') {
 		module.exports = exports;
 	};
 	
@@ -45,6 +45,7 @@
 				},
 				{
 					name: 'Doodad.NodeJs.IO',
+					version: '0.2',
 					optional: true,
 				},
 			],
@@ -258,33 +259,31 @@
 						return myWidget;
 					};
 					
-					return namespaces.loadNamespaces(function() {
-						if (nodejs) {
-							var myWidget = createMyWidget('myWidget1', 'Console !');
-							var stream = new io.HtmlOutputStream();
-							stream.pipe(io.stdout);
-							myWidget.render(stream);
-							stream.flush();
-						} else {
-							var myWidget = createMyWidget('myWidget1', 'Hello !');
-							myWidget.onRender.attach(null, function onRender(ev) {alert('render 1')});
-							myWidget.render('test1');
+					if (nodejs) {
+						var myWidget = createMyWidget('myWidget1', 'Console !');
+						var stream = new io.HtmlOutputStream();
+						stream.pipe(io.stdout);
+						myWidget.render(stream);
+						stream.flush();
+					} else {
+						var myWidget = createMyWidget('myWidget1', 'Hello !');
+						myWidget.onRender.attach(null, function onRender(ev) {alert('render 1')});
+						myWidget.render('test1');
 
-							var myWidget = createMyWidget('myWidget2', 'Salut !');
-							myWidget.onRender.attach(null, function onRender(ev) {alert('render 2')});
-							myWidget.render('test2');
-							
-							// Test "destroy"
-							var myWidget = createMyWidget('myWidget3', 'Ciao !');
-							myWidget.onRender.attach(null, function onRender(ev) {alert('render 3')});
-							//myWidget.render('test3');
-							myWidget.destroy();
-							
-							var myWidget = createMyWidget('myWidget3', 'Ciao !');
-							myWidget.onRender.attach(null, function onRender(ev) {alert('render 3')});
-							myWidget.render('test3');
-						};
-					});
+						var myWidget = createMyWidget('myWidget2', 'Salut !');
+						myWidget.onRender.attach(null, function onRender(ev) {alert('render 2')});
+						myWidget.render('test2');
+						
+						// Test "destroy"
+						var myWidget = createMyWidget('myWidget3', 'Ciao !');
+						myWidget.onRender.attach(null, function onRender(ev) {alert('render 3')});
+						//myWidget.render('test3');
+						myWidget.destroy();
+						
+						var myWidget = createMyWidget('myWidget3', 'Ciao !');
+						myWidget.onRender.attach(null, function onRender(ev) {alert('render 3')});
+						myWidget.render('test3');
+					};
 				};
 			},
 		};
@@ -292,8 +291,8 @@
 		return DD_MODULES;
 	};
 	
-	if (!global.process) {
+	if (typeof process !== 'object') {
 		// <PRB> export/import are not yet supported in browsers
 		global.DD_MODULES = exports.add(global.DD_MODULES);
 	};
-})();
+}).call((typeof global !== 'undefined') ? global : ((typeof window !== 'undefined') ? window : this));

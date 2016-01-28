@@ -1,7 +1,7 @@
 {
 	"//": "Encoding: utf8",
 	"//": "",
-	"//": "    dOOdad - Object-oriented programming framework with some extras",
+	"//": "    dOOdad - Object-oriented programming framework",
 	"//": "    File: make.json - Make data file",
 	"//": "    Project home: https://sourceforge.net/projects/doodad-js/",
 	"//": "    Trunk: svn checkout svn://svn.code.sf.net/p/doodad-js/code/trunk doodad-js-code",
@@ -10,7 +10,7 @@
 	"//": "    Note: I'm still in alpha-beta stage, so expect to find some bugs or incomplete parts !",
 	"//": "    Licence: Apache V2",
 	"//": "",
-	"//": "    Copyright 2015 Claude Petit",
+	"//": "    Copyright 2016 Claude Petit",
 	"//": "",
 	"//": "    Licensed under the Apache License, Version 2.0 (the \"License\");",
 	"//": "    you may not use this file except in compliance with the License.",
@@ -52,7 +52,8 @@
 					{
 						"class": "Make.File.Javascript",
 						"source": "%SOURCEDIR%/common/Test.js",
-						"destination": "%INSTALLDIR%/%PACKAGENAME%/Test.min.js"
+						"destination": "%INSTALLDIR%/%PACKAGENAME%/Test.min.js",
+						"runDirectives": true
 					},
 					{
 						"class": "Make.Folder.Create",
@@ -66,7 +67,8 @@
 					{
 						"class": "Make.File.Javascript",
 						"source": "%SOURCEDIR%/common/units/Unit_Tools.js",
-						"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools.min.js"
+						"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools.min.js",
+						"runDirectives": true
 					},
 					{
 						"class": "Make.File.Copy",
@@ -76,7 +78,8 @@
 					{
 						"class": "Make.File.Javascript",
 						"source": "%SOURCEDIR%/common/units/Unit_Tools_Array.js",
-						"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools_Array.min.js"
+						"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools_Array.min.js",
+						"runDirectives": true
 					},
 					{
 						"class": "Make.File.Copy",
@@ -86,7 +89,8 @@
 					{
 						"class": "Make.File.Javascript",
 						"source": "%SOURCEDIR%/common/units/Unit_Tools_Dictionary.js",
-						"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools_Dictionary.min.js"
+						"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools_Dictionary.min.js",
+						"runDirectives": true
 					},
 					{
 						"class": "Make.File.Copy",
@@ -96,7 +100,8 @@
 					{
 						"class": "Make.File.Javascript",
 						"source": "%SOURCEDIR%/common/units/Unit_Tools_Misc.js",
-						"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools_Misc.min.js"
+						"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools_Misc.min.js",
+						"runDirectives": true
 					},
 					{
 						"class": "Make.File.Copy",
@@ -106,7 +111,8 @@
 					{
 						"class": "Make.File.Javascript",
 						"source": "%SOURCEDIR%/common/units/Unit_Tools_Path.js",
-						"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools_Path.min.js"
+						"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools_Path.min.js",
+						"runDirectives": true
 					},
 					{
 						"class": "Make.File.Copy",
@@ -116,7 +122,8 @@
 					{
 						"class": "Make.File.Javascript",
 						"source": "%SOURCEDIR%/common/units/Unit_Tools_SafeEval.js",
-						"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools_SafeEval.min.js"
+						"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools_SafeEval.min.js",
+						"runDirectives": true
 					},
 					{
 						"class": "Make.File.Copy",
@@ -126,7 +133,8 @@
 					{
 						"class": "Make.File.Javascript",
 						"source": "%SOURCEDIR%/common/units/Unit_Tools_String.js",
-						"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools_String.min.js"
+						"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools_String.min.js",
+						"runDirectives": true
 					},
 					{
 						"class": "Make.File.Copy",
@@ -136,7 +144,8 @@
 					{
 						"class": "Make.File.Javascript",
 						"source": "%SOURCEDIR%/common/units/Unit_Tools_Urls.js",
-						"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools_Urls.min.js"
+						"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools_Urls.min.js",
+						"runDirectives": true
 					},
 					{
 						"class": "Make.File.Copy",
@@ -146,7 +155,8 @@
 					{
 						"class": "Make.File.Javascript",
 						"source": "%SOURCEDIR%/common/units/Unit_Types.js",
-						"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Types.min.js"
+						"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Types.min.js",
+						"runDirectives": true
 					},
 					{
 						"class": "Make.File.Copy",
@@ -156,7 +166,8 @@
 					{
 						"class": "Make.File.Javascript",
 						"source": "%SOURCEDIR%/common/units/Unit_Types_Array.js",
-						"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Types_Array.min.js"
+						"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Types_Array.min.js",
+						"runDirectives": true
 					},
 					{
 						"class": "Make.File.Copy",
@@ -166,7 +177,8 @@
 					{
 						"class": "Make.File.Javascript",
 						"source": "%SOURCEDIR%/common/units/Unit_Types_Conversion.js",
-						"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Types_Conversion.min.js"
+						"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Types_Conversion.min.js",
+						"runDirectives": true
 					},
 					{
 						"class": "Make.File.Copy",
@@ -176,7 +188,8 @@
 					{
 						"class": "Make.File.Javascript",
 						"source": "%SOURCEDIR%/common/units/Unit_Types_Dictionary.js",
-						"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Types_Dictionary.min.js"
+						"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Types_Dictionary.min.js",
+						"runDirectives": true
 					},
 					{
 						"class": "Make.File.Copy",
@@ -186,7 +199,8 @@
 					{
 						"class": "Make.File.Javascript",
 						"source": "%SOURCEDIR%/common/units/Unit_Types_Is.js",
-						"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Types_Is.min.js"
+						"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Types_Is.min.js",
+						"runDirectives": true
 					},
 					{
 						"class": "Make.File.Copy",
@@ -196,7 +210,8 @@
 					{
 						"class": "Make.File.Javascript",
 						"source": "%SOURCEDIR%/common/units/Unit_Types_ToSource.js",
-						"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Types_ToSource.min.js"
+						"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Types_ToSource.min.js",
+						"runDirectives": true
 					},
 					{
 						"class": "Make.File.Copy",
@@ -206,7 +221,14 @@
 					{
 						"class": "Make.File.Javascript",
 						"source": "%SOURCEDIR%/common/units/Unit_Types_Type.js",
-						"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Types_Type.min.js"
+						"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Types_Type.min.js",
+						"runDirectives": true
+					},
+					{
+						"class": "Make.File.Javascript",
+						"source": "%SOURCEDIR%/common/units/index.js",
+						"destination": "%INSTALLDIR%/%PACKAGENAME%/units/index.js",
+						"runDirectives": true
 					},
 					{
 						"class": "Make.File.Copy",
@@ -218,6 +240,7 @@
 						"source": "%SOURCEDIR%/client/units/Test.html",
 						"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Test.html"
 					},
+
 					{
 						"class": "Make.Folder.Create",
 						"destination": "%INSTALLDIR%/%PACKAGENAME%/widgets"
@@ -230,7 +253,8 @@
 					{
 						"class": "Make.File.Javascript",
 						"source": "%SOURCEDIR%/common/widgets/MyWidget.js",
-						"destination": "%INSTALLDIR%/%PACKAGENAME%/widgets/MyWidget.min.js"
+						"destination": "%INSTALLDIR%/%PACKAGENAME%/widgets/MyWidget.min.js",
+						"runDirectives": true
 					},
 					{
 						"class": "Make.File.Copy",
@@ -240,7 +264,8 @@
 					{
 						"class": "Make.File.Javascript",
 						"source": "%SOURCEDIR%/common/widgets/MyWidget_loader.js",
-						"destination": "%INSTALLDIR%/%PACKAGENAME%/widgets/MyWidget_loader.min.js"
+						"destination": "%INSTALLDIR%/%PACKAGENAME%/widgets/MyWidget_loader.min.js",
+						"runDirectives": true
 					},
 					{
 						"class": "Make.File.Copy",
@@ -251,6 +276,29 @@
 						"class": "Make.File.Copy",
 						"source": "%SOURCEDIR%/client/widgets/test.html",
 						"destination": "%INSTALLDIR%/%PACKAGENAME%/widgets/test.html"
+					},
+					
+					{
+						"class": "Make.Task",
+						"name": "browserify"
+					}
+				]
+			},
+			"browserify": {
+				"operations": [
+					{
+						"class": "Make.Folder.Create",
+						"destination": "%INSTALLDIR%/%PACKAGENAME%/browserify"
+					},
+					{
+						"class": "Make.File.Copy",
+						"source": "%SOURCEDIR%/browserify/index.html",
+						"destination": "%INSTALLDIR%/%PACKAGENAME%/browserify/index.html"
+					},
+					{
+						"class": "Make.Browserify.Bundle",
+						"source": "%SOURCEDIR%/browserify/main.js",
+						"destination": "%INSTALLDIR%/%PACKAGENAME%/browserify/bundle.js"
 					}
 				]
 			}

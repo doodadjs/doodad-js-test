@@ -1,5 +1,5 @@
-//! REPLACE_BY("// Copyright 2015 Claude Petit, licensed under Apache License version 2.0\n")
-// dOOdad - Object-oriented programming framework with some extras
+//! REPLACE_BY("// Copyright 2016 Claude Petit, licensed under Apache License version 2.0\n")
+// dOOdad - Object-oriented programming framework
 // File: master.js - Test startup file for NodeJs
 // Project home: https://sourceforge.net/projects/doodad-js/
 // Trunk: svn checkout svn://svn.code.sf.net/p/doodad-js/code/trunk doodad-js-code
@@ -8,7 +8,7 @@
 // Note: I'm still in alpha-beta stage, so expect to find some bugs or incomplete parts !
 // License: Apache V2
 //
-//	Copyright 2015 Claude Petit
+//	Copyright 2016 Claude Petit
 //
 //	Licensed under the Apache License, Version 2.0 (the "License");
 //	you may not use this file except in compliance with the License.
@@ -37,7 +37,8 @@ module.exports = function(root, options) {
 		server = doodad.Server,
 		nodejs = doodad.NodeJs,
 		
-		nodeOs = require('os');
+		nodeOs = require('os'),
+		Promise = tools.getPromise();
 
 	function startup() {
 		const cpus = Math.min(nodeOs.cpus().length, MAX_CPUS);
@@ -80,10 +81,22 @@ module.exports = function(root, options) {
 				commands: {
 					stats: function() {
 						if (cpus > 1) {
-							messenger.callService('MyService', 'stats', null, {
-								callback: function(result, worker) {
-									console.log('<W:' + worker.id + '>  ' + util.inspect(result));
-								},
+							const output = {};
+							let count = types.keys(cluster.workers).length;
+							return new Promise(function(resolve, reject) {
+								const timeId = setTimeout(function() {
+									reject(output);
+								}, 1000 * 60 * 2);
+								messenger.callService('MyService', 'stats', null, {
+									callback: function(err, result, worker) {
+										output['W:' + worker.id] = err || result;
+										count--;
+										if (count === 0) {
+											clearTimeout(timeId);
+											resolve(output);
+										};
+									},
+								});
 							});
 						} else {
 							return nodejs.Server.Http.Request.$getStats();
@@ -91,11 +104,23 @@ module.exports = function(root, options) {
 					},
 					ping: function() {
 						if (cpus > 1) {
-							messenger.ping({
-								callback: function(result, worker) {
-									console.log('<W:' + worker.id + '> ' + result + ' ms');
-								},
-							})
+							const output = {};
+							let count = types.keys(cluster.workers).length;
+							return new Promise(function(resolve, reject) {
+								const timeId = setTimeout(function() {
+									reject(output);
+								}, 1000 * 60 * 2);
+								messenger.ping({
+									callback: function(err, result, worker) {
+										output['W:' + worker.id] = err || result;
+										count--;
+										if (count === 0) {
+											clearTimeout(timeId);
+											resolve(output);
+										};
+									},
+								});
+							});
 						} else {
 							// TODO: "types.NotAvailable" error
 							throw new types.Error("Command not available.");
@@ -127,21 +152,7 @@ module.exports = function(root, options) {
 	
 	require('doodad-js-terminal').add(DD_MODULES);
 	require('doodad-js-test/src/common/Test.js').add(DD_MODULES);
-	require("doodad-js-test/src/common/units/Unit_Types.js").add(DD_MODULES);
-	require("doodad-js-test/src/common/units/Unit_Types_Is.js").add(DD_MODULES);
-	require("doodad-js-test/src/common/units/Unit_Types_Type.js").add(DD_MODULES);
-	require("doodad-js-test/src/common/units/Unit_Types_Conversion.js").add(DD_MODULES);
-	require("doodad-js-test/src/common/units/Unit_Types_Dictionary.js").add(DD_MODULES);
-	require("doodad-js-test/src/common/units/Unit_Types_Array.js").add(DD_MODULES);
-	require("doodad-js-test/src/common/units/Unit_Types_ToSource.js").add(DD_MODULES);
-	require("doodad-js-test/src/common/units/Unit_Tools.js").add(DD_MODULES);
-	//require("doodad-js-test/src/common/units/Unit_Tools_SafeEval.js").add(DD_MODULES);
-	require("doodad-js-test/src/common/units/Unit_Tools_Path.js").add(DD_MODULES);
-	require("doodad-js-test/src/common/units/Unit_Tools_Urls.js").add(DD_MODULES);
-	require("doodad-js-test/src/common/units/Unit_Tools_String.js").add(DD_MODULES);
-	require("doodad-js-test/src/common/units/Unit_Tools_Array.js").add(DD_MODULES);
-	require("doodad-js-test/src/common/units/Unit_Tools_Dictionary.js").add(DD_MODULES);
-	require("doodad-js-test/src/common/units/Unit_Tools_Misc.js").add(DD_MODULES);
+	require('doodad-js-test/src/common/units/index.js').add(DD_MODULES);
 
 	namespaces.loadNamespaces(startup, false, null, DD_MODULES)
 		['catch'](function(err) {

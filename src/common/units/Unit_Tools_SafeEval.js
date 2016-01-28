@@ -1,5 +1,5 @@
-//! REPLACE_BY("// Copyright 2015 Claude Petit, licensed under Apache License version 2.0\n")
-// dOOdad - Object-oriented programming framework with some extras
+//! REPLACE_BY("// Copyright 2016 Claude Petit, licensed under Apache License version 2.0\n")
+// dOOdad - Object-oriented programming framework
 // File: Unit_Tools_SafeEval.js - Unit testing module file
 // Project home: https://sourceforge.net/projects/doodad-js/
 // Trunk: svn checkout svn://svn.code.sf.net/p/doodad-js/code/trunk doodad-js-code
@@ -8,7 +8,7 @@
 // Note: I'm still in alpha-beta stage, so expect to find some bugs or incomplete parts !
 // License: Apache V2
 //
-//	Copyright 2015 Claude Petit
+//	Copyright 2016 Claude Petit
 //
 //	Licensed under the Apache License, Version 2.0 (the "License");
 //	you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@
 	var global = this;
 
 	var exports = {};
-	if (global.process) {
+	if (typeof process === 'object') {
 		module.exports = exports;
 	};
 	
@@ -86,7 +86,6 @@
 					command.run("a=1,'b=2'", {},	/**/ "'a=1,\\'b=2\\''");
 					command.run(1, {},				/**/ "a", null, ['a']);
 					command.run(1, {},				/**/ "(a)", null, ['a']);
-					global.window && command.run(1, {},				/**/ "window.a", null, ['a']);
 					command.run(true, {},			/**/ "a==1", null, ['a']);
 					command.run(true, {},			/**/ "a == 1", null, ['a']);
 					command.run(true, {},			/**/ "a== 1", null, ['a']);
@@ -119,15 +118,6 @@
 					command.run(2, {note: "May fail under MS Internet Explorer, Safari and Nodejs because binary number constants are not supported."},				/**/ "0b10");  // Firefox Nightly
 					command.run(8, {note: "May fail under MS Internet Explorer, Safari and Nodejs because octal number constants are not supported."},				/**/ "0o10");  // Firefox Nightly
 
-					var msg = "Note: May fail under MS Internet Explorer, Safari and Nodejs because template strings are not supported.";
-					command.run('Hi 1 !', {note: msg},		/**/ "`Hi ${a} !`", null, ['a']);  // Firefox Nightly
-					command.run('Hi you !', {note: msg},	/**/ "`Hi ${who} !`", {who: "you"});  // Firefox Nightly
-					command.run('Hi you, the geek !', {note: msg},	/**/ "`Hi ${who+', the geek'} !`", {who: "you"});  // Firefox Nightly
-					command.run('Hi !', {note: msg},		/**/ "tag`Hi ${who} !`", {tag: function() {return 'Hi !'}, who: "you"}, null, true);  // Firefox Nightly
-					command.run('Hi !', {note: msg},		/**/ "tag `Hi ${who} !`", {tag: function() {return 'Hi !'}, who: "you"}, null, true);  // Firefox Nightly
-					command.run(newTypes.AccessDenied, {not: true, mode: 'isinstance', note: msg},		/**/ "`${new Date}`", null, ['Date'], false, true);  // Firefox Nightly
-					command.run(newTypes.AccessDenied, {not: true, mode: 'isinstance', note: msg}, 		/**/ "`${new Date()}`", null, ['Date'], false, true);  // Firefox Nightly
-					
 					command.run(1, {},				/**/ "/*eval*/a", null, ['a']);
 					command.run(1, {},				/**/ "/*a=1*/a", null, ['a']);
 					command.run(1, {},				/**/ "a/*a=1*/", null, ['a']);
@@ -137,66 +127,36 @@
 						io.stdout.closeElement();
 						io.stdout.openElement({tag: 'div', attrs: 'class="denied"'});
 					};
-					command.run(newTypes.AccessDenied, {mode: 'isinstance'}, /**/ "a=1", null, ['a']);   // assignment
-					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "a='hello'", null, ['a']);   // assignment
-					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "a=`hello`", null, ['a']);   // Firefox Nightly: assignment
-					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "a=+1", null, ['a']);   // assignment
-					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "a=-1", null, ['a']);   // assignment
-					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "a=b", null, ['a','b']);   // assignment
-					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "a=1;", null, ['a']);   // assignment
-					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "(a)=1", null, ['a']); // assignment
-					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "a = 1", null, ['a']); // assignment
-					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "a= 1", null, ['a']);  // assignment
-					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "a =1", null, ['a']);  // assignment
-					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "a=  1", null, ['a']); // assignment
-					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "a  =1", null, ['a']); // assignment
-					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "a+=1", null, ['a']);  // assignment
-					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "a+='hello'", null, ['a']);   // assignment
-					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "a+=`hello`", null, ['a']);   // Firefox Nightly: assignment
-					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "a++", null, ['a']);   // incrementation
-					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "a--", null, ['a']);   // incrementation
-					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "a ++", null, ['a']);   // incrementation
-					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "++a", null, ['a']);   // incrementation
-					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "--a", null, ['a']);   // incrementation
-					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "++ a", null, ['a']);   // incrementation
-					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "alert('hello')", null, ['alert']);  // function call
-					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "alert ('hello')", null, ['alert']);  // function call
-					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "var c");  // var is denied
+					command.run(newTypes.AccessDenied, {mode: 'isinstance'}, /**/ "a=1", null, ['a']);   // assignment denied
+					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "a='hello'", null, ['a']);   // assignment denied
+					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "a=+1", null, ['a']);   // assignment denied
+					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "a=-1", null, ['a']);   // assignment denied
+					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "a=b", null, ['a','b']);   // assignment denied
+					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "a=1;", null, ['a']);   // assignment denied
+					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "(a)=1", null, ['a']); // assignment denied
+					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "a = 1", null, ['a']); // assignment denied
+					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "a= 1", null, ['a']);  // assignment denied
+					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "a =1", null, ['a']);  // assignment denied
+					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "a=  1", null, ['a']); // assignment denied
+					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "a  =1", null, ['a']); // assignment denied
+					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "a+=1", null, ['a']);  // assignment denied
+					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "a+='hello'", null, ['a']);   // assignment denied
+					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "a++", null, ['a']);   // incrementation denied
+					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "a--", null, ['a']);   // incrementation denied
+					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "a ++", null, ['a']);   // incrementation denied
+					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "++a", null, ['a']);   // incrementation denied
+					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "--a", null, ['a']);   // incrementation denied
+					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "++ a", null, ['a']);   // incrementation denied
 					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "this");  // local variables of safeEval are denied
 					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "expression");  // local variables of safeEval are denied
-					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "value()", {value: global.alert}); // function call
-					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "'hello'; a=3", null, ['a']);  // multiple statements
-					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "a;b");   // multiple statements
-					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "a\r\nb");  // multiple statements
-					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "//comment\na", null, ['a']); // multiple statements
 					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "eval('1')");   // eval is denied
-					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "eval('1')", null, null, true);   // eval is denied
 					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "window"); // window is denied
-					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "window.window"); // window is denied
-					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "window.eval"); // eval is denied
-					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "window.window.eval('1')", null, null, true); // eval is denied
 					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "a"); // 'a' is denied
-					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "window.a"); // 'a' is denied
 					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "document"); // 'document' is denied
-					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "window.document"); // 'document' is denied
-					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "window.document.body"); // 'document' is denied
-					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "(function() {return 1})()");   // function is denied
 
-					var msg = "May fail under MS Internet Explorer and Safari because template strings are not supported.";
-					command.run(newTypes.AccessDenied, {mode: 'isinstance', note: msg},  /**/ "`Hi ${a} !`");  // Firefox Nightly: a is denied
-					command.run(newTypes.AccessDenied, {mode: 'isinstance', note: msg},  /**/ "`Hi ${this} !`");  // Firefox Nightly: this is denied
-					command.run(newTypes.AccessDenied, {mode: 'isinstance', note: msg},  /**/ "`Hi ${who='me'} !`", {who: "you"});  // Firefox Nightly: assignment
-					command.run(newTypes.AccessDenied, {mode: 'isinstance', note: msg},  /**/ "`Hi ${who+=' too'} !`", {who: "you"});  // Firefox Nightly: assignment
-					command.run(newTypes.AccessDenied, {mode: 'isinstance', note: msg},  /**/ "`Hi ${who++} !`", {who: 0});  // Firefox Nightly:  increment
-					command.run(newTypes.AccessDenied, {mode: 'isinstance', note: msg},  /**/ "`Hi ${who;} !`", {who: "you"});  // Firefox Nightly: statement in template
-					command.run(newTypes.AccessDenied, {mode: 'isinstance', note: msg},  /**/ "`Hi ${`${who}`} !`", {who: "you"});  // Firefox Nightly: template in template denied
-					command.run(newTypes.AccessDenied, {mode: 'isinstance', note: msg},  /**/ "`${new Date}`", null, ['Date']);  // Firefox Nightly:  new denied
-					command.run(newTypes.AccessDenied, {mode: 'isinstance', note: msg},  /**/ "`${(function(){return '1'})()}`");  // Firefox Nightly: function is denied
-					command.run(newTypes.AccessDenied, {mode: 'isinstance', note: msg},  /**/ "tag`hello`");  // Firefox Nightly: tag is denied
-					command.run(newTypes.AccessDenied, {mode: 'isinstance', note: msg},  /**/ "tag`hello`", {tag: global.alert});  // Firefox Nightly: function call
+					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "`Hi !`");  // Templates are denied
+					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "`Hi ${'you'} !`");  // Templates are denied
 						
-					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "eval`alert('hello'}`");  // Firefox Nightly: eval is denied
-					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "window.eval`alert('hello'}`");  // Firefox Nightly: eval is denied
 					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "/*comment*/eval");  // eval is denied
 					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "eval/*comment*/");  // eval is denied
 					command.run(newTypes.AccessDenied, {mode: 'isinstance'},  /**/ "eval//comment");  // eval is denied
@@ -214,8 +174,8 @@
 		return DD_MODULES;
 	};
 	
-	if (!global.process) {
+	if (typeof process !== 'object') {
 		// <PRB> export/import are not yet supported in browsers
 		global.DD_MODULES = exports.add(global.DD_MODULES);
 	};
-})();
+}).call((typeof global !== 'undefined') ? global : ((typeof window !== 'undefined') ? window : this));

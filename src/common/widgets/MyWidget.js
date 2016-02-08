@@ -111,6 +111,16 @@
 						return "private";
 					}),
 					
+					// Test RENAME
+					functionToRename: doodad.PUBLIC(function() {
+						return "Rename me !";
+					}),
+					
+					// Test _superFrom
+					getVersion: doodad.PUBLIC(function() {
+						return 1;
+					}),
+					
 					render: doodad.OVERRIDE(function render(stream) {
 						stream.write('<span' + this.renderHtmlAttributes(['main', 'mergeTest']) + '>' + tools.escapeHtml(this.message || '', this.document) + '</span>');
 					}),
@@ -120,7 +130,7 @@
 				if (nodejs) {
 					finalStep = MyWidgetStep1;
 				} else {
-					var MyWidgetStep2 = doodad.REGISTER(MyWidgetStep1.$extend(
+					var MyWidgetStep2 = doodad.REGISTER(doodad.BASE(MyWidgetStep1.$extend(
 					{
 						$TYPE_NAME: '__MyWidgetStep2__',
 						
@@ -144,6 +154,11 @@
 							*/
 						}),
 					
+						// Test RENAME
+						functionToRename: doodad.RENAME_OVERRIDE(function renamedFunction() {
+							return this._super() + " Done";
+						}),
+						
 						acquire: doodad.OVERRIDE(function acquire() {
 							this._super();
 							var span = client.getFirstElement(this.stream.element);
@@ -154,17 +169,29 @@
 							this._super();
 							this.onJsClick.clear();
 						}),
-					}));
+						
+						// Test _superFrom
+						getVersion: doodad.REPLACE(function() {
+							return 2;
+						}),
+					
+					})));
 					
 					// Test adding js event type
-					var MyWidgetStep3 = doodad.REGISTER(MyWidgetStep2.$extend(
+					var MyWidgetStep3 = doodad.REGISTER(doodad.BASE(MyWidgetStep2.$extend(
 					{
 						$TYPE_NAME: '__MyWidgetStep3__',
 						
 						onJsClick: doodad.OVERRIDE(doodad.JS_EVENT('click')),
-					}));
+
+						// Test _superFrom
+						getVersion: doodad.REPLACE(function() {
+							return 3;
+						}),
 					
-					var MyWidgetStep4 = doodad.REGISTER(MyWidgetStep3.$extend(
+					})));
+					
+					var MyWidgetStep4 = doodad.REGISTER(doodad.BASE(MyWidgetStep3.$extend(
 					{
 						$TYPE_NAME: '__MyWidgetStep4__',
 
@@ -195,7 +222,13 @@
 							//throw new exceptions.Error("test");
 							
 						})),
-					}));
+						
+						// Test _superFrom
+						getVersion: doodad.REPLACE(function() {
+							return 4;
+						}),
+					
+					})));
 					
 					finalStep = MyWidgetStep4;
 				};
@@ -220,6 +253,17 @@
 						return "private overriden";
 					}),
 					*/
+					
+					// Test RENAME (must respect the contract)
+					functionToRename: doodad.OVERRIDE(function functionToRename() {
+						return this.renamedFunction();
+					}),
+
+					// Test _superFrom
+					getVersion: doodad.REPLACE(function() {
+						return this._superFrom(MyWidgetStep2);
+					}),
+				
 				}));
 					
 					
@@ -283,6 +327,13 @@
 						var myWidget = createMyWidget('myWidget3', 'Ciao !');
 						myWidget.onRender.attach(null, function onRender(ev) {alert('render 3')});
 						myWidget.render('test3');
+						
+						// Test "RENAMED"
+						alert(myWidget.renamedFunction()); // Must be "Rename me ! Done"
+						
+						// Test "_superFrom"
+						alert(myWidget.getVersion()); // Must be "2"
+						
 					};
 				};
 			},

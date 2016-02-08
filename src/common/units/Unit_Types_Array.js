@@ -373,7 +373,6 @@
 					command.end();
 					createArrays();
 					
-					
 					var command = test.prepareCommand(newTypes.prepend, "Doodad.Types.prepend");
 					command.run(null,                                           {eval: true}     /**/ );
 					command.run("[1, 2, test.EmptySlot, test.EmptySlot]",       {eval: true},    /**/ "global.ar1");
@@ -385,11 +384,20 @@
 					command.end();
 					createArrays();
 					
+					var command = test.prepareCommand(newTypes.unique, "Doodad.Types.unique");
+					command.run([],                                               {repetitions: 100}     /**/);
+					command.run(newTypes.AssertionFailed,                         {mode: 'isinstance'},  /**/ 1);
+					command.run(['a', 'b', 'c'],                                  {repetitions: 100},    /**/ ["a", "b", "c", "a", "b", "c"]);
+					command.run(['a', 'b', 'c', 'd', 'e', 'f'],                   {repetitions: 100},    /**/ ["a", "b", "c", "a", "b", "c"], ["d", "e", "f", "d", "e", "f"]);
+					command.run(['a', 'b', 'c'],                                  {repetitions: 100},    /**/ "abcabc");
+					command.run(['a', 'b', 'c', 'd', 'e', 'f'],                   {repetitions: 100},    /**/ "abcabc", "defdef");
+					command.end();
+
 					var command = test.prepareCommand(newTypes.isClonable, "Doodad.Types.isClonable");
 					command.run(false,      {eval: true}     /**/ );
 					command.run(true,       {eval: true},    /**/  "global.ar1");
 					command.end();
-					
+
 					var command = test.prepareCommand(newTypes.clone, "Doodad.Types.clone");
 					command.run("undefined",  {eval: true}                               /**/ );
 					command.run("global.ar1", {eval: true, not: true, mode: 'compare'},    /**/  "global.ar1");

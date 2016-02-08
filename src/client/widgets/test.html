@@ -38,7 +38,10 @@
 						doodad.Loader.loadScripts(window.DD_SCRIPTS);
 					};
 						
-					namespaces.loadNamespaces(startup, false, options, window.DD_MODULES);
+					namespaces.loadNamespaces(startup, false, options, window.DD_MODULES)
+						['catch'](function(err) {
+							console.error(err);
+						});
 				};
 			}).call((typeof global !== 'undefined') ? global : ((typeof window !== 'undefined') ? window : this));
 		</script>

@@ -353,16 +353,6 @@
 					command.end();
 
 					
-					var command = test.prepareCommand(newTools.unique, "Doodad.Tools.unique");
-					
-					command.run([],                                               {repetitions: 100}  /**/);
-					command.run(newTypes.AssertionFailed,                         {mode: 'isinstance'},  /**/ 1);
-					command.run(['a', 'b', 'c'],                                  {repetitions: 100}, /**/ "abcabc");
-					command.run(['a', 'b', 'c', 'd', 'e', 'f'],                   {repetitions: 100}, /**/ "abcabc", "defdef");
-
-					command.end();
-
-					
 				},
 			},
 		};

@@ -279,9 +279,12 @@
 						var window = global,
 							document = global.document,
 							location = global.location;
-						
+
+						var ended = false;
+							
 						return {
 							run: function (expected, /*optional*/options 	/**/ /*paramarray*/) {
+								root.DD_ASSERT && root.DD_ASSERT(!ended, "Command has been ended.");
 								if (!options) {
 									options = {};
 								};
@@ -293,24 +296,31 @@
 										(
 											(mode === 'isinstance')
 											? 
-												('Instance Of ' + (isEval ? expected : (types.isFunction(expected) ? expected.name : expected.constructor.name)))
+												('Instance Of ' + (isEval && types.isString(expected) ? expected : (types.isFunction(expected) ? expected.name : expected.constructor.name)))
 											: 
 												((mode === 'compare') ? 'Equals ' : '') + 
-												(isEval ? expected : types.toSource(expected, types.get(options, 'depth', 0)))
+												(isEval && types.isString(expected) ? expected : types.toSource(expected, types.get(options, 'depth', 0)))
 										),
 									expectedCls = 'expected',
 									params = Array.prototype.slice.call(arguments, 2);
 									
-								if (isEval) {
-									// <PRB> eval("{}") thinks "{}" is a block of code
-									//expected = eval(expected)
-									eval("expected=(" + expected + ")");
+								var evalError = null;
+								if (isEval && types.isString(expected)) {
+									try {
+										// <PRB> eval("{}") thinks "{}" is a block of code
+										//expected = eval(expected)
+										eval("expected=(" + expected + ")");
+									} catch(ex) {
+										evalError = ex;
+									};
 								};
 
-								
-								expected = types.toObject(expected);
-								
 								test.TESTS_COUNT++;
+								
+								var	result,
+									resultStr,
+									resultCls,
+									printOpts;
 								
 								if (html) {
 									if (dom) {
@@ -320,110 +330,134 @@
 									};
 								};
 								
-								var command = "Command: " + (types.get(options, 'command', null) ||
-										fnName + 
-										"(" + 
-										tools.map(params, function(val, key) {
-												if (isEval) {
-													return val;
-												} else {
-													return types.toSource(val, types.get(options, 'depth', 0));
-												};
-											}).join(', ') + 
-										");");
-										
-								var printOpts = {};
-								if (html) {
-									printOpts.attrs = 'class="name"';
-								};
-								io.stdout.print(command, printOpts);
-								
-								var printOpts = {};
-								if (html) {
-									printOpts.attrs = ('class="' + expectedCls + '"');
-								};
-								io.stdout.print(expectedStr, printOpts);
-								
-								if (isEval) {
-									params = tools.map(params, function(expr) {
-										// <PRB> eval("{}") thinks "{}" is a block of code
-										//return eval(expr);
-										return eval("expr=(" + expr + ")");
-									});
-								};
-								
-								var	result,
-									resultStr = "Got: ",
-									resultCls = 'got',
-									time = null,
-									repetitions = (options.repetitions || 1);
+								if (!evalError) {
+									expected = types.toObject(expected);
 									
-								if (__performanceEnabled__) {
-									time = 0;
-									for (var i = 0; i < repetitions; i++) {
-										var now = performance.now();
+									var command = "Command: " + (types.get(options, 'command', null) ||
+											fnName + 
+											"(" + 
+											tools.map(params, function(val, key) {
+													if (isEval && types.isString(val)) {
+														return val;
+													} else {
+														return types.toSource(val, types.get(options, 'depth', 0));
+													};
+												}).join(', ') + 
+											");");
+											
+									printOpts = {};
+									if (html) {
+										printOpts.attrs = 'class="name"';
+									};
+									io.stdout.print(command, printOpts);
+									
+									printOpts = {};
+									if (html) {
+										printOpts.attrs = ('class="' + expectedCls + '"');
+									};
+									io.stdout.print(expectedStr, printOpts);
+									
+									if (isEval) {
 										try {
-											result = fn.apply(this, params);
+											params = tools.map(params, function(expr) {
+												if (types.isString(expr)) {
+													// <PRB> eval("{}") thinks "{}" is a block of code
+													//return eval(expr);
+													return eval("expr=(" + expr + ")");
+												} else {
+													return expr;
+												};
+											});
 										} catch(ex) {
-											result = ex;
+											evalError = ex;
 										};
-										time += (performance.now() - now);
-									};
-								} else if (__processEnabled__) {
-									time = 0;
-									for (var i = 0; i < repetitions; i++) {
-										var now = process.hrtime();
-										try {
-											result = fn.apply(this, params);
-										} catch(ex) {
-											result = ex;
-										};
-										time = process.hrtime(now);
-										time += (time[0] * 1000) + (time[1] / 1e9);
-									};
-									time /= 1000000;
-								} else if (__timingEnabled__) {
-									time = 0;
-									for (var i = 0; i < repetitions; i++) {
-										console.time("Time");
-										try {
-											result = fn.apply(this, params);
-										} catch(ex) {
-											result = ex;
-										};
-										time += console.timeEnd("Time");
-									};
-									if (isNaN(time)) {
-										time = null;
-									};
-								} else {
-									try {
-										result = fn.apply(this, params);
-									} catch(ex) {
-										result = ex;
 									};
 								};
-								if (types.isError(result)) {
-									resultStr += result.toString();
-									resultCls += ' error';
-								} else {
-									resultStr += 
-											((mode === 'isinstance') ? 
-												'Instance Of ' + (types.isFunction(result) ? result.name : (types.isObjectLike(result) ? result.constructor.name : '????')) + 
-												' (' + types.toSource(result, types.get(options, 'depth', 0)) + ')'
-											: 
-												types.toSource(result, types.get(options, 'depth', 0))
-											); 
-									result = types.toObject(result);
+
+								if (!evalError) {
+									resultStr = "Got: ";
+									resultCls = 'got';
+									var time = null,
+										repetitions = (options.repetitions || 1);
+										
+									if (__performanceEnabled__) {
+										time = 0;
+										for (var i = 0; i < repetitions; i++) {
+											var now = performance.now();
+											try {
+												result = fn.apply(this, params);
+											} catch(ex) {
+												result = ex;
+											};
+											time += (performance.now() - now);
+										};
+									} else if (__processEnabled__) {
+										time = 0;
+										for (var i = 0; i < repetitions; i++) {
+											var now = process.hrtime();
+											try {
+												result = fn.apply(this, params);
+											} catch(ex) {
+												result = ex;
+											};
+											now = process.hrtime(now);
+											time += (now[0] + (now[1] / 1e9)) * 1e3;
+										};
+									} else if (__timingEnabled__) {
+										time = 0;
+										for (var i = 0; i < repetitions; i++) {
+											console.time("Time");
+											try {
+												result = fn.apply(this, params);
+											} catch(ex) {
+												result = ex;
+											};
+											time += console.timeEnd("Time");
+										};
+										if (isNaN(time)) {
+											time = null;
+										};
+									} else {
+										try {
+											result = fn.apply(this, params);
+										} catch(ex) {
+											result = ex;
+										};
+									};
+									if (types.isError(result)) {
+										resultStr += result.toString();
+										resultCls += ' error';
+									} else {
+										resultStr += 
+												((mode === 'isinstance') ? 
+													'Instance Of ' + (types.isFunction(result) ? result.name : (types.isObjectLike(result) ? result.constructor.name : '????')) + 
+													' (' + types.toSource(result, types.get(options, 'depth', 0)) + ')'
+												: 
+													types.toSource(result, types.get(options, 'depth', 0))
+												); 
+										result = types.toObject(result);
+									};
+									
+									printOpts = {};
+									if (html) {
+										printOpts.attrs = ('class="' + resultCls + '"');
+									};
+									io.stdout.print(resultStr, printOpts);
+									
+									result = (types.get(options, 'compareFn', null) || test.compare)(expected, result, options);
 								};
 								
-								var printOpts = {};
-								if (html) {
-									printOpts.attrs = ('class="' + resultCls + '"');
+								if (evalError) {
+									resultStr = "Expression error :" + evalError.toString();
+									resultCls = 'result error';
+									printOpts = {};
+									if (html) {
+										printOpts.attrs = ('class="' + resultCls + '"');
+									};
+									io.stdout.print(resultStr, printOpts);
+									
+									result = false;
 								};
-								io.stdout.print(resultStr, printOpts);
-								
-								result = (types.get(options, 'compareFn', null) || test.compare)(expected, result, options);
 								
 								resultStr = "Result: " + (result ? "OK !" : ">>> FAILED <<<");
 								resultCls = 'result';
@@ -433,13 +467,13 @@
 									resultCls += ' error';
 									test.FAILED_TESTS++;
 								};
-								var printOpts = {};
+								printOpts = {};
 								if (html) {
 									printOpts.attrs = ('class="' + resultCls + '"');
 								};
 								io.stdout.print(resultStr, printOpts);
 								
-								resultStr = "Time: " + ((time === null) ? 'Not available' : (time + ' ms' + ((repetitions > 1) ? (' / ' + repetitions + ' = ' + (time / repetitions) + ' ms') : ''))),
+								resultStr = "Time: " + ((time === null) ? 'Not available' : (String(time) + ' ms' + ((repetitions > 1) ? (' / ' + repetitions + ' = ' + String(time / repetitions) + ' ms') : ''))),
 								resultCls = 'time',
 								printOpts = {};
 								if (html) {
@@ -449,7 +483,7 @@
 								
 								var note = types.get(options, 'note', null);
 								if (note) {
-									var printOpts = {};
+									printOpts = {};
 									if (html) {
 										printOpts.attrs = 'class="note"';
 									};
@@ -465,6 +499,8 @@
 							},
 						
 							end: function() {
+								root.DD_ASSERT && root.DD_ASSERT(!ended, "Command has been ended.");
+								ended = true;
 								if (html) {
 									io.stdout.flush({flushElement: true});
 									io.stdout.closeElement();

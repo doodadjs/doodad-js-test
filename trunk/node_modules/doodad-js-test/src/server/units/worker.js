@@ -46,9 +46,10 @@ module.exports = function(root, options) {
 			const messenger = new nodejsCluster.ClusterMessenger(server.Ipc.ServiceManager);
 			messenger.connect();
 				
+			const con = messenger.getInterface(ioInterfaces.IConsole);
+			
 			nodejs.Console.capture(function(name, args) {
 				// TODO: Do like "Terminal.consoleWrite"
-				const con = messenger.getInterface(ioInterfaces.IConsole);
 				con[name].call(con, '<W:' + cluster.worker.id + '>  ' + args[0]);
 			});
 			
@@ -56,7 +57,6 @@ module.exports = function(root, options) {
 				hooks: {
 					console: function consoleHook(fn, message) {
 						// TODO: Do like "Terminal.consoleWrite"
-						const con = messenger.getInterface(ioInterfaces.IConsole);
 						con[fn].call(con, '<W:' + cluster.worker.id + '>  ' + message);
 					},
 				},
@@ -77,25 +77,6 @@ module.exports = function(root, options) {
 			}),
 		}));
 
-		const filesModules = [
-			'doodad-js',
-			'doodad-js-dates',
-			'doodad-js-http',
-			'doodad-js-io',
-			'doodad-js-locale',
-			'doodad-js-mime',
-			'doodad-js-minifiers',
-			'doodad-js-templates',
-			'doodad-js-test',
-			'doodad-js-widgets',
-			'doodad-js-xml',
-			'doodad-js-loader',
-		];
-		
-		const filesPath = tools.map(filesModules, function(mod) {
-			return tools.Path.parse(require.resolve(mod)).set({file: null}).combine('./dist/', {os: 'linux', dirChar: '/'});
-		});
-		
 		let saxPath;
 		try {
 			saxPath = tools.Path.parse(require.resolve('sax/package.json'))
@@ -116,6 +97,8 @@ module.exports = function(root, options) {
 			console.warn("The library 'es6-promise' is not available. Serving the library to the client browser will be disabled.");
 		};
 		
+		const folderTemplate = tools.Path.parse(require.resolve('doodad-js-http')).set({file: null}).combine("./res/templates/Folder.ddt", {isRelative: true, os: 'linux'});
+		
 		const factory = new server.Http.PageFactory({
 			'/': {
 				page: server.Http.RedirectPage,
@@ -126,31 +109,87 @@ module.exports = function(root, options) {
 				service: server.Ipc.ServiceManager,
 				//verbs: ['POST'],
 			},
-			'/nodejs/static/': [
-				{
-					page: nodejs.Server.Http.StaticPage,
-					path: filesPath,
-					showFolders: true,
-					folderTemplate: tools.Path.parse(require.resolve('doodad-js-http')).set({file: null}).combine("./res/templates/Folder.ddt", {isRelative: true, os: 'linux'}),
-				},
-				//{
-				//	page: nodejs.Server.Http.JavascriptPage,
-				//	path: filesPath,
-				//	mimeTypes: ['application/javascript', 'application/x-javascript'],
-				//	cachePath: options.jsCachePath,
-				//	//directives: ["DEFINE('NO_DOC')"],
-				//	runDirectives: true,
-				//},
-			],
+			'/nodejs/static/doodad-js/': {
+				page: nodejs.Server.Http.StaticPage,
+				path: tools.Path.parse(require.resolve('doodad-js')).set({file: null}).combine('./dist/doodad-js/', {os: 'linux', dirChar: '/'}),
+				showFolders: true,
+				folderTemplate: folderTemplate,
+			},
+			'/nodejs/static/doodad-js-dates/': {
+				page: nodejs.Server.Http.StaticPage,
+				path: tools.Path.parse(require.resolve('doodad-js-dates')).set({file: null}).combine('./dist/doodad-js-dates/', {os: 'linux', dirChar: '/'}),
+				showFolders: true,
+				folderTemplate: folderTemplate,
+			},
+			'/nodejs/static/doodad-js-http/': {
+				page: nodejs.Server.Http.StaticPage,
+				path: tools.Path.parse(require.resolve('doodad-js-http')).set({file: null}).combine('./dist/doodad-js-http/', {os: 'linux', dirChar: '/'}),
+				showFolders: true,
+				folderTemplate: folderTemplate,
+			},
+			'/nodejs/static/doodad-js-io/': {
+				page: nodejs.Server.Http.StaticPage,
+				path: tools.Path.parse(require.resolve('doodad-js-io')).set({file: null}).combine('./dist/doodad-js-io/', {os: 'linux', dirChar: '/'}),
+				showFolders: true,
+				folderTemplate: folderTemplate,
+			},
+			'/nodejs/static/doodad-js-locale/': {
+				page: nodejs.Server.Http.StaticPage,
+				path: tools.Path.parse(require.resolve('doodad-js-locale')).set({file: null}).combine('./dist/doodad-js-locale/', {os: 'linux', dirChar: '/'}),
+				showFolders: true,
+				folderTemplate: folderTemplate,
+			},
+			'/nodejs/static/doodad-js-mime/': {
+				page: nodejs.Server.Http.StaticPage,
+				path: tools.Path.parse(require.resolve('doodad-js-mime')).set({file: null}).combine('./dist/doodad-js-mime/', {os: 'linux', dirChar: '/'}),
+				showFolders: true,
+				folderTemplate: folderTemplate,
+			},
+			'/nodejs/static/doodad-js-minifiers/': {
+				page: nodejs.Server.Http.StaticPage,
+				path: tools.Path.parse(require.resolve('doodad-js-minifiers')).set({file: null}).combine('./dist/doodad-js-minifiers/', {os: 'linux', dirChar: '/'}),
+				showFolders: true,
+				folderTemplate: folderTemplate,
+			},
+			'/nodejs/static/doodad-js-templates/': {
+				page: nodejs.Server.Http.StaticPage,
+				path: tools.Path.parse(require.resolve('doodad-js-templates')).set({file: null}).combine('./dist/doodad-js-templates/', {os: 'linux', dirChar: '/'}),
+				showFolders: true,
+				folderTemplate: folderTemplate,
+			},
+			'/nodejs/static/doodad-js-test/': {
+				page: nodejs.Server.Http.StaticPage,
+				path: tools.Path.parse(require.resolve('doodad-js-test')).set({file: null}).combine('./dist/doodad-js-test/', {os: 'linux', dirChar: '/'}),
+				showFolders: true,
+				folderTemplate: folderTemplate,
+			},
+			'/nodejs/static/doodad-js-widgets/': {
+				page: nodejs.Server.Http.StaticPage,
+				path: tools.Path.parse(require.resolve('doodad-js-widgets')).set({file: null}).combine('./dist/doodad-js-widgets/', {os: 'linux', dirChar: '/'}),
+				showFolders: true,
+				folderTemplate: folderTemplate,
+			},
+			'/nodejs/static/doodad-js-xml/': {
+				page: nodejs.Server.Http.StaticPage,
+				path: tools.Path.parse(require.resolve('doodad-js-xml')).set({file: null}).combine('./dist/doodad-js-xml/', {os: 'linux', dirChar: '/'}),
+				showFolders: true,
+				folderTemplate: folderTemplate,
+			},
+			'/nodejs/static/doodad-js-loader/': {
+				page: nodejs.Server.Http.StaticPage,
+				path: tools.Path.parse(require.resolve('doodad-js-loader')).set({file: null}).combine('./dist/doodad-js-loader/', {os: 'linux', dirChar: '/'}),
+				showFolders: true,
+				folderTemplate: folderTemplate,
+			},
 			'/nodejs/static/lib/sax/': saxPath && {
-					page: nodejs.Server.Http.JavascriptPage,
-					path: saxPath,
-					mimeTypes: ['application/javascript', 'application/x-javascript'],
-					cachePath: options.jsCachePath,
+				page: nodejs.Server.Http.JavascriptPage,
+				path: saxPath,
+				mimeTypes: ['application/javascript', 'application/x-javascript'],
+				cachePath: options.jsCachePath,
 			},
 			'/nodejs/static/lib/es6-promise/': promisePath && {
-					page: nodejs.Server.Http.StaticPage,
-					path: promisePath,
+				page: nodejs.Server.Http.StaticPage,
+				path: promisePath,
 			},
 			'/nodejs/static/doodad-js-test/widgets/': {
 				page: server.Http.RedirectPage,

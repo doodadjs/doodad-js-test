@@ -261,7 +261,7 @@
 
 					// Test _superFrom
 					getVersion: doodad.REPLACE(function() {
-						return this._superFrom(MyWidgetStep2);
+						return this._superFrom(MyWidgetStep2)();
 					}),
 				
 				}));

@@ -117,7 +117,8 @@
 					command.run("[]", {eval: true},                               /**/ "global.fn");
 					command.run("[]", {eval: true},                               /**/ "Object.prototype.toString");
 					command.run("[undefined]", {eval: true},                      /**/ "Object");
-					command.run("Array", {eval: true, mode: 'isinstance'},        /**/ "arguments");
+					command.run("[1, 2, 3]", {eval: true},                        /**/ "(function(){return arguments})(1,2,3)");
+					command.run("[undefined, undefined, undefined]", {eval: true},  /**/ "{length: 3}");
 					command.end();
 
 					

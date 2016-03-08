@@ -72,6 +72,17 @@
 					},
 					{
 						"class": "Make.File.Copy",
+						"source": "%SOURCEDIR%/common/units/Unit_Tools_Files.js",
+						"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools_Files.js"
+					},
+					{
+						"class": "Make.File.Javascript",
+						"source": "%SOURCEDIR%/common/units/Unit_Tools_Files.js",
+						"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools_Files.min.js",
+						"runDirectives": true
+					},
+					{
+						"class": "Make.File.Copy",
 						"source": "%SOURCEDIR%/common/units/Unit_Tools_Array.js",
 						"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools_Array.js"
 					},
@@ -105,13 +116,13 @@
 					},
 					{
 						"class": "Make.File.Copy",
-						"source": "%SOURCEDIR%/common/units/Unit_Tools_Path.js",
-						"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools_Path.js"
+						"source": "%SOURCEDIR%/common/units/Unit_Tools_Files_Path.js",
+						"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools_Files_Path.js"
 					},
 					{
 						"class": "Make.File.Javascript",
-						"source": "%SOURCEDIR%/common/units/Unit_Tools_Path.js",
-						"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools_Path.min.js",
+						"source": "%SOURCEDIR%/common/units/Unit_Tools_Files_Path.js",
+						"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools_Files_Path.min.js",
 						"runDirectives": true
 					},
 					{
@@ -138,13 +149,13 @@
 					},
 					{
 						"class": "Make.File.Copy",
-						"source": "%SOURCEDIR%/common/units/Unit_Tools_Urls.js",
-						"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools_Urls.js"
+						"source": "%SOURCEDIR%/common/units/Unit_Tools_Files_Urls.js",
+						"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools_Files_Urls.js"
 					},
 					{
 						"class": "Make.File.Javascript",
-						"source": "%SOURCEDIR%/common/units/Unit_Tools_Urls.js",
-						"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools_Urls.min.js",
+						"source": "%SOURCEDIR%/common/units/Unit_Tools_Files_Urls.js",
+						"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools_Files_Urls.min.js",
 						"runDirectives": true
 					},
 					{

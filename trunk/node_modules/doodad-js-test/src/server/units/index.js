@@ -32,9 +32,10 @@ let root,
 	
 function startup() {
 	const doodad = root.Doodad,
-		tools = doodad.Tools;
+		tools = doodad.Tools,
+		files = tools.Files;
 					
-	const cachePath = tools.Path.parse(tools.Files.getTempFolder()).combine('./nodesjs/doodad-js/', {os: 'linux'});
+	const cachePath = files.Path.parse(tools.Files.getTempFolder()).combine('./nodesjs/doodad-js/', {os: 'linux'});
 	tools.Files.mkdir(cachePath, {makeParents: true});
 	
 	const options = {
@@ -50,17 +51,20 @@ function startup() {
 
 const DD_MODULES = {};
 
+require('doodad-js-unicode').add(DD_MODULES);
 require('doodad-js-locale').add(DD_MODULES);
 require('doodad-js-dates').add(DD_MODULES);
 require('doodad-js-io').add(DD_MODULES);
 require('doodad-js-server').add(DD_MODULES);
 require('doodad-js-ipc').add(DD_MODULES);
 require('doodad-js-cluster').add(DD_MODULES);
+require('doodad-js-safeeval').add(DD_MODULES);
 
 root = require('doodad-js').createRoot(DD_MODULES);
 
 namespaces = root.Doodad.Namespaces;
-return namespaces.loadNamespaces(startup, false, null, DD_MODULES)
+
+return namespaces.loadNamespaces(DD_MODULES, startup)
 		['catch'](function (err) {
 			console.error(err.stack);
 			process.exit(1);

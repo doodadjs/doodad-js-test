@@ -55,7 +55,8 @@
 						io = doodad.IO,
 						newDoodad = test.NewRoot.Doodad,
 						newTypes = newDoodad.Types,
-						newTools = newDoodad.Tools;
+						newTools = newDoodad.Tools,
+						newSafeEval = newTools.SafeEval;
 
 					
 					if (!options) {
@@ -68,7 +69,7 @@
 
 					var html = (io.stdout instanceof io.HtmlOutputStream);
 					
-					var command = test.prepareCommand(newTools.safeEval, "Doodad.Tools.safeEval");
+					var command = test.prepareCommand(newSafeEval.eval, "Doodad.Tools.SafeEval.eval");
 					
 					if (html) {
 						io.stdout.openElement({tag: 'div', attrs: 'class="allowed"'});

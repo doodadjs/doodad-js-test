@@ -45,7 +45,7 @@
 				},
 				{
 					name: 'Doodad.NodeJs.IO',
-					version: '0.2',
+					version: '0.4.0',
 					optional: true,
 				},
 			],

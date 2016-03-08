@@ -35,16 +35,16 @@
 		DD_MODULES = (DD_MODULES || {});
 		DD_MODULES['Doodad.Test'] = {
 			type: null,
-			version: '0a',
+			version: '1.3.0',
 			namespaces: [],
 			dependencies: [
 				{
 					name: 'Doodad.IO',
-					version: '0.2',
+					version: '0.4.0',
 				}, 
 				{
 					name: 'Doodad.Client.IO',
-					version: '0.2',
+					version: '0.4.0',
 					optional: true,
 				},
 				{

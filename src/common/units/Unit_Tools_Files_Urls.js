@@ -33,11 +33,11 @@
 	
 	exports.add = function add(DD_MODULES) {
 		DD_MODULES = (DD_MODULES || {});
-		DD_MODULES['Doodad.Test.Tools.Urls'] = {
+		DD_MODULES['Doodad.Test.Tools.Files.Urls'] = {
 			type: 'TestUnit',
 			version: '0d',
 			namespaces: null,
-			dependencies: ['Doodad.Test.Tools'],
+			dependencies: ['Doodad.Test.Tools.Files'],
 
 			// Unit
 			priority: null,
@@ -50,11 +50,12 @@
 						doodad = root.Doodad,
 						namespaces = doodad.Namespaces,
 						test = doodad.Test,
-						unit = test.Tools.Urls,
+						unit = test.Tools.Files.Urls,
 						types = doodad.Types,
 						tools = doodad.Tools,
 						io = doodad.IO,
-						newTools = test.NewRoot.Doodad.Tools;
+						newTools = test.NewRoot.Doodad.Tools,
+						newFiles = newTools.Files;
 
 
 					if (!options) {
@@ -63,8 +64,8 @@
 					
 					
 					var command = test.prepareCommand(function(/*paramarray*/) {
-						return newTools.Url.parse.apply(newTools.Url, arguments);
-					}, "Doodad.Tools.Url.parse.test1");
+						return newFiles.Url.parse.apply(newFiles.Url, arguments);
+					}, "Doodad.Tools.Files.Url.parse.test1");
 						
 					command.run({
 						protocol: 'http',
@@ -74,12 +75,12 @@
 						port: 8080,
 						path: ['v0', 'tests', 'units'],
 						file: 'test.html',
-						args: {__args: [{name: 'unit', value: 'Doodad.Test.Tools.Url'}]},
+						args: {__args: [{name: 'unit', value: 'Doodad.Test.Tools.Files.Url'}]},
 						anchor: 'failedBookmark',
 						isRelative: false,
 						noEscapes: false,
 						isWindows: false,
-					}, {depth: 3}, /**/ "http://user:password@www.doodad-js.local:8080/v0/tests/units/test.html?unit=Doodad.Test.Tools.Url#failedBookmark", options);
+					}, {depth: 3}, /**/ "http://user:password@www.doodad-js.local:8080/v0/tests/units/test.html?unit=Doodad.Test.Tools.Files.Url#failedBookmark", options);
 
 					command.run({
 						protocol: 'http',
@@ -89,12 +90,12 @@
 						port: 8080,
 						path: ['v0', 'tests', 'units'],
 						file: 'test.html',
-						args: {__args: [{name: 'unit', value: 'Doodad.Test.Tools.Url'}]},
+						args: {__args: [{name: 'unit', value: 'Doodad.Test.Tools.Files.Url'}]},
 						anchor: '',
 						isRelative: false,
 						noEscapes: false,
 						isWindows: false,
-					}, {depth: 3}, /**/ "http://user:password@www.doodad-js.local:8080/v0/tests/units/test.html?unit=Doodad.Test.Tools.Url#", options);
+					}, {depth: 3}, /**/ "http://user:password@www.doodad-js.local:8080/v0/tests/units/test.html?unit=Doodad.Test.Tools.Files.Url#", options);
 
 					command.run({
 						protocol: 'http',
@@ -104,12 +105,12 @@
 						port: 8080,
 						path: ['v0', 'tests', 'units'],
 						file: 'test.html',
-						args: {__args: [{name: 'unit', value: 'Doodad.Test.Tools.Url'}]},
+						args: {__args: [{name: 'unit', value: 'Doodad.Test.Tools.Files.Url'}]},
 						anchor: null,
 						isRelative: false,
 						noEscapes: false,
 						isWindows: false,
-					}, {depth: 3}, /**/ "http://user:password@www.doodad-js.local:8080/v0/tests/units/test.html?unit=Doodad.Test.Tools.Url", options);
+					}, {depth: 3}, /**/ "http://user:password@www.doodad-js.local:8080/v0/tests/units/test.html?unit=Doodad.Test.Tools.Files.Url", options);
 
 					command.run({
 						protocol: 'http',
@@ -386,8 +387,8 @@
 			
 					var command = (function() {
 							var command = test.prepareCommand.call(this, function(url) {
-									return newTools.Url.parse(url).toString();
-								}, "Doodad.Tools.Url.parse.test2");
+									return newFiles.Url.parse(url).toString();
+								}, "Doodad.Test.Tools.Files.Url.parse.test2");
 							return types.extend({}, command, {
 								run: function(url, /*optional*/expected /*paramarray*/) {
 									var params =  Array.prototype.slice.call(arguments, 0, arguments.length - 2);
@@ -627,11 +628,11 @@
 					
 					
 					var command = test.prepareCommand(function(url1, url2, /*optional*/optionsUrl1, /*optional*/optionsUrl2, /*optional*/setUrl2, /*optional*/combineOptions, /*optional*/toStringOptions) {
-						url1 = newTools.Url.parse(url1, optionsUrl1);
+						url1 = newFiles.Url.parse(url1, optionsUrl1);
 						if (!url1) {
 							return undefined;
 						};
-						url2 = newTools.Url.parse(url2, optionsUrl2);
+						url2 = newFiles.Url.parse(url2, optionsUrl2);
 						if (url2) {
 							if (setUrl2) {
 								url2 = url2.set(setUrl2);
@@ -642,7 +643,7 @@
 							url2 = url2.toString(toStringOptions);
 						};
 						return url2;
-					}, "Doodad.Tools.Url.combine.Url");
+					}, "Doodad.Tools.Files.Url.combine.Url");
 					
 					command.run("http://www.doodad-js.local/Doodad.js?v=1&a=&b&#anchor",                                  {repetitions: 100}, /**/ "http://user:password@www.mydomain.com:8080/Doodad/v1/", "http://www.doodad-js.local/Doodad.js?v=1&a=&b&#anchor");
 					command.run("http://www.doodad-js.local/Doodad/v1/?v=1&a=&b&#anchor",                                 {repetitions: 100}, /**/ "http://user:password@www.mydomain.com:8080/Doodad/v1/", "http://www.doodad-js.local?v=1&a=&b&#anchor");
@@ -656,11 +657,11 @@
 					
 					
 					var command = test.prepareCommand(function(url, path, /*optional*/optionsUrl, /*optional*/optionsPath, /*optional*/setPath, /*optional*/combineOptions, /*optional*/toStringOptions) {
-						url = newTools.Url.parse(url, optionsUrl);
+						url = newFiles.Url.parse(url, optionsUrl);
 						if (!url) {
 							return undefined;
 						};
-						path = newTools.Path.parse(path, optionsPath);
+						path = newFiles.Path.parse(path, optionsPath);
 						if (!path) {
 							return undefined;
 						};
@@ -672,7 +673,7 @@
 							url = url.toString(toStringOptions);
 						};
 						return url;
-					}, "Doodad.Tools.Url.combine.Path");
+					}, "Doodad.Tools.Files.Url.combine.Path");
 					
 					command.run("http://user:password@www.mydomain.com:8080/Doodad.js",                                  {repetitions: 100}, /**/ "http://user:password@www.mydomain.com:8080/Doodad/v1/", "/Doodad.js", null, {os: 'linux'});
 					command.run("http://user:password@www.mydomain.com:8080/Doodad/v1/Doodad.js",                        {repetitions: 100}, /**/ "http://user:password@www.mydomain.com:8080/Doodad/v1/", "Doodad.js", null, {os: 'linux'});

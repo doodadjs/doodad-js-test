@@ -8,13 +8,17 @@
 		<script src="../../doodad-js/Debug.js"></script>
 		<script src="../../doodad-js/Types.js"></script>
 		<script src="../../doodad-js/Tools.js"></script>
+		<script src="../../doodad-js/Tools_Files.js"></script>
+		<script src="../../doodad-js/Tools_Config.js"></script>
 		<script src="../../doodad-js/Namespaces.js"></script>
 		<script src="../../doodad-js/Doodad.js"></script>
 		<script src="../../doodad-js/Client.js"></script>
 		<script src="../../doodad-js/Modules.js"></script>
+		<script src="../../doodad-js-unicode/index.js"></script>
 		<script src="../../doodad-js-locale/index.js"></script>
 		<script src="../../doodad-js-dates/index.js"></script>
 		<script src="../../doodad-js-io/index.js"></script>
+		<!--<script src="../../doodad-js-safeeval/index.js"></script>-->
 		<script src="../../doodad-js-test/Test.js"></script>
 		<script src="../../doodad-js-test/units/index.js"></script>
 		<script src="../../lib/sax/sax.js"></script>
@@ -46,7 +50,7 @@
 					var root = global.createRoot(global.DD_MODULES, options),
 						namespaces = root.Doodad.Namespaces;
 					
-					namespaces.loadNamespaces(startup, false, options)
+					namespaces.loadNamespaces(global.DD_MODULES, startup, options, false)
 						['catch'](function(err) {
 							alert(err);
 						});

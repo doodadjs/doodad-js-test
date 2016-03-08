@@ -33,8 +33,12 @@
 	
 	exports.add = function add(DD_MODULES) {
 		DD_MODULES = (DD_MODULES || {});
-		global.DD_SCRIPTS = (global.DD_SCRIPTS || []);
-		global.DD_SCRIPTS.push(
+		return DD_MODULES;
+	};
+	
+	exports.addScripts = function addScripts(DD_SCRIPTS) {
+		DD_SCRIPTS = (DD_SCRIPTS || []);
+		DD_SCRIPTS.push(
 			{
 				description: "Load 'doodad-js-io'",
 				dependencies : [
@@ -103,12 +107,12 @@
 				]
 			}
 		);
-		
-		return DD_MODULES;
+		return DD_SCRIPTS;
 	};
 	
 	if (typeof process !== 'object') {
 		// <PRB> export/import are not yet supported in browsers
 		global.DD_MODULES = exports.add(global.DD_MODULES);
+		global.DD_SCRIPTS = exports.addScripts(global.DD_SCRIPTS);
 	};
 }).call((typeof global !== 'undefined') ? global : ((typeof window !== 'undefined') ? window : this));

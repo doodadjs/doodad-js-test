@@ -38,7 +38,7 @@ module.exports = function(root, options) {
 		nodejs = doodad.NodeJs,
 		
 		nodeOs = require('os'),
-		Promise = tools.getPromise();
+		Promise = types.getPromise();
 
 	function startup() {
 		const cpus = Math.min(nodeOs.cpus().length, MAX_CPUS);
@@ -154,7 +154,7 @@ module.exports = function(root, options) {
 	require('doodad-js-test/src/common/Test.js').add(DD_MODULES);
 	require('doodad-js-test/src/common/units/index.js').add(DD_MODULES);
 
-	namespaces.loadNamespaces(startup, false, null, DD_MODULES)
+	namespaces.loadNamespaces(DD_MODULES, startup)
 		['catch'](function(err) {
 			console.error(err.stack);
 			process.exit(1);

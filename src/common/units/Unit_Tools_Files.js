@@ -1,5 +1,6 @@
+//! REPLACE_BY("// Copyright 2016 Claude Petit, licensed under Apache License version 2.0\n")
 // dOOdad - Object-oriented programming framework
-// File: main.js - Module startup file for 'browserify'.
+// File: Unit_Tools_Files.js - Unit testing module file
 // Project home: https://sourceforge.net/projects/doodad-js/
 // Trunk: svn checkout svn://svn.code.sf.net/p/doodad-js/code/trunk doodad-js-code
 // Author: Claude Petit, Quebec city
@@ -20,21 +21,37 @@
 //	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //	See the License for the specific language governing permissions and
 //	limitations under the License.
+//! END_REPLACE()
 
-window.onload = function() {
-	var root = require('doodad-js').createRoot();
-	
-	var modules = {};
-	require('doodad-js-unicode').add(modules);
-	require('doodad-js-locale').add(modules);
-	require('doodad-js-dates').add(modules);
-	
-	function startup() {
-		alert(root.Doodad.Tools.Dates.strftime("%c", new Date()));
+(function() {
+	var global = this;
+
+	var exports = {};
+	if (typeof process === 'object') {
+		module.exports = exports;
 	};
 	
-	root.Doodad.Namespaces.loadNamespaces(modules, startup)
-		['catch'](function(err) {
-			console.log(err);
-		});
-};
+	exports.add = function add(DD_MODULES) {
+		DD_MODULES = (DD_MODULES || {});
+		DD_MODULES['Doodad.Test.Tools.Files'] = {
+			type: 'TestUnit',
+			version: '0d',
+			namespaces: null,
+			dependencies: ['Doodad.Test.Tools'],
+			
+			// Unit
+			priority: null,
+			
+			proto: {
+				run: null,
+			},
+		};
+		
+		return DD_MODULES;
+	};
+	
+	if (typeof process !== 'object') {
+		// <PRB> export/import are not yet supported in browsers
+		global.DD_MODULES = exports.add(global.DD_MODULES);
+	};
+}).call((typeof global !== 'undefined') ? global : ((typeof window !== 'undefined') ? window : this));

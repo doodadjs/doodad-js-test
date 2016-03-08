@@ -27,16 +27,22 @@
 
 const DD_MODULES = {};
 require("../../common/widgets/MyWidget_loader.js").add(DD_MODULES);
+require('doodad-js-unicode').add(DD_MODULES);
+require('doodad-js-locale').add(DD_MODULES);
+require('doodad-js-safeeval').add(DD_MODULES);
 require('doodad-js-loader').add(DD_MODULES);
+
+const DD_SCRIPTS = [];
+require("../../common/widgets/MyWidget_loader.js").addScripts(DD_SCRIPTS);
 
 const root = require('doodad-js').createRoot(DD_MODULES),
 	doodad = root.Doodad,
 	namespaces = doodad.Namespaces;
 
 function startup() {
-	doodad.Loader.loadScripts(global.DD_SCRIPTS)
+	doodad.Loader.loadScripts(DD_SCRIPTS)
 		['catch'](function(err){console.log(err.stack)});
 };
 
-namespaces.loadNamespaces(startup, false, null, DD_MODULES)
+namespaces.loadNamespaces(DD_MODULES, startup)
 	['catch'](function(err){console.log(err.stack)});

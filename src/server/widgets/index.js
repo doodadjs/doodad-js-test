@@ -40,8 +40,7 @@ const root = require('doodad-js').createRoot(DD_MODULES),
 	namespaces = doodad.Namespaces;
 
 function startup() {
-	doodad.Loader.loadScripts(DD_SCRIPTS)
-		['catch'](function(err){console.log(err.stack)});
+	return doodad.Loader.loadScripts(DD_SCRIPTS);
 };
 
 namespaces.loadNamespaces(DD_MODULES, startup)

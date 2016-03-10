@@ -1,6 +1,6 @@
 {
   "name": "doodad-js-test",
-  "version": "1.3.1",
+  "version": "1.3.5",
   "description": "doodad-js Test application",
   "homepage": "https://sourceforge.net/projects/doodad-js/",
   "main": "index.js",
@@ -50,6 +50,9 @@
     "doodad-js-terminal": "^0.2.0",
     "doodad-js-widgets": "^0.2.0",
     "doodad-js-xml": "^1.2.0"
+  },
+  "optionalDependencies": {
+    "es6-promise": "^3.0.2"
   },
   "devDependencies": {
     "doodad-js-make": "^0.3.0"

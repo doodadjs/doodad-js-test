@@ -16,7 +16,16 @@
 		<script async src="../../doodad-js-safeeval/index.js"></script>
 		<script async src="../../doodad-js-loader/index.js"></script> 
 		<script async src="./MyWidget_loader.js"></script>
-		<script async src="../../lib/es6-promise/es6-promise.min.js"></script>
+		
+		<!--IE8 <script>
+			// <PRB> "es6-promise" needs "Array.isArray"
+			if (!Array.isArray) {
+				Array.isArray = function(obj) {
+					return Object.prototype.toString.call(obj) === '[object Array]';
+				};
+			};
+		</script>-->
+		<script src="../../lib/es6-promise/es6-promise.min.js"></script>
 		
 		<script>
 			(function() {
@@ -37,10 +46,11 @@
 					
 					var root = window.createRoot(window.DD_MODULES, options),
 						doodad = root.Doodad,
-						namespaces = doodad.Namespaces;
+						namespaces = doodad.Namespaces,
+						types = doodad.Types;
 
 					function startup() {
-						doodad.Loader.loadScripts(window.DD_SCRIPTS);
+						return doodad.Loader.loadScripts(window.DD_SCRIPTS);
 					};
 						
 					namespaces.loadNamespaces(window.DD_MODULES, startup, options, false)
@@ -54,7 +64,6 @@
 		<div id="test1"></div>
 		<div id="test2"></div>
 		<div id="test3"></div>
-		
 		
 	</body>
 </html>

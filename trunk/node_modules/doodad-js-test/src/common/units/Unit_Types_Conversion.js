@@ -66,7 +66,7 @@
 					
 					var command = test.prepareCommand(newTypes.toObject, "Doodad.Types.toObject");
 					command.run(newTypes.undefined, {},                            /**/ undefined);
-					command.run(newTypes.null, {},                                 /**/ null);
+					command.run(newTypes['null'], {},                                 /**/ null);
 					command.run("String", {eval: true, mode: 'isinstance'},        /**/ "''");
 					command.run("Number", {eval: true, mode: 'isinstance'},        /**/ "1");
 					command.run("Number", {eval: true, mode: 'isinstance'},        /**/ "0.1");
@@ -89,10 +89,11 @@
 					//command.run("Object", {eval: true, mode: 'isinstance'},        /**/ "arguments");
 					command.end();
 
-					global.obj = {};
-					global.date = new Date;
-					global.err = new Error;
-					global.fn = (function(){});
+					global.testObject = {};
+					global.testDate = new Date;
+					global.testError = new Error;
+					global.testFunction = (function(){});
+					
 					var command = test.prepareCommand(newTypes.toArray, "Doodad.Types.toArray");
 					command.run(types.TypeError, {eval: true, mode: 'isinstance'}, /**/ "undefined");
 					command.run(types.TypeError, {eval: true, mode: 'isinstance'}, /**/ "null");
@@ -103,7 +104,7 @@
 					command.run("[]", {eval: true},                               /**/ "NaN");
 					command.run("[]", {eval: true},                               /**/ "Infinity");
 					command.run("[]", {eval: true},                               /**/ "true");
-					command.run("[]", {eval: true},                               /**/ "global.obj");
+					command.run("[]", {eval: true},                               /**/ "testObject");
 					command.run("[]",    {eval: true},                            /**/ "[]");
 					command.run("[]",    {eval: true},                            /**/ "new String('')");
 					command.run("['h', 'e', 'l', 'l', 'o']",  {eval: true},       /**/ "new String('hello')");
@@ -112,9 +113,9 @@
 					command.run("[]", {eval: true},                               /**/ "new Number(NaN)");
 					command.run("[]", {eval: true},                               /**/ "new Number(Infinity)");
 					command.run("[]", {eval: true},                               /**/ "new Boolean(false)");
-					command.run("[]", {eval: true},                               /**/ "global.date");
-					command.run("[]", {eval: true},                               /**/ "global.err");
-					command.run("[]", {eval: true},                               /**/ "global.fn");
+					command.run("[]", {eval: true},                               /**/ "testDate");
+					command.run("[]", {eval: true},                               /**/ "testError");
+					command.run("[]", {eval: true},                               /**/ "testFunction");
 					command.run("[]", {eval: true},                               /**/ "Object.prototype.toString");
 					command.run("[undefined]", {eval: true},                      /**/ "Object");
 					command.run("[1, 2, 3]", {eval: true},                        /**/ "(function(){return arguments})(1,2,3)");

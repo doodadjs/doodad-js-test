@@ -40,12 +40,16 @@
 			dependencies: [
 				'Doodad.Widgets',
 				{
-					name: 'Doodad.Client.Widgets',
+					name: 'Doodad.Widgets.Client',
+					optional: true,
+				},
+				{
+					name: 'Doodad.Widgets.Server',
 					optional: true,
 				},
 				{
 					name: 'Doodad.NodeJs.IO',
-					version: '0.4.0',
+					version: '1.0.0',
 					optional: true,
 				},
 			],
@@ -62,7 +66,6 @@
 					namespaces = doodad.Namespaces,
 					widgets = doodad.Widgets,
 					client = doodad.Client,
-					clientWidgets = client && client.Widgets,
 					tools = doodad.Tools,
 					types = doodad.Types,
 					exceptions = doodad.Exceptions,
@@ -72,7 +75,7 @@
 				//===================================
 				// MyWidget
 				//===================================
-				var MyWidgetStep1 = doodad.REGISTER((nodejs ? widgets : clientWidgets).HtmlWidget.$extend(
+				var MyWidgetStep1 = doodad.REGISTER(widgets.HtmlWidget.$extend(
 				{
 					$TYPE_NAME: '__MyWidgetStep1__',
 					
@@ -122,7 +125,7 @@
 					}),
 					
 					render: doodad.OVERRIDE(function render(stream) {
-						stream.write('<span' + this.renderHtmlAttributes(['main', 'mergeTest']) + '>' + tools.escapeHtml(this.message || '', this.document) + '</span>');
+						stream.write('<span' + this.renderAttributes(['main', 'mergeTest']) + '>' + tools.escapeHtml(this.message || '', this.document) + '</span>');
 					}),
 				}));
 
@@ -288,9 +291,9 @@
 						colors.splice(color, 1);
 						myWidget.setStyles(styles);
 						
-						var attributes = myWidget.getHtmlAttributes('mergeTest');
+						var attributes = myWidget.getAttributes('mergeTest');
 						attributes.class = 'mergeTest';
-						myWidget.setHtmlAttributes(attributes, 'mergeTest');
+						myWidget.setAttributes(attributes, 'mergeTest');
 						
 						color = Math.floor(Math.random() * colors.length);
 						var styles = myWidget.getStyles('mergeTest');

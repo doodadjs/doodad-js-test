@@ -1,7 +1,16 @@
 <html>
 	<head>
-		<script async src="../../lib/es6-promise/es6-promise.min.js"></script>
-		<script async src="bundle.js"></script>
+		<!--IE8 <script>
+			// <PRB> "es6-promise" needs "Array.isArray"
+			if (!Array.isArray) {
+				Array.isArray = function(obj) {
+					return Object.prototype.toString.call(obj) === '[object Array]';
+				};
+			};
+		</script>-->
+		<script src="../../lib/es6-promise/es6-promise.min.js"></script>
+
+		<script src="bundle.js"></script>
 	</head>
 	<body>
 	</body>

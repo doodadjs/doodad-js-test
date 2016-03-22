@@ -35,22 +35,25 @@
 		DD_MODULES = (DD_MODULES || {});
 		DD_MODULES['Doodad.Test'] = {
 			type: null,
-			version: '1.3.0',
+			version: '1.4.0',
 			namespaces: [],
 			dependencies: [
 				{
 					name: 'Doodad.IO',
-					version: '0.4.0',
+					version: '1.0.0',
 				}, 
 				{
 					name: 'Doodad.Client.IO',
-					version: '0.4.0',
+					version: '1.0.0',
 					optional: true,
 				},
 				{
 					name: 'Doodad.NodeJs',
 					optional: true,
 				},
+				//{
+				//	name: 'Doodad.Tools.SafeEval',
+				//},
 			],
 
 			create: function create(root, /*optional*/_options) {
@@ -88,13 +91,20 @@
 					
 					newRoot.enableAsserts();
 
+					var __Internal__ = {
+						stdout: io.stdout,
+					};
+					
 					test.TESTS_COUNT = 0;
 					test.FAILED_TESTS = 0;
 					test.CHILDREN = null;
 					test.CURRENT_UNIT = null;
 					
+					test.setOutput = function setOutput(stream) {
+						__Internal__.stdout = stream;
+					};
 
-					test.getUnits = function(namespace) {
+					test.getUnits = function getUnits(namespace) {
 						var units = namespace.CHILDREN;
 						if (!units) {
 							units = namespace.CHILDREN = [];
@@ -126,7 +136,7 @@
 						return units;
 					};
 					
-					test.getUnit = function(name) {
+					test.getUnit = function getUnit(name) {
 						var entry = namespaces.getEntry(name);
 						if (!entry) {
 							return null;
@@ -142,7 +152,7 @@
 					test.EmptySlot.prototype.toSource = function() {return "undefined";};
 					test.EmptySlot = new test.EmptySlot();
 					
-					test.compare = function(expected, result, /*optional*/options) {
+					test.compare = function compare(expected, result, /*optional*/options) {
 						expected = types.toObject(expected);
 						result = types.toObject(result);
 						var expectedValue = expected.valueOf(),
@@ -264,15 +274,15 @@
 					var __processEnabled__ = !__performanceEnabled__ && !!(nodejs && global.process.hrtime);
 					var __timingEnabled__ = !__processEnabled__ && !!(global.console && global.console.time && global.console.timeEnd);
 						
-					test.prepareCommand = function(fn, fnName) {
-						var html = types._implements(io.stdout, ioMixIns.HtmlOutput),
-							dom = (clientIO ? (io.stdout instanceof clientIO.DomOutputStream) : false);
+					test.prepareCommand = function prepareCommand(fn, fnName) {
+						var html = types._implements(__Internal__.stdout, ioMixIns.HtmlOutput),
+							dom = (clientIO ? (__Internal__.stdout instanceof clientIO.DomOutputStream) : false);
 						
 						if (html) {
-							io.stdout.openElement({tag: 'div', attrs: 'class="command"'});
-							io.stdout.print(fnName, {attrs: 'class="name"'});
+							__Internal__.stdout.openElement({tag: 'div', attrs: 'class="command"'});
+							__Internal__.stdout.print(fnName, {attrs: 'class="name"'});
 						} else {
-							io.stdout.print("Name: " + fnName);
+							__Internal__.stdout.print("Name: " + fnName);
 						};
 						
 						// For "eval"
@@ -307,9 +317,7 @@
 								var evalError = null;
 								if (isEval && types.isString(expected)) {
 									try {
-										// <PRB> eval("{}") thinks "{}" is a block of code
-										//expected = eval(expected)
-										eval("expected=(" + expected + ")");
+										expected = types.eval(expected, {EmptySlot: test.EmptySlot});
 									} catch(ex) {
 										evalError = ex;
 									};
@@ -324,9 +332,9 @@
 								
 								if (html) {
 									if (dom) {
-										io.stdout.openElement({tag: 'div', attrs: 'class="run bindMe"'});
+										__Internal__.stdout.openElement({tag: 'div', attrs: 'class="run bindMe"'});
 									} else {
-										io.stdout.openElement({tag: 'div', attrs: 'class="run"'});
+										__Internal__.stdout.openElement({tag: 'div', attrs: 'class="run"'});
 									};
 								};
 								
@@ -349,21 +357,19 @@
 									if (html) {
 										printOpts.attrs = 'class="name"';
 									};
-									io.stdout.print(command, printOpts);
+									__Internal__.stdout.print(command, printOpts);
 									
 									printOpts = {};
 									if (html) {
 										printOpts.attrs = ('class="' + expectedCls + '"');
 									};
-									io.stdout.print(expectedStr, printOpts);
+									__Internal__.stdout.print(expectedStr, printOpts);
 									
 									if (isEval) {
 										try {
 											params = tools.map(params, function(expr) {
 												if (types.isString(expr)) {
-													// <PRB> eval("{}") thinks "{}" is a block of code
-													//return eval(expr);
-													return eval("expr=(" + expr + ")");
+													return types.eval(expr, {EmptySlot: test.EmptySlot});
 												} else {
 													return expr;
 												};
@@ -442,7 +448,7 @@
 									if (html) {
 										printOpts.attrs = ('class="' + resultCls + '"');
 									};
-									io.stdout.print(resultStr, printOpts);
+									__Internal__.stdout.print(resultStr, printOpts);
 									
 									result = (types.get(options, 'compareFn', null) || test.compare)(expected, result, options);
 								};
@@ -454,7 +460,7 @@
 									if (html) {
 										printOpts.attrs = ('class="' + resultCls + '"');
 									};
-									io.stdout.print(resultStr, printOpts);
+									__Internal__.stdout.print(resultStr, printOpts);
 									
 									result = false;
 								};
@@ -471,7 +477,7 @@
 								if (html) {
 									printOpts.attrs = ('class="' + resultCls + '"');
 								};
-								io.stdout.print(resultStr, printOpts);
+								__Internal__.stdout.print(resultStr, printOpts);
 								
 								resultStr = "Time: " + ((time === null) ? 'Not available' : (String(time) + ' ms' + ((repetitions > 1) ? (' / ' + repetitions + ' = ' + String(time / repetitions) + ' ms') : ''))),
 								resultCls = 'time',
@@ -479,7 +485,7 @@
 								if (html) {
 									printOpts.attrs = ('class="' + resultCls + '"');
 								};
-								io.stdout.print(resultStr, printOpts);
+								__Internal__.stdout.print(resultStr, printOpts);
 								
 								var note = types.get(options, 'note', null);
 								if (note) {
@@ -487,14 +493,14 @@
 									if (html) {
 										printOpts.attrs = 'class="note"';
 									};
-									io.stdout.print("Note: " + note, printOpts);
+									__Internal__.stdout.print("Note: " + note, printOpts);
 								};
 								
 								if (html) {
-									io.stdout.flush({flushElement: true});
-									io.stdout.closeElement();
+									__Internal__.stdout.flush({flushElement: true});
+									__Internal__.stdout.closeElement();
 								} else {
-									io.stdout.flush();
+									__Internal__.stdout.flush();
 								};
 							},
 						
@@ -502,36 +508,36 @@
 								root.DD_ASSERT && root.DD_ASSERT(!ended, "Command has been ended.");
 								ended = true;
 								if (html) {
-									io.stdout.flush({flushElement: true});
-									io.stdout.closeElement();
+									__Internal__.stdout.flush({flushElement: true});
+									__Internal__.stdout.closeElement();
 								} else {
-									io.stdout.flush();
+									__Internal__.stdout.flush();
 								};
 							},
 						};
 					};
 					
-					test.runUnit = function(entry, /*optional*/options) {
-						var html = types._implements(io.stdout, ioMixIns.HtmlOutput);
+					test.runUnit = function runUnit(entry, /*optional*/options) {
+						var html = types._implements(__Internal__.stdout, ioMixIns.HtmlOutput);
 						if (html) {
-							io.stdout.openElement({tag: 'div', attrs: 'class="unit" title="' + entry.spec.name + '"'});
-							io.stdout.print(entry.spec.name, {attrs: 'class="name"'});
+							__Internal__.stdout.openElement({tag: 'div', attrs: 'class="unit" title="' + entry.spec.name + '"'});
+							__Internal__.stdout.print(entry.spec.name, {attrs: 'class="name"'});
 						} else {
-							io.stdout.print(entry.spec.name);
+							__Internal__.stdout.print(entry.spec.name);
 						};
 						if ((entry.namespace !== test) && entry.namespace.run) {
 							entry.namespace.run(entry, options);
 						};
 						test.runChildren(entry, options);
 						if (html) {
-							io.stdout.flush({flushElement: true});
-							io.stdout.closeElement();
+							__Internal__.stdout.flush({flushElement: true});
+							__Internal__.stdout.closeElement();
 						} else {
-							io.stdout.flush();
+							__Internal__.stdout.flush();
 						};
 					};
 					
-					test.runChildren = function(entry) {
+					test.runChildren = function runChildren(entry) {
 						var units = test.getUnits(entry.namespace);
 						for (var i = 0; i < units.length; i++) {
 							test.runUnit(units[i]);
@@ -570,18 +576,19 @@
 							};
 						};
 					};
-					test.showFails = function() {
-						var root = io.stdout.element,
+					
+					test.showFails = function showFails() {
+						var root = __Internal__.stdout.element,
 							runElements = Array.prototype.slice.call(root.getElementsByClassName("run bindMe"), 0), // <PRB> Returned objects collection is dynamic
 							failedRuns = [],
 							state = {};
 						
 						if (test.FAILED_TESTS) {
-							io.stdout.openElement({tag: 'div', attrs: 'class="failedPopup bindMe"'});
-							io.stdout.write('<a id="failedBookmark"></a><button class="prevFailed bindMe">Previous</button><button class="nextFailed bindMe">Next</button><span class="failedOf bindMe"></span>');
-							io.stdout.flush({flushElement: true});
-							var popup = io.stdout.element;
-							io.stdout.closeElement();
+							__Internal__.stdout.openElement({tag: 'div', attrs: 'class="failedPopup bindMe"'});
+							__Internal__.stdout.write('<a id="failedBookmark"></a><button class="prevFailed bindMe">Previous</button><button class="nextFailed bindMe">Next</button><span class="failedOf bindMe"></span>');
+							__Internal__.stdout.flush({flushElement: true});
+							var popup = __Internal__.stdout.element;
+							__Internal__.stdout.closeElement();
 							
 							var	prevButton = popup.getElementsByClassName('prevFailed bindMe')[0],
 								nextButton = popup.getElementsByClassName('nextFailed bindMe')[0];
@@ -754,16 +761,16 @@
 						};
 					};
 					
-					test.showUnitName = function() {
+					test.showUnitName = function showUnitName() {
 						var name = (test.CURRENT_UNIT ? test.CURRENT_UNIT.spec.name : ''),
-							root = io.stdout.element,
+							root = __Internal__.stdout.element,
 							elements = Array.prototype.slice.call(root.getElementsByClassName("unitName"), 0); // <PRB> Returned objects collection is dynamic
 						for (var i = 0; i < elements.length; i++) {
 							elements[i].textContent = name;
 						};
 					};
 
-					test.moveToUnit = function(entry) {
+					test.moveToUnit = function moveToUnit(entry) {
 						var url = tools.getCurrentLocation();
 						if (entry) {
 							url = url.set({
@@ -804,12 +811,13 @@
 							};
 						};
 					};
-					test.showNavigator = function() {
-						io.stdout.openElement({tag: 'div', attrs: 'class="navigator"'});
-						io.stdout.write('<button class="index bindMe">Index</button><button class="prevUnit bindMe">&lt;&lt;&lt;</button><span class="unitName"></span><button class="nextUnit bindMe">&gt;&gt;&gt;</button>');
-						io.stdout.flush({flushElement: true});
-						var root = io.stdout.element;
-						io.stdout.closeElement();
+					
+					test.showNavigator = function showNavigator() {
+						__Internal__.stdout.openElement({tag: 'div', attrs: 'class="navigator"'});
+						__Internal__.stdout.write('<button class="index bindMe">Index</button><button class="prevUnit bindMe">&lt;&lt;&lt;</button><span class="unitName"></span><button class="nextUnit bindMe">&gt;&gt;&gt;</button>');
+						__Internal__.stdout.flush({flushElement: true});
+						var root = __Internal__.stdout.element;
+						__Internal__.stdout.closeElement();
 						
 						var indexButton = root.getElementsByClassName('index bindMe')[0],
 							prevButton = root.getElementsByClassName('prevUnit bindMe')[0],
@@ -900,12 +908,12 @@
 						return html + '</ul>';
 					};
 					
-					test.showIndex = function(unit) {
-						io.stdout.openElement({tag: 'div', attrs: 'class="indexMenu"'});
-						io.stdout.write(__buildIndexItems__(test));
-						io.stdout.flush({flushElement: true});
-						var root = io.stdout.element;
-						io.stdout.closeElement();
+					test.showIndex = function showIndex(unit) {
+						__Internal__.stdout.openElement({tag: 'div', attrs: 'class="indexMenu"'});
+						__Internal__.stdout.write(__buildIndexItems__(test));
+						__Internal__.stdout.flush({flushElement: true});
+						var root = __Internal__.stdout.element;
+						__Internal__.stdout.closeElement();
 						
 						var elements = Array.prototype.slice.call(root.getElementsByClassName("indexMenuItem bindMe"), 0); // <PRB> Returned objects collection is dynamic
 							
@@ -931,13 +939,13 @@
 						};
 					};
 					
-					test.run = function() {
+					test.run = function run() {
 						var success = true;
 						
 						test.FAILED_TESTS = 0;
 						
-						var html = types._implements(io.stdout, ioMixIns.HtmlOutput),
-							dom = (clientIO ? (io.stdout instanceof clientIO.DomOutputStream) : false);
+						var html = types._implements(__Internal__.stdout, ioMixIns.HtmlOutput),
+							dom = (clientIO ? (__Internal__.stdout instanceof clientIO.DomOutputStream) : false);
 						
 						var args = tools.getCurrentLocation().args,
 							name = args.get('unit'),
@@ -947,7 +955,7 @@
 							ok = false;
 							
 						if (html) {
-							io.stdout.openElement({tag: 'div', attrs: 'class="test"'});
+							__Internal__.stdout.openElement({tag: 'div', attrs: 'class="test"'});
 						};
 
 						if (name) {
@@ -988,11 +996,11 @@
 						};
 							
 						if (html) {
-							io.stdout.closeElement();
+							__Internal__.stdout.closeElement();
 						};
 						
-						io.stdout.flush();
-						io.stdout.reset();
+						__Internal__.stdout.flush();
+						__Internal__.stdout.reset();
 						
 						io.stderr.flush();
 						io.stderr.reset();
@@ -1017,17 +1025,17 @@
 								};
 							} else {
 								if (!unit) {
-									io.stdout.print("End: There is nothing to test.");
+									__Internal__.stdout.print("End: There is nothing to test.");
 								} else if (!ok) {
-									io.stdout.print("End: An error occurred while testing.");
+									__Internal__.stdout.print("End: An error occurred while testing.");
 									success = false;
 								} else if (test.FAILED_TESTS) {
-									io.stdout.print("End: Some tests failed.");
+									__Internal__.stdout.print("End: Some tests failed.");
 									success = false;
 								} else {
-									io.stdout.print("End: Every tests passed.    Total: " + test.TESTS_COUNT);
+									__Internal__.stdout.print("End: Every tests passed.    Total: " + test.TESTS_COUNT);
 								};
-								io.stdout.flush();
+								__Internal__.stdout.flush();
 							};
 						};
 						

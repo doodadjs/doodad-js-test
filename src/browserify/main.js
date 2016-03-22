@@ -22,7 +22,14 @@
 //	limitations under the License.
 
 window.onload = function() {
-	var root = require('doodad-js').createRoot();
+	var options = {};
+	options['Doodad.Modules'] = {
+		settings: {
+			modulesUri: '../..',
+		},
+	};
+	
+	var root = require('doodad-js').createRoot(window.DD_MODULES, options);
 	
 	var modules = {};
 	require('doodad-js-unicode').add(modules);

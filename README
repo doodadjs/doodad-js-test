@@ -7,7 +7,7 @@ doodad-js Test application
 ## Installation
 
 ```bash
-$ npm install doodad-js-terminal
+$ npm install doodad-js-test
 ```
 
 ## Features

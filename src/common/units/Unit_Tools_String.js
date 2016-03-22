@@ -113,10 +113,10 @@
 					
 					var command = test.prepareCommand(newTools.trim, "Doodad.Tools.trim");
 					
-					newRoot.DD_ASSERT && command.run(newTypes.AssertionFailed,    {mode: 'isinstance'}  /**/ );
-					newRoot.DD_ASSERT && command.run(newTypes.AssertionFailed,    {mode: 'isinstance'}, /**/ "a", 0);
-					newRoot.DD_ASSERT && command.run(newTypes.AssertionFailed,    {mode: 'isinstance'}, /**/ "  a  ", " ", "");
-					newRoot.DD_ASSERT && command.run(newTypes.AssertionFailed,    {mode: 'isinstance'}, /**/ "  a  ", " ", 0, "");
+					//newRoot.DD_ASSERT && command.run(newTypes.AssertionFailed,    {mode: 'isinstance'}  /**/ );
+					//newRoot.DD_ASSERT && command.run(newTypes.AssertionFailed,    {mode: 'isinstance'}, /**/ "a", 0);
+					//newRoot.DD_ASSERT && command.run(newTypes.AssertionFailed,    {mode: 'isinstance'}, /**/ "  a  ", " ", "");
+					//newRoot.DD_ASSERT && command.run(newTypes.AssertionFailed,    {mode: 'isinstance'}, /**/ "  a  ", " ", 0, "");
 					command.run("a",                                              {repetitions: 100}, /**/ "  a  ");
 					command.run("a",                                              {repetitions: 100}, /**/ "  a  ", " ");
 					command.run("a",                                              {repetitions: 100}, /**/ "  a  ", " ", 0);

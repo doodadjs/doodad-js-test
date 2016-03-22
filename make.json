@@ -309,7 +309,8 @@
 					{
 						"class": "Make.Browserify.Bundle",
 						"source": "%SOURCEDIR%/browserify/main.js",
-						"destination": "%INSTALLDIR%/%PACKAGENAME%/browserify/bundle.js"
+						"destination": "%INSTALLDIR%/%PACKAGENAME%/browserify/bundle.js",
+						"minify": false
 					}
 				]
 			}

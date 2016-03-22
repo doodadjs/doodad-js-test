@@ -22,7 +22,17 @@
 		<script async src="../../doodad-js-test/Test.js"></script>
 		<script async src="../../doodad-js-test/units/index.js"></script>
 		<script async src="../../lib/sax/sax.js"></script>
-		<script async src="../../lib/es6-promise/es6-promise.min.js"></script>
+		
+		<!--IE8 <script>
+			// <PRB> "es6-promise" needs "Array.isArray"
+			if (!Array.isArray) {
+				Array.isArray = function(obj) {
+					return Object.prototype.toString.call(obj) === '[object Array]';
+				};
+			};
+		</script>-->
+		<script src="../../lib/es6-promise/es6-promise.min.js"></script>
+		
 		<script>
 			(function() {
 				"use strict";
@@ -34,8 +44,12 @@
 					};
 					
 					function startup() {
-						var test = root.Doodad.Test;
+						var test = root.Doodad.Test,
+							clientIO = root.Doodad.Client.IO;
+						test.setOutput(new clientIO.DomOutputStream({autoFlush: true}));
 						test.run();
+						
+						window.DD_ROOT = root;
 					};
 					
 					var global = window;

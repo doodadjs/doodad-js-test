@@ -1321,7 +1321,7 @@
 					
 					var hasGen = false;
 					try {
-						eval("(function*(){})");
+						types.eval("function*(){}");
 						hasGen = true;
 					} catch(ex) {
 					};

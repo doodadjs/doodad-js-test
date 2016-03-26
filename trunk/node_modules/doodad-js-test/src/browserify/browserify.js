@@ -21,4 +21,43 @@
 //	See the License for the specific language governing permissions and
 //	limitations under the License.
 
-throw new Error("This module is server-side only and can't be used with 'browserify'.");
+"use strict";
+
+module.exports = {
+	add: function add(DD_MODULES) {
+		DD_MODULES = (DD_MODULES || {});
+		DD_MODULES['doodad-js-test'] = {
+			type: 'Package',
+			//! INSERT("version:'" + VERSION('doodad-js-test') + "',")
+			namespaces: null,
+			dependencies: [
+				{
+					name: 'doodad-js',
+					//! INSERT("version:'" + VERSION('doodad-js') + "',")
+				},
+				{
+					name: 'doodad-js-io',
+					//! INSERT("version:'" + VERSION('doodad-js-io') + "',")
+				},
+			],
+			
+			create: function create(root, /*optional*/_options) {
+				var config = null;
+				try {
+					config = require('./dist/doodad-js-test/config.json');
+				} catch(ex) {
+				};
+				
+				var modules = {};
+				
+				require("./dist/doodad-js-test/Test.min.js").add(modules);
+				
+				return root.Doodad.Namespaces.loadNamespaces(modules, null, config, false)
+					.then(function() {
+						// Returns nothing
+					});
+			},
+		};
+		return DD_MODULES;
+	},
+};

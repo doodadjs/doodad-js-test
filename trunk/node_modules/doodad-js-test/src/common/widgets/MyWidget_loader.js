@@ -46,10 +46,10 @@
 						optional: false,
 						conditions: {
 							include: [ // "and" conditions
-								"root.Doodad.Namespaces.getNamespace('Doodad')",
+								"root.Doodad.Namespaces.getNamespace('doodad-js')",
 							],
 							exclude: [ // "or" conditions
-								"root.Doodad.Namespaces.getNamespace('Doodad.IO')",
+								"root.Doodad.Namespaces.getNamespace('doodad-js-io')",
 							],
 							before: false,
 						},
@@ -66,10 +66,10 @@
 						optional: false,
 						conditions: {
 							include: [ // "and" conditions
-								"root.Doodad.Namespaces.getNamespace('Doodad.IO')",
+								"root.Doodad.Namespaces.getNamespace('doodad-js-io')",
 							],
 							exclude: [ // "or" conditions
-								"root.Doodad.Namespaces.getNamespace('Doodad.Widgets')",
+								"root.Doodad.Namespaces.getNamespace('doodad-js-widgets')",
 							],
 							before: false,
 						},
@@ -86,7 +86,7 @@
 						optional: false,
 						conditions: {
 							include: [ // "and" conditions
-								"root.Doodad.Namespaces.getNamespace('Doodad.Widgets')",
+								"root.Doodad.Namespaces.getNamespace('doodad-js-widgets')",
 							],
 							exclude: [ // "or" conditions
 							],

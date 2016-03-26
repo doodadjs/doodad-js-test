@@ -29,6 +29,23 @@
 			"make": {
 				"operations": [
 					{
+						"class": "Make.File.Javascript",
+						"source": "%SOURCEDIR%/common/index.js",
+						"destination": "%PACKAGEDIR%/index.js",
+						"runDirectives": true
+					},
+					{
+						"class": "Make.File.Javascript",
+						"source": "%SOURCEDIR%/browserify/browserify.js",
+						"destination": "%PACKAGEDIR%/browserify.js",
+						"runDirectives": true
+					},
+					
+					{
+						"class": "Make.Update.PackageJson"
+					},
+					
+					{
 						"class": "Make.Task",
 						"name": "configure"
 					}
@@ -289,6 +306,22 @@
 						"destination": "%INSTALLDIR%/%PACKAGENAME%/widgets/test.html"
 					},
 					
+					{
+						"class": "Make.Generate.Configuration",
+						"destination": "%INSTALLDIR%/%PACKAGENAME%/config.json"
+					},
+					{
+						"class": "Make.File.Javascript",
+						"source": "%SOURCEDIR%/common/index.js",
+						"destination": "%INSTALLDIR%/%PACKAGENAME%/index.js",
+						"runDirectives": true
+					},
+					
+					{
+						"class": "Make.Generate.Configuration",
+						"destination": "%PACKAGEDIR%/config.json"
+					},
+
 					{
 						"class": "Make.Task",
 						"name": "browserify"

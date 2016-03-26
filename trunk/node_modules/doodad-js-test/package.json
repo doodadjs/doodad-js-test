@@ -1,6 +1,7 @@
 {
   "name": "doodad-js-test",
-  "version": "1.4.0",
+  "version": "1.5.0",
+  "stage": "a",
   "description": "doodad-js Test application",
   "homepage": "https://sourceforge.net/projects/doodad-js/",
   "main": "index.js",

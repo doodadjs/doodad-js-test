@@ -38,20 +38,18 @@
 			version: '0d',
 			namespaces: null,
 			dependencies: [
-				'Doodad.Widgets',
 				{
-					name: 'Doodad.Widgets.Client',
-					optional: true,
-				},
+					name: 'doodad-js',
+					//! INSERT("version:'" + VERSION('doodad-js') + "',")
+				}, 
 				{
-					name: 'Doodad.Widgets.Server',
-					optional: true,
-				},
+					name: 'doodad-js-io',
+					//! INSERT("version:'" + VERSION('doodad-js-io') + "',")
+				}, 
 				{
-					name: 'Doodad.NodeJs.IO',
-					version: '1.0.0',
-					optional: true,
-				},
+					name: 'doodad-js-widgets',
+					//! INSERT("version:'" + VERSION('doodad-js-widgets') + "',")
+				}, 
 			],
 			
 			create: function create(root, /*optional*/_options) {

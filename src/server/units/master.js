@@ -151,7 +151,7 @@ module.exports = function(root, options) {
 	const DD_MODULES = {};
 	
 	require('doodad-js-terminal').add(DD_MODULES);
-	require('doodad-js-test/src/common/Test.js').add(DD_MODULES);
+	require('doodad-js-test').add(DD_MODULES);
 	require('doodad-js-test/src/common/units/index.js').add(DD_MODULES);
 
 	namespaces.loadNamespaces(DD_MODULES, startup)

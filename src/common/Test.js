@@ -35,26 +35,9 @@
 		DD_MODULES = (DD_MODULES || {});
 		DD_MODULES['Doodad.Test'] = {
 			type: null,
-			version: '1.4.0',
-			namespaces: [],
-			dependencies: [
-				{
-					name: 'Doodad.IO',
-					version: '1.0.0',
-				}, 
-				{
-					name: 'Doodad.Client.IO',
-					version: '1.0.0',
-					optional: true,
-				},
-				{
-					name: 'Doodad.NodeJs',
-					optional: true,
-				},
-				//{
-				//	name: 'Doodad.Tools.SafeEval',
-				//},
-			],
+			//! INSERT("version:'" + VERSION('doodad-js-test') + "',")
+			namespaces: null,
+			dependencies: null,
 
 			create: function create(root, /*optional*/_options) {
 				// Unit test module entry

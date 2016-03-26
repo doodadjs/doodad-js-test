@@ -1,5 +1,5 @@
 // dOOdad - Object-oriented programming framework
-// File: index.js - Loader module startup file
+// File: index.js - Test module startup file
 // Project home: https://sourceforge.net/projects/doodad-js/
 // Trunk: svn checkout svn://svn.code.sf.net/p/doodad-js/code/trunk doodad-js-code
 // Author: Claude Petit, Quebec city
@@ -33,23 +33,19 @@
 	
 	exports.add = function add(DD_MODULES) {
 		DD_MODULES = (DD_MODULES || {});
-		DD_MODULES[MODULE_NAME + '.units'] = {
+		DD_MODULES[MODULE_NAME] = {
 			type: 'Package',
-			version: '0b',
+			//! INSERT("version:'" + VERSION('doodad-js-test') + "',")
 			namespaces: null,
 			dependencies: [
 				{
 					name: 'doodad-js',
 					//! INSERT("version:'" + VERSION('doodad-js') + "',")
-				}, 
+				},
 				{
-					name: 'doodad-js-test',
-					//! INSERT("version:'" + VERSION('doodad-js-test') + "',")
-				}, 
-				//{
-				//	name: 'doodad-js-safeeval',
-				//	//! INSERT("version:'" + VERSION('doodad-js-safeeval') + "',")
-				//}, 
+					name: 'doodad-js-io',
+					//! INSERT("version:'" + VERSION('doodad-js-io') + "',")
+				},
 			],
 			
 			create: function create(root, /*optional*/_options) {
@@ -58,27 +54,9 @@
 				var doodad = root.Doodad,
 					modules = doodad.Modules;
 				
-				//var fromSource = root.getOptions().settings.fromSource;
-				var path = (global.process ? '/src/common/units/' : '/units/');
-				
-				return modules.load(MODULE_NAME, [
-							path + "Unit_Types.js",
-							path + "Unit_Types_Is.js",
-							path + "Unit_Types_Type.js",
-							path + "Unit_Types_Conversion.js",
-							path + "Unit_Types_Dictionary.js",
-							path + "Unit_Types_Array.js",
-							path + "Unit_Types_ToSource.js",
-							path + "Unit_Tools.js",
-							//path + "Unit_Tools_SafeEval.js",
-							path + "Unit_Tools_Files.js",
-							path + "Unit_Tools_Files_Path.js",
-							path + "Unit_Tools_Files_Urls.js",
-							path + "Unit_Tools_String.js",
-							path + "Unit_Tools_Array.js",
-							path + "Unit_Tools_Dictionary.js",
-							path + "Unit_Tools_Misc.js",
-						], _options)
+				var fromSource = root.getOptions().settings.fromSource;
+
+				return modules.load(MODULE_NAME, (fromSource ? (global.process ? 'src/common/Test.js' : 'Test.js') : 'Test.min.js'), _options)
 					.then(function() {
 						// Returns nothing
 					});

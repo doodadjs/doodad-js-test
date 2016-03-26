@@ -40,6 +40,12 @@
 						"destination": "%PACKAGEDIR%/browserify.js",
 						"runDirectives": true
 					},
+					{
+						"class": "Make.File.Javascript",
+						"source": "%SOURCEDIR%/common/Test.js",
+						"destination": "%PACKAGEDIR%/Test.min.js",
+						"runDirectives": true
+					},
 					
 					{
 						"class": "Make.Update.PackageJson"

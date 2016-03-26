@@ -1,6 +1,6 @@
 {
   "name": "doodad-js-test",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "stage": "a",
   "description": "doodad-js Test application",
   "homepage": "https://sourceforge.net/projects/doodad-js/",
@@ -8,6 +8,7 @@
   "files": [
     "dist",
     "src",
+	"Test.min.js",
     "index.js",
     "make.json",
     "README",

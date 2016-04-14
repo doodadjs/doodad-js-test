@@ -1,4 +1,4 @@
-//! REPLACE_BY("// Copyright 2016 Claude Petit, licensed under Apache License version 2.0\n")
+//! REPLACE_BY("// Copyright 2016 Claude Petit, licensed under Apache License version 2.0\n", true)
 // dOOdad - Object-oriented programming framework
 // File: index.js - Test startup file for NodeJs
 // Project home: https://sourceforge.net/projects/doodad-js/
@@ -64,7 +64,7 @@ root = require('doodad-js').createRoot(DD_MODULES);
 
 namespaces = root.Doodad.Namespaces;
 
-return namespaces.loadNamespaces(DD_MODULES, startup)
+return namespaces.load(DD_MODULES, startup)
 		['catch'](function (err) {
 			console.error(err.stack);
 			process.exit(1);

@@ -1,64 +1,17 @@
 {
   "name": "doodad-js-test",
-  "version": "1.5.1",
+  "version": "1.6.3",
   "stage": "a",
   "description": "doodad-js Test application",
-  "homepage": "https://sourceforge.net/projects/doodad-js/",
-  "main": "index.js",
   "files": [
-    "dist",
-    "src",
-	"Test.min.js",
-    "index.js",
-    "make.json",
-    "README",
-    "LICENSE",
-	"browserify.js",
 	"tonic.js"
   ],
-  "scripts": {
-    "prepublish": "node -r \"doodad-js-make/make.js\" . make",
-    "configure": "node -r \"doodad-js-make/make.js\" . custom=configure",
-    "browserify": "node -r \"doodad-js-make/make.js\" . custom=browserify"
-  },
   "keywords": [
     "doodad-js",
     "test"
   ],
-  "author": "Claude Petit <doodadjs@gmail.com> (https://sourceforge.net/projects/doodad-js/)",
-  "license": "Apache-2.0",
-  "engines": {
-    "node": ">=4.2.0 <6.0.0"
-  },
-  "repository": {
-    "type": "svn",
-    "url": "https://svn.code.sf.net/p/doodad-js/code/trunk/node_modules/doodad-js-test/"
-  },
-  "bugs": {
-    "url" : "https://sourceforge.net/p/doodad-js/tickets/",
-    "email" : "doodadjs@gmail.com"
-  },
-  "dependencies": {
-    "doodad-js": "^2.2.0",
-    "doodad-js-cluster": "^1.3.2",
-    "doodad-js-dates": "^1.3.0",
-    "doodad-js-http": "^0.4.2",
-    "doodad-js-http_jsonrpc": "^0.3.2",
-    "doodad-js-loader": "^0.2.2",
-    "doodad-js-locale": "^2.0.0",
-    "doodad-js-mime": "^0.2.5",
-    "doodad-js-minifiers": "^0.4.0",
-    "doodad-js-templates": "^0.2.5",
-    "doodad-js-terminal": "^0.2.5",
-    "doodad-js-widgets": "^0.3.0",
-    "doodad-js-xml": "^1.2.2"
-  },
   "optionalDependencies": {
     "es6-promise": "^3.0.2"
   },
-  "devDependencies": {
-    "doodad-js-make": "^0.3.2"
-  },
-  "tonicExampleFilename": "tonic.js",
-  "browser": "./browserify.js"
+  "tonicExampleFilename": "tonic.js"
 }

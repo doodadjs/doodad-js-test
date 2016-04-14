@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<body>
-		<script async src="../../doodad-js/index_debug.js"></script>
+		<script async src="../../doodad-js/bundle_debug.js"></script>
 		<script async src="../../doodad-js-unicode/index.js"></script>
 		<script async src="../../doodad-js-locale/index.js"></script>
 		<script async src="../../doodad-js-safeeval/index.js"></script>
@@ -30,9 +30,7 @@
 
 					var options = {};
 					options['Doodad.Modules'] = {
-						settings: {
-							modulesUri: '../..',
-						},
+						modulesUri: '../..',
 					};
 					
 					var root = window.createRoot(window.DD_MODULES, options),

@@ -1,4 +1,4 @@
-//! REPLACE_BY("// Copyright 2016 Claude Petit, licensed under Apache License version 2.0\n")
+//! REPLACE_BY("// Copyright 2016 Claude Petit, licensed under Apache License version 2.0\n", true)
 // dOOdad - Object-oriented programming framework
 // File: master.js - Test startup file for NodeJs
 // Project home: https://sourceforge.net/projects/doodad-js/
@@ -47,7 +47,7 @@ module.exports = function(root, options) {
 			tools.Files.mkdir(options.jsCachePath);
 			
 			cluster.setupMaster({
-				silent: false,
+				silent: true,
 			});
 			
 			if (cpus > 1) {
@@ -154,7 +154,7 @@ module.exports = function(root, options) {
 	require('doodad-js-test').add(DD_MODULES);
 	require('doodad-js-test/src/common/units/index.js').add(DD_MODULES);
 
-	namespaces.loadNamespaces(DD_MODULES, startup)
+	namespaces.load(DD_MODULES, startup)
 		['catch'](function(err) {
 			console.error(err.stack);
 			process.exit(1);

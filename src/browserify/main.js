@@ -24,9 +24,7 @@
 window.onload = function() {
 	var options = {};
 	options['Doodad.Modules'] = {
-		settings: {
-			modulesUri: '../..',
-		},
+		modulesUri: '../..',
 	};
 	
 	var root = require('doodad-js').createRoot(window.DD_MODULES, options);
@@ -40,7 +38,7 @@ window.onload = function() {
 		alert(root.Doodad.Tools.Dates.strftime("%c", new Date()));
 	};
 	
-	root.Doodad.Namespaces.loadNamespaces(modules, startup)
+	root.Doodad.Namespaces.load(modules, startup)
 		['catch'](function(err) {
 			console.log(err);
 		});

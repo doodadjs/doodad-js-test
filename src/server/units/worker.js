@@ -1,4 +1,4 @@
-//! REPLACE_BY("// Copyright 2016 Claude Petit, licensed under Apache License version 2.0\n")
+//! REPLACE_BY("// Copyright 2016 Claude Petit, licensed under Apache License version 2.0\n", true)
 // dOOdad - Object-oriented programming framework
 // File: worker.js - Test startup file for NodeJs
 // Project home: https://sourceforge.net/projects/doodad-js/
@@ -49,15 +49,25 @@ module.exports = function(root, options) {
 				
 			const con = messenger.getInterface(ioInterfaces.IConsole);
 			
-			nodejs.Console.capture(function(name, args) {
+			nodejs.Console.capture(function(fn, args) {
 				// TODO: Do like "Terminal.consoleWrite"
-				con[name].call(con, '<W:' + cluster.worker.id + '>  ' + args[0]);
+				con[fn].call(con, '<W:' + cluster.worker.id + '>  ' + args[0]);
 			});
 			
 			tools.setOptions({
 				hooks: {
-					console: function consoleHook(fn, message) {
+					console: function consoleHook(level, message) {
 						// TODO: Do like "Terminal.consoleWrite"
+						var fn;
+						if (level === tools.LogLevels.Info) {
+							fn = 'info';
+						} else if (level === tools.LogLevels.Warning) {
+							fn = 'warn';
+						} else if (level === tools.LogLevels.Error) {
+							fn = 'error';
+						} else {
+							fn = 'log';
+						};
 						con[fn].call(con, '<W:' + cluster.worker.id + '>  ' + message);
 					},
 				},
@@ -98,8 +108,6 @@ module.exports = function(root, options) {
 			console.warn("The library 'es6-promise' is not available. Serving the library to the client browser will be disabled.");
 		};
 		
-		const folderTemplate = files.Path.parse(require.resolve('doodad-js-http')).set({file: null}).combine("./res/templates/Folder.ddt", {isRelative: true, os: 'linux'});
-		
 		const factory = new server.Http.PageFactory({
 			'/': {
 				page: server.Http.RedirectPage,
@@ -114,85 +122,71 @@ module.exports = function(root, options) {
 				page: nodejs.Server.Http.StaticPage,
 				path: files.Path.parse(require.resolve('doodad-js')).set({file: null}).combine('./dist/doodad-js/', {os: 'linux', dirChar: '/'}),
 				showFolders: true,
-				folderTemplate: folderTemplate,
 			},
 			'/nodejs/static/doodad-js-dates/': {
 				page: nodejs.Server.Http.StaticPage,
 				path: files.Path.parse(require.resolve('doodad-js-dates')).set({file: null}).combine('./dist/doodad-js-dates/', {os: 'linux', dirChar: '/'}),
 				showFolders: true,
-				folderTemplate: folderTemplate,
 			},
 			'/nodejs/static/doodad-js-http/': {
 				page: nodejs.Server.Http.StaticPage,
 				path: files.Path.parse(require.resolve('doodad-js-http')).set({file: null}).combine('./dist/doodad-js-http/', {os: 'linux', dirChar: '/'}),
 				showFolders: true,
-				folderTemplate: folderTemplate,
 			},
 			'/nodejs/static/doodad-js-io/': {
 				page: nodejs.Server.Http.StaticPage,
 				path: files.Path.parse(require.resolve('doodad-js-io')).set({file: null}).combine('./dist/doodad-js-io/', {os: 'linux', dirChar: '/'}),
 				showFolders: true,
-				folderTemplate: folderTemplate,
 			},
 			'/nodejs/static/doodad-js-locale/': {
 				page: nodejs.Server.Http.StaticPage,
 				path: files.Path.parse(require.resolve('doodad-js-locale')).set({file: null}).combine('./dist/doodad-js-locale/', {os: 'linux', dirChar: '/'}),
 				showFolders: true,
-				folderTemplate: folderTemplate,
 			},
 			'/nodejs/static/doodad-js-mime/': {
 				page: nodejs.Server.Http.StaticPage,
 				path: files.Path.parse(require.resolve('doodad-js-mime')).set({file: null}).combine('./dist/doodad-js-mime/', {os: 'linux', dirChar: '/'}),
 				showFolders: true,
-				folderTemplate: folderTemplate,
 			},
 			'/nodejs/static/doodad-js-minifiers/': {
 				page: nodejs.Server.Http.StaticPage,
 				path: files.Path.parse(require.resolve('doodad-js-minifiers')).set({file: null}).combine('./dist/doodad-js-minifiers/', {os: 'linux', dirChar: '/'}),
 				showFolders: true,
-				folderTemplate: folderTemplate,
 			},
 			'/nodejs/static/doodad-js-templates/': {
 				page: nodejs.Server.Http.StaticPage,
 				path: files.Path.parse(require.resolve('doodad-js-templates')).set({file: null}).combine('./dist/doodad-js-templates/', {os: 'linux', dirChar: '/'}),
 				showFolders: true,
-				folderTemplate: folderTemplate,
 			},
 			'/nodejs/static/doodad-js-test/': {
 				page: nodejs.Server.Http.StaticPage,
 				path: files.Path.parse(require.resolve('doodad-js-test')).set({file: null}).combine('./dist/doodad-js-test/', {os: 'linux', dirChar: '/'}),
 				showFolders: true,
-				folderTemplate: folderTemplate,
 			},
 			'/nodejs/static/doodad-js-widgets/': {
 				page: nodejs.Server.Http.StaticPage,
 				path: files.Path.parse(require.resolve('doodad-js-widgets')).set({file: null}).combine('./dist/doodad-js-widgets/', {os: 'linux', dirChar: '/'}),
 				showFolders: true,
-				folderTemplate: folderTemplate,
 			},
 			'/nodejs/static/doodad-js-xml/': {
 				page: nodejs.Server.Http.StaticPage,
 				path: files.Path.parse(require.resolve('doodad-js-xml')).set({file: null}).combine('./dist/doodad-js-xml/', {os: 'linux', dirChar: '/'}),
 				showFolders: true,
-				folderTemplate: folderTemplate,
 			},
 			'/nodejs/static/doodad-js-loader/': {
 				page: nodejs.Server.Http.StaticPage,
 				path: files.Path.parse(require.resolve('doodad-js-loader')).set({file: null}).combine('./dist/doodad-js-loader/', {os: 'linux', dirChar: '/'}),
 				showFolders: true,
-				folderTemplate: folderTemplate,
 			},
 			'/nodejs/static/doodad-js-safeeval/': {
 				page: nodejs.Server.Http.StaticPage,
 				path: files.Path.parse(require.resolve('doodad-js-safeeval')).set({file: null}).combine('./dist/doodad-js-safeeval/', {os: 'linux', dirChar: '/'}),
 				showFolders: true,
-				folderTemplate: folderTemplate,
 			},
 			'/nodejs/static/doodad-js-unicode/': {
 				page: nodejs.Server.Http.StaticPage,
 				path: files.Path.parse(require.resolve('doodad-js-unicode')).set({file: null}).combine('./dist/doodad-js-unicode/', {os: 'linux', dirChar: '/'}),
 				showFolders: true,
-				folderTemplate: folderTemplate,
 			},
 			'/nodejs/static/lib/sax/': saxPath && {
 				page: nodejs.Server.Http.JavascriptPage,
@@ -279,7 +273,7 @@ module.exports = function(root, options) {
 	require('doodad-js-http').add(DD_MODULES);
 	require('doodad-js-http_jsonrpc').add(DD_MODULES);
 	
-	namespaces.loadNamespaces(DD_MODULES, startup)
+	namespaces.load(DD_MODULES, startup)
 		['catch'](function(err) {
 			console.error(err.stack);
 			//process.exit(1);

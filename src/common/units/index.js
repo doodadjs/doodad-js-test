@@ -25,9 +25,16 @@
 	var global = this;
 
 	var exports = {};
-	if (typeof process === 'object') {
-		module.exports = exports;
+	
+	//! BEGIN_REMOVE()
+	if ((typeof process === 'object') && (typeof module === 'object')) {
+	//! END_REMOVE()
+		//! IF_DEF("serverSide")
+			module.exports = exports;
+		//! END_IF()
+	//! BEGIN_REMOVE()
 	};
+	//! END_REMOVE()
 	
 	var MODULE_NAME = 'doodad-js-test';
 	
@@ -36,19 +43,18 @@
 		DD_MODULES[MODULE_NAME + '.units'] = {
 			type: 'Package',
 			version: '0b',
-			namespaces: null,
 			dependencies: [
 				{
 					name: 'doodad-js',
-					//! INSERT("version:'" + VERSION('doodad-js') + "',")
+					version: /*! REPLACE_BY(TO_SOURCE(VERSION('doodad-js'))) */ null /*! END_REPLACE() */,
 				}, 
 				{
 					name: 'doodad-js-test',
-					//! INSERT("version:'" + VERSION('doodad-js-test') + "',")
+					version: /*! REPLACE_BY(TO_SOURCE(VERSION('doodad-js-test'))) */ null /*! END_REPLACE() */,
 				}, 
 				//{
 				//	name: 'doodad-js-safeeval',
-				//	//! INSERT("version:'" + VERSION('doodad-js-safeeval') + "',")
+				//	version: /*! REPLACE_BY(TO_SOURCE(VERSION('doodad-js-safeeval'))) */ null /*! END_REPLACE() */,
 				//}, 
 			],
 			
@@ -58,8 +64,8 @@
 				var doodad = root.Doodad,
 					modules = doodad.Modules;
 				
-				//var fromSource = root.getOptions().settings.fromSource;
-				var path = (global.process ? '/src/common/units/' : '/units/');
+				//var fromSource = root.getOptions().fromSource;
+				var path = (doodad.NodeJs ? '/src/common/units/' : '/units/');
 				
 				return modules.load(MODULE_NAME, [
 							path + "Unit_Types.js",
@@ -87,8 +93,23 @@
 		return DD_MODULES;
 	};
 	
-	if (typeof process !== 'object') {
-		// <PRB> export/import are not yet supported in browsers
-		global.DD_MODULES = exports.add(global.DD_MODULES);
+	//! BEGIN_REMOVE()
+	if ((typeof process !== 'object') || (typeof module !== 'object')) {
+	//! END_REMOVE()
+		//! IF_UNDEF("serverSide")
+			// <PRB> export/import are not yet supported in browsers
+			global.DD_MODULES = exports.add(global.DD_MODULES);
+		//! END_IF()
+	//! BEGIN_REMOVE()
 	};
-}).call((typeof global !== 'undefined') ? global : ((typeof window !== 'undefined') ? window : this));
+	//! END_REMOVE()
+}).call(
+	//! BEGIN_REMOVE()
+	(typeof window !== 'undefined') ? window : ((typeof global !== 'undefined') ? global : this)
+	//! END_REMOVE()
+	//! IF_DEF("serverSide")
+	//! 	INJECT("global")
+	//! ELSE()
+	//! 	INJECT("window")
+	//! END_IF()
+);

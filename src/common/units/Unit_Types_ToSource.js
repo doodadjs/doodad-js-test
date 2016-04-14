@@ -1,4 +1,4 @@
-//! REPLACE_BY("// Copyright 2016 Claude Petit, licensed under Apache License version 2.0\n")
+//! REPLACE_BY("// Copyright 2016 Claude Petit, licensed under Apache License version 2.0\n", true)
 // dOOdad - Object-oriented programming framework
 // File: Unit_Types_ToSource.js - Unit testing module file
 // Project home: https://sourceforge.net/projects/doodad-js/
@@ -27,16 +27,22 @@
 	var global = this;
 
 	var exports = {};
-	if (typeof process === 'object') {
-		module.exports = exports;
+	
+	//! BEGIN_REMOVE()
+	if ((typeof process === 'object') && (typeof module === 'object')) {
+	//! END_REMOVE()
+		//! IF_DEF("serverSide")
+			module.exports = exports;
+		//! END_IF()
+	//! BEGIN_REMOVE()
 	};
+	//! END_REMOVE()
 	
 	exports.add = function add(DD_MODULES) {
 		DD_MODULES = (DD_MODULES || {});
 		DD_MODULES['Doodad.Test.Types.ToSource'] = {
 			type: 'TestUnit',
 			version: '0d',
-			namespaces: null,
 			dependencies: ['Doodad.Test.Types'],
 
 			// Unit
@@ -94,9 +100,9 @@
 					command.run("[1]",                                             {}, /**/  [1]);
 					command.run("[1, 2]",                                          {}, /**/  [1, 2]);
 					command.run("[, 2]",                                           {}, /**/  [, 2]); // empty slot
-					command.run("{'a': 1, 'b': (new Object())}",                   {depth: 2}, /**/  {a: 1, b: {c: {d: 4}}});
-					command.run("{'a': 1, 'b': (new Object())}",                   {depth: 2}, /**/  {a: 1, b: {c: {d: 4}}}, 0);
-					command.run("{'a': 1, 'b': {'c': (new Object())}}",            {depth: 2}, /**/  {a: 1, b: {c: {d: 4}}}, 1);
+					command.run("{'a': 1, 'b': {}}",                               {depth: 2}, /**/  {a: 1, b: {c: {d: 4}}});
+					command.run("{'a': 1, 'b': {}}",                               {depth: 2}, /**/  {a: 1, b: {c: {d: 4}}}, 0);
+					command.run("{'a': 1, 'b': {'c': {}}}",                        {depth: 2}, /**/  {a: 1, b: {c: {d: 4}}}, 1);
 					command.run("{'a': 1, 'b': {'c': {'d': 4}}}",                  {depth: 2}, /**/  {a: 1, b: {c: {d: 4}}}, 2);
 					command.run("[1, (new Array(2))]",                             {depth: 2}, /**/  [1, [2, [3]]]);
 					command.run("[1, (new Array(2))]",                             {depth: 2}, /**/  [1, [2, [3]]], 0);
@@ -117,8 +123,23 @@
 		return DD_MODULES;
 	};
 	
-	if (typeof process !== 'object') {
-		// <PRB> export/import are not yet supported in browsers
-		global.DD_MODULES = exports.add(global.DD_MODULES);
+	//! BEGIN_REMOVE()
+	if ((typeof process !== 'object') || (typeof module !== 'object')) {
+	//! END_REMOVE()
+		//! IF_UNDEF("serverSide")
+			// <PRB> export/import are not yet supported in browsers
+			global.DD_MODULES = exports.add(global.DD_MODULES);
+		//! END_IF()
+	//! BEGIN_REMOVE()
 	};
-}).call((typeof global !== 'undefined') ? global : ((typeof window !== 'undefined') ? window : this));
+	//! END_REMOVE()
+}).call(
+	//! BEGIN_REMOVE()
+	(typeof window !== 'undefined') ? window : ((typeof global !== 'undefined') ? global : this)
+	//! END_REMOVE()
+	//! IF_DEF("serverSide")
+	//! 	INJECT("global")
+	//! ELSE()
+	//! 	INJECT("window")
+	//! END_IF()
+);

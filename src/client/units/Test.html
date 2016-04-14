@@ -4,7 +4,7 @@
 		<link rel="stylesheet" href="../../doodad-js-test/units/Test.css" />
 	</head>
 	<body>
-		<script async src="../../doodad-js/index_debug.js"></script>
+		<script async src="../../doodad-js/bundle_debug.js"></script>
 		<script async src="../../doodad-js-unicode/index.js"></script>
 		<script async src="../../doodad-js-locale/index.js"></script>
 		<script async src="../../doodad-js-dates/index.js"></script>
@@ -47,9 +47,7 @@
 					
 					var options = {};
 					options['Doodad.Modules'] = {
-						settings: {
-							modulesUri: '../..',
-						},
+						modulesUri: '../..',
 					};
 
 					var root = global.createRoot(global.DD_MODULES, options),

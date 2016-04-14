@@ -1,4 +1,4 @@
-//! REPLACE_BY("// Copyright 2016 Claude Petit, licensed under Apache License version 2.0\n")
+//! REPLACE_BY("// Copyright 2016 Claude Petit, licensed under Apache License version 2.0\n", true)
 // dOOdad - Object-oriented programming framework
 // File: index.js - Test startup file for NodeJs
 // Project home: https://sourceforge.net/projects/doodad-js/
@@ -28,10 +28,11 @@
 const DD_MODULES = {};
 const loader = require("../../common/widgets/MyWidget_loader.js");
 loader.add(DD_MODULES);
-//require('doodad-js-unicode').add(DD_MODULES);
-//require('doodad-js-locale').add(DD_MODULES);
-//require('doodad-js-safeeval').add(DD_MODULES);
-//require('doodad-js-loader').add(DD_MODULES);
+
+require('doodad-js-unicode').add(DD_MODULES);
+require('doodad-js-locale').add(DD_MODULES);
+require('doodad-js-safeeval').add(DD_MODULES);
+require('doodad-js-loader').add(DD_MODULES);
 
 const DD_SCRIPTS = [];
 loader.addScripts(DD_SCRIPTS);
@@ -44,5 +45,5 @@ function startup() {
 	return doodad.Loader.loadScripts(DD_SCRIPTS);
 };
 
-namespaces.loadNamespaces(DD_MODULES, startup)
+namespaces.load(DD_MODULES, startup)
 	['catch'](function(err){console.log(err.stack)});

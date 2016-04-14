@@ -1,4 +1,3 @@
-//! REPLACE_BY("// Copyright 2016 Claude Petit, licensed under Apache License version 2.0\n")
 // dOOdad - Object-oriented programming framework
 // File: index.js - Will get replaced on build.
 // Project home: https://sourceforge.net/projects/doodad-js/
@@ -21,8 +20,5 @@
 //	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //	See the License for the specific language governing permissions and
 //	limitations under the License.
-//! END_REPLACE()
 
 "use strict";
-
-module.exports = require('./src/common/index.js');

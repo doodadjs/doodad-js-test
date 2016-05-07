@@ -118,111 +118,122 @@ module.exports = function(root, options) {
 				service: server.Ipc.ServiceManager,
 				//verbs: ['POST'],
 			},
-			'/nodejs/static/doodad-js/': {
-				page: nodejs.Server.Http.StaticPage,
-				path: files.Path.parse(require.resolve('doodad-js')).set({file: null}).combine('./dist/doodad-js/', {os: 'linux', dirChar: '/'}),
-				showFolders: true,
-			},
-			'/nodejs/static/doodad-js-dates/': {
-				page: nodejs.Server.Http.StaticPage,
-				path: files.Path.parse(require.resolve('doodad-js-dates')).set({file: null}).combine('./dist/doodad-js-dates/', {os: 'linux', dirChar: '/'}),
-				showFolders: true,
-			},
-			'/nodejs/static/doodad-js-http/': {
-				page: nodejs.Server.Http.StaticPage,
-				path: files.Path.parse(require.resolve('doodad-js-http')).set({file: null}).combine('./dist/doodad-js-http/', {os: 'linux', dirChar: '/'}),
-				showFolders: true,
-			},
-			'/nodejs/static/doodad-js-io/': {
-				page: nodejs.Server.Http.StaticPage,
-				path: files.Path.parse(require.resolve('doodad-js-io')).set({file: null}).combine('./dist/doodad-js-io/', {os: 'linux', dirChar: '/'}),
-				showFolders: true,
-			},
-			'/nodejs/static/doodad-js-locale/': {
-				page: nodejs.Server.Http.StaticPage,
-				path: files.Path.parse(require.resolve('doodad-js-locale')).set({file: null}).combine('./dist/doodad-js-locale/', {os: 'linux', dirChar: '/'}),
-				showFolders: true,
-			},
-			'/nodejs/static/doodad-js-mime/': {
-				page: nodejs.Server.Http.StaticPage,
-				path: files.Path.parse(require.resolve('doodad-js-mime')).set({file: null}).combine('./dist/doodad-js-mime/', {os: 'linux', dirChar: '/'}),
-				showFolders: true,
-			},
-			'/nodejs/static/doodad-js-minifiers/': {
-				page: nodejs.Server.Http.StaticPage,
-				path: files.Path.parse(require.resolve('doodad-js-minifiers')).set({file: null}).combine('./dist/doodad-js-minifiers/', {os: 'linux', dirChar: '/'}),
-				showFolders: true,
-			},
-			'/nodejs/static/doodad-js-templates/': {
-				page: nodejs.Server.Http.StaticPage,
-				path: files.Path.parse(require.resolve('doodad-js-templates')).set({file: null}).combine('./dist/doodad-js-templates/', {os: 'linux', dirChar: '/'}),
-				showFolders: true,
-			},
-			'/nodejs/static/doodad-js-test/': {
-				page: nodejs.Server.Http.StaticPage,
-				path: files.Path.parse(require.resolve('doodad-js-test')).set({file: null}).combine('./dist/doodad-js-test/', {os: 'linux', dirChar: '/'}),
-				showFolders: true,
-			},
-			'/nodejs/static/doodad-js-widgets/': {
-				page: nodejs.Server.Http.StaticPage,
-				path: files.Path.parse(require.resolve('doodad-js-widgets')).set({file: null}).combine('./dist/doodad-js-widgets/', {os: 'linux', dirChar: '/'}),
-				showFolders: true,
-			},
-			'/nodejs/static/doodad-js-xml/': {
-				page: nodejs.Server.Http.StaticPage,
-				path: files.Path.parse(require.resolve('doodad-js-xml')).set({file: null}).combine('./dist/doodad-js-xml/', {os: 'linux', dirChar: '/'}),
-				showFolders: true,
-			},
-			'/nodejs/static/doodad-js-loader/': {
-				page: nodejs.Server.Http.StaticPage,
-				path: files.Path.parse(require.resolve('doodad-js-loader')).set({file: null}).combine('./dist/doodad-js-loader/', {os: 'linux', dirChar: '/'}),
-				showFolders: true,
-			},
-			'/nodejs/static/doodad-js-safeeval/': {
-				page: nodejs.Server.Http.StaticPage,
-				path: files.Path.parse(require.resolve('doodad-js-safeeval')).set({file: null}).combine('./dist/doodad-js-safeeval/', {os: 'linux', dirChar: '/'}),
-				showFolders: true,
-			},
-			'/nodejs/static/doodad-js-unicode/': {
-				page: nodejs.Server.Http.StaticPage,
-				path: files.Path.parse(require.resolve('doodad-js-unicode')).set({file: null}).combine('./dist/doodad-js-unicode/', {os: 'linux', dirChar: '/'}),
-				showFolders: true,
-			},
-			'/nodejs/static/lib/sax/': saxPath && {
-				page: nodejs.Server.Http.JavascriptPage,
-				path: saxPath,
-				mimeTypes: ['application/javascript', 'application/x-javascript'],
-				cachePath: options.jsCachePath,
-			},
-			'/nodejs/static/lib/es6-promise/': promisePath && {
-				page: nodejs.Server.Http.StaticPage,
-				path: promisePath,
-			},
-			'/nodejs/static/doodad-js-test/widgets/': {
-				page: server.Http.RedirectPage,
-				targetUrl: '/nodejs/static/doodad-js-test/widgets/test.html',
-				depth: 0,
-			},
-			'/nodejs/static/doodad-js-test/units/': {
-				page: server.Http.RedirectPage,
-				targetUrl: '/nodejs/static/doodad-js-test/units/Test.html',
-				depth: 0,
-			},
-			'/nodejs/static/doodad-js-test/browserify/': {
-				page: server.Http.RedirectPage,
-				targetUrl: '/nodejs/static/doodad-js-test/browserify/index.html',
-				depth: 0,
-			},
+			'/nodejs/static/': new server.Http.PageFactory({
+				'/doodad-js': {
+					page: nodejs.Server.Http.StaticPage,
+					path: files.Path.parse(require.resolve('doodad-js')).set({file: null}).combine('./dist/doodad-js/', {os: 'linux', dirChar: '/'}),
+					showFolders: true,
+					depth: Infinity,
+				},
+				'/doodad-js-dates': {
+					page: nodejs.Server.Http.StaticPage,
+					path: files.Path.parse(require.resolve('doodad-js-dates')).set({file: null}).combine('./dist/doodad-js-dates/', {os: 'linux', dirChar: '/'}),
+					showFolders: true,
+					depth: Infinity,
+				},
+				'/doodad-js-http': {
+					page: nodejs.Server.Http.StaticPage,
+					path: files.Path.parse(require.resolve('doodad-js-http')).set({file: null}).combine('./dist/doodad-js-http/', {os: 'linux', dirChar: '/'}),
+					showFolders: true,
+					depth: Infinity,
+				},
+				'/doodad-js-io': {
+					page: nodejs.Server.Http.StaticPage,
+					path: files.Path.parse(require.resolve('doodad-js-io')).set({file: null}).combine('./dist/doodad-js-io/', {os: 'linux', dirChar: '/'}),
+					showFolders: true,
+					depth: Infinity,
+				},
+				'/doodad-js-locale': {
+					page: nodejs.Server.Http.StaticPage,
+					path: files.Path.parse(require.resolve('doodad-js-locale')).set({file: null}).combine('./dist/doodad-js-locale/', {os: 'linux', dirChar: '/'}),
+					showFolders: true,
+					depth: Infinity,
+				},
+				'/doodad-js-mime': {
+					page: nodejs.Server.Http.StaticPage,
+					path: files.Path.parse(require.resolve('doodad-js-mime')).set({file: null}).combine('./dist/doodad-js-mime/', {os: 'linux', dirChar: '/'}),
+					showFolders: true,
+					depth: Infinity,
+				},
+				'/doodad-js-minifiers': {
+					page: nodejs.Server.Http.StaticPage,
+					path: files.Path.parse(require.resolve('doodad-js-minifiers')).set({file: null}).combine('./dist/doodad-js-minifiers/', {os: 'linux', dirChar: '/'}),
+					showFolders: true,
+					depth: Infinity,
+				},
+				'/doodad-js-templates': {
+					page: nodejs.Server.Http.StaticPage,
+					path: files.Path.parse(require.resolve('doodad-js-templates')).set({file: null}).combine('./dist/doodad-js-templates/', {os: 'linux', dirChar: '/'}),
+					showFolders: true,
+					depth: Infinity,
+				},
+				'/doodad-js-test': {
+					page: nodejs.Server.Http.StaticPage,
+					path: files.Path.parse(require.resolve('doodad-js-test')).set({file: null}).combine('./dist/doodad-js-test/', {os: 'linux', dirChar: '/'}),
+					showFolders: true,
+					depth: Infinity,
+				},
+				'/doodad-js-widgets': {
+					page: nodejs.Server.Http.StaticPage,
+					path: files.Path.parse(require.resolve('doodad-js-widgets')).set({file: null}).combine('./dist/doodad-js-widgets/', {os: 'linux', dirChar: '/'}),
+					showFolders: true,
+					depth: Infinity,
+				},
+				'/doodad-js-xml': {
+					page: nodejs.Server.Http.StaticPage,
+					path: files.Path.parse(require.resolve('doodad-js-xml')).set({file: null}).combine('./dist/doodad-js-xml/', {os: 'linux', dirChar: '/'}),
+					showFolders: true,
+					depth: Infinity,
+				},
+				'/doodad-js-loader': {
+					page: nodejs.Server.Http.StaticPage,
+					path: files.Path.parse(require.resolve('doodad-js-loader')).set({file: null}).combine('./dist/doodad-js-loader/', {os: 'linux', dirChar: '/'}),
+					showFolders: true,
+					depth: Infinity,
+				},
+				'/doodad-js-safeeval': {
+					page: nodejs.Server.Http.StaticPage,
+					path: files.Path.parse(require.resolve('doodad-js-safeeval')).set({file: null}).combine('./dist/doodad-js-safeeval/', {os: 'linux', dirChar: '/'}),
+					showFolders: true,
+					depth: Infinity,
+				},
+				'/doodad-js-unicode': {
+					page: nodejs.Server.Http.StaticPage,
+					path: files.Path.parse(require.resolve('doodad-js-unicode')).set({file: null}).combine('./dist/doodad-js-unicode/', {os: 'linux', dirChar: '/'}),
+					showFolders: true,
+					depth: Infinity,
+				},
+				'/lib/sax': saxPath && {
+					page: nodejs.Server.Http.JavascriptPage,
+					path: saxPath,
+					mimeTypes: ['application/javascript', 'application/x-javascript'],
+					cachePath: options.jsCachePath,
+					depth: Infinity,
+				},
+				'/lib/es6-promise': promisePath && {
+					page: nodejs.Server.Http.StaticPage,
+					path: promisePath,
+					depth: Infinity,
+				},
+				'/doodad-js-test/widgets/': {
+					page: server.Http.RedirectPage,
+					targetUrl: '/nodejs/static/doodad-js-test/widgets/test.html',
+				},
+				'/doodad-js-test/units/': {
+					page: server.Http.RedirectPage,
+					targetUrl: '/nodejs/static/doodad-js-test/units/Test.html',
+				},
+				'/doodad-js-test/browserify/': {
+					page: server.Http.RedirectPage,
+					targetUrl: '/nodejs/static/doodad-js-test/browserify/index.html',
+				},
+			}),
 			
 			//  Test infinite redirects
 			//'/favicon.ico': {
 			//	page: server.Http.RedirectPage,
 			//	targetUrl: '/favicon.ico',
 			//},
-			'/favicon.ico': {
-				page: server.Http.StatusPage,
-				status: types.HttpStatus.NotFound,
-			},
 		});
 
 		function onerror(ev) {

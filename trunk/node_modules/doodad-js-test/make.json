@@ -27,14 +27,12 @@
 	"dependencies": [
 		{
 			"name": "doodad-js",
-			"optional": false,
 			"client": true,
 			"server": true,
 			"browserify": true
 		},
 		{
 			"name": "doodad-js-io",
-			"optional": false,
 			"client": true,
 			"server": true,
 			"browserify": true
@@ -42,84 +40,72 @@
 		
 		{
 			"name": "doodad-js-cluster",
-			"optional": false,
 			"client": false,
 			"server": false,
 			"browserify": false
 		},
 		{
 			"name": "doodad-js-dates",
-			"optional": false,
 			"client": false,
 			"server": false,
 			"browserify": false
 		},
 		{
 			"name": "doodad-js-http",
-			"optional": false,
 			"client": false,
 			"server": false,
 			"browserify": false
 		},
 		{
 			"name": "doodad-js-http_jsonrpc",
-			"optional": false,
 			"client": false,
 			"server": false,
 			"browserify": false
 		},
 		{
 			"name": "doodad-js-locale",
-			"optional": false,
 			"client": false,
 			"server": false,
 			"browserify": false
 		},
 		{
 			"name": "doodad-js-loader",
-			"optional": false,
 			"client": false,
 			"server": false,
 			"browserify": false
 		},
 		{
 			"name": "doodad-js-mime",
-			"optional": false,
 			"client": false,
 			"server": false,
 			"browserify": false
 		},
 		{
 			"name": "doodad-js-minifiers",
-			"optional": false,
 			"client": false,
 			"server": false,
 			"browserify": false
 		},
 		{
 			"name": "doodad-js-templates",
-			"optional": false,
 			"client": false,
 			"server": false,
 			"browserify": false
 		},
 		{
 			"name": "doodad-js-terminal",
-			"optional": false,
 			"client": false,
 			"server": false,
 			"browserify": false
 		},
 		{
 			"name": "doodad-js-widgets",
-			"optional": false,
 			"client": false,
 			"server": false,
 			"browserify": false
 		},
 		{
 			"name": "doodad-js-xml",
-			"optional": false,
 			"client": false,
 			"server": false,
 			"browserify": false
@@ -156,196 +142,6 @@
 					"class": "Make.Generate.Package"
 				},
 				
-				{
-					"class": "Make.Folder.Create",
-					"destination": "%INSTALLDIR%/%PACKAGENAME%/units"
-				},
-				{
-					"class": "Make.Folder.Create",
-					"destination": "%INSTALLDIR%/%PACKAGENAME%/units"
-				},
-				{
-					"class": "Make.File.Copy",
-					"source": "%SOURCEDIR%/common/units/Unit_Tools.js",
-					"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools.js"
-				},
-				{
-					"class": "Make.File.Javascript",
-					"source": "%SOURCEDIR%/common/units/Unit_Tools.js",
-					"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools.min.js",
-					"runDirectives": true
-				},
-				{
-					"class": "Make.File.Copy",
-					"source": "%SOURCEDIR%/common/units/Unit_Tools_Files.js",
-					"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools_Files.js"
-				},
-				{
-					"class": "Make.File.Javascript",
-					"source": "%SOURCEDIR%/common/units/Unit_Tools_Files.js",
-					"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools_Files.min.js",
-					"runDirectives": true
-				},
-				{
-					"class": "Make.File.Copy",
-					"source": "%SOURCEDIR%/common/units/Unit_Tools_Array.js",
-					"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools_Array.js"
-				},
-				{
-					"class": "Make.File.Javascript",
-					"source": "%SOURCEDIR%/common/units/Unit_Tools_Array.js",
-					"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools_Array.min.js",
-					"runDirectives": true
-				},
-				{
-					"class": "Make.File.Copy",
-					"source": "%SOURCEDIR%/common/units/Unit_Tools_Dictionary.js",
-					"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools_Dictionary.js"
-				},
-				{
-					"class": "Make.File.Javascript",
-					"source": "%SOURCEDIR%/common/units/Unit_Tools_Dictionary.js",
-					"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools_Dictionary.min.js",
-					"runDirectives": true
-				},
-				{
-					"class": "Make.File.Copy",
-					"source": "%SOURCEDIR%/common/units/Unit_Tools_Misc.js",
-					"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools_Misc.js"
-				},
-				{
-					"class": "Make.File.Javascript",
-					"source": "%SOURCEDIR%/common/units/Unit_Tools_Misc.js",
-					"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools_Misc.min.js",
-					"runDirectives": true
-				},
-				{
-					"class": "Make.File.Copy",
-					"source": "%SOURCEDIR%/common/units/Unit_Tools_Files_Path.js",
-					"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools_Files_Path.js"
-				},
-				{
-					"class": "Make.File.Javascript",
-					"source": "%SOURCEDIR%/common/units/Unit_Tools_Files_Path.js",
-					"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools_Files_Path.min.js",
-					"runDirectives": true
-				},
-				{
-					"class": "Make.File.Copy",
-					"source": "%SOURCEDIR%/common/units/Unit_Tools_SafeEval.js",
-					"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools_SafeEval.js"
-				},
-				{
-					"class": "Make.File.Javascript",
-					"source": "%SOURCEDIR%/common/units/Unit_Tools_SafeEval.js",
-					"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools_SafeEval.min.js",
-					"runDirectives": true
-				},
-				{
-					"class": "Make.File.Copy",
-					"source": "%SOURCEDIR%/common/units/Unit_Tools_String.js",
-					"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools_String.js"
-				},
-				{
-					"class": "Make.File.Javascript",
-					"source": "%SOURCEDIR%/common/units/Unit_Tools_String.js",
-					"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools_String.min.js",
-					"runDirectives": true
-				},
-				{
-					"class": "Make.File.Copy",
-					"source": "%SOURCEDIR%/common/units/Unit_Tools_Files_Urls.js",
-					"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools_Files_Urls.js"
-				},
-				{
-					"class": "Make.File.Javascript",
-					"source": "%SOURCEDIR%/common/units/Unit_Tools_Files_Urls.js",
-					"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Tools_Files_Urls.min.js",
-					"runDirectives": true
-				},
-				{
-					"class": "Make.File.Copy",
-					"source": "%SOURCEDIR%/common/units/Unit_Types.js",
-					"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Types.js"
-				},
-				{
-					"class": "Make.File.Javascript",
-					"source": "%SOURCEDIR%/common/units/Unit_Types.js",
-					"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Types.min.js",
-					"runDirectives": true
-				},
-				{
-					"class": "Make.File.Copy",
-					"source": "%SOURCEDIR%/common/units/Unit_Types_Array.js",
-					"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Types_Array.js"
-				},
-				{
-					"class": "Make.File.Javascript",
-					"source": "%SOURCEDIR%/common/units/Unit_Types_Array.js",
-					"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Types_Array.min.js",
-					"runDirectives": true
-				},
-				{
-					"class": "Make.File.Copy",
-					"source": "%SOURCEDIR%/common/units/Unit_Types_Conversion.js",
-					"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Types_Conversion.js"
-				},
-				{
-					"class": "Make.File.Javascript",
-					"source": "%SOURCEDIR%/common/units/Unit_Types_Conversion.js",
-					"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Types_Conversion.min.js",
-					"runDirectives": true
-				},
-				{
-					"class": "Make.File.Copy",
-					"source": "%SOURCEDIR%/common/units/Unit_Types_Dictionary.js",
-					"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Types_Dictionary.js"
-				},
-				{
-					"class": "Make.File.Javascript",
-					"source": "%SOURCEDIR%/common/units/Unit_Types_Dictionary.js",
-					"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Types_Dictionary.min.js",
-					"runDirectives": true
-				},
-				{
-					"class": "Make.File.Copy",
-					"source": "%SOURCEDIR%/common/units/Unit_Types_Is.js",
-					"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Types_Is.js"
-				},
-				{
-					"class": "Make.File.Javascript",
-					"source": "%SOURCEDIR%/common/units/Unit_Types_Is.js",
-					"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Types_Is.min.js",
-					"runDirectives": true
-				},
-				{
-					"class": "Make.File.Copy",
-					"source": "%SOURCEDIR%/common/units/Unit_Types_ToSource.js",
-					"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Types_ToSource.js"
-				},
-				{
-					"class": "Make.File.Javascript",
-					"source": "%SOURCEDIR%/common/units/Unit_Types_ToSource.js",
-					"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Types_ToSource.min.js",
-					"runDirectives": true
-				},
-				{
-					"class": "Make.File.Copy",
-					"source": "%SOURCEDIR%/common/units/Unit_Types_Type.js",
-					"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Types_Type.js"
-				},
-				{
-					"class": "Make.File.Javascript",
-					"source": "%SOURCEDIR%/common/units/Unit_Types_Type.js",
-					"destination": "%INSTALLDIR%/%PACKAGENAME%/units/Unit_Types_Type.min.js",
-					"runDirectives": true
-				},
-				{
-					"class": "Make.File.Javascript",
-					"source": "%SOURCEDIR%/common/units/index.js",
-					"destination": "%INSTALLDIR%/%PACKAGENAME%/units/index.js",
-					"runDirectives": true
-				},
 				{
 					"class": "Make.File.Copy",
 					"source": "%SOURCEDIR%/client/units/Test.css",

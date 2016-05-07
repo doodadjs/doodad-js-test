@@ -5,13 +5,14 @@
 	</head>
 	<body>
 		<script async src="../../doodad-js/bundle_debug.js"></script>
+		<script async src="../../doodad-js/tests.js"></script>
 		<script async src="../../doodad-js-unicode/index.js"></script>
 		<script async src="../../doodad-js-locale/index.js"></script>
 		<script async src="../../doodad-js-dates/index.js"></script>
 		<script async src="../../doodad-js-io/index.js"></script>
-		<!--<script async src="../../doodad-js-safeeval/index.js"></script>-->
+		<script async src="../../doodad-js-safeeval/index.js"></script>
+		<script async src="../../doodad-js-safeeval/tests.js"></script>
 		<script async src="../../doodad-js-test/index.js"></script>
-		<script async src="../../doodad-js-test/units/index.js"></script>
 		<script async src="../../lib/sax/sax.js"></script>
 		
 		<!--IE8 <script>
@@ -37,6 +38,7 @@
 					function startup() {
 						var test = root.Doodad.Test,
 							clientIO = root.Doodad.Client.IO;
+
 						test.setOutput(new clientIO.DomOutputStream({autoFlush: true}));
 						test.run();
 						

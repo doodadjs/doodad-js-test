@@ -49,6 +49,9 @@ function startup() {
 	};
 };
 
+const options = {
+};
+
 const DD_MODULES = {};
 
 require('doodad-js-unicode').add(DD_MODULES);
@@ -64,7 +67,7 @@ root = require('doodad-js').createRoot(DD_MODULES);
 
 namespaces = root.Doodad.Namespaces;
 
-return namespaces.load(DD_MODULES, startup)
+return namespaces.load(DD_MODULES, startup, options)
 		['catch'](function (err) {
 			console.error(err.stack);
 			process.exit(1);

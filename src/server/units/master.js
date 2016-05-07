@@ -150,9 +150,10 @@ module.exports = function(root, options) {
 
 	const DD_MODULES = {};
 	
+	require('doodad-js/tests.js').add(DD_MODULES);
+	require('doodad-js-safeeval/tests.js').add(DD_MODULES);
 	require('doodad-js-terminal').add(DD_MODULES);
 	require('doodad-js-test').add(DD_MODULES);
-	require('doodad-js-test/src/common/units/index.js').add(DD_MODULES);
 
 	namespaces.load(DD_MODULES, startup)
 		['catch'](function(err) {

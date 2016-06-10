@@ -74,8 +74,24 @@ return namespaces.load(DD_MODULES, startup, options)
 		});
 
 
+/* Cross-Origin (simple request) : Should return an index file with appropriated headers
+GET /nodejs/static/doodad-js-test/ HTTP/1.0
+Content-Type: text/html
+User-Agent: HTTPTool/1.0
+Origin: www.test.local
+Host: www.doodad-js.local
 
+*/
 
+/* Cross-Origin (full request) : Should return appropriated headers, without content
+OPTIONS /nodejs/static/doodad-js-test/ HTTP/1.0
+Content-Type: text/html
+User-Agent: HTTPTool/1.0
+Origin: www.test.local
+Access-Control-Request-Method: GET
+Host: www.doodad-js.local
+
+*/
 
 // RPC GET : /rpc?method=%22callService%22&params=[%22MyService%22,%22hello%22]
 

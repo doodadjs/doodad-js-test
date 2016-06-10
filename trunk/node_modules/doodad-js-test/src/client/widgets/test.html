@@ -42,7 +42,7 @@
 						return doodad.Loader.loadScripts(window.DD_SCRIPTS);
 					};
 						
-					namespaces.loadNamespaces(window.DD_MODULES, startup, options, false)
+					namespaces.load(window.DD_MODULES, startup, options, false)
 						['catch'](function(err) {
 							console.error(err);
 						});

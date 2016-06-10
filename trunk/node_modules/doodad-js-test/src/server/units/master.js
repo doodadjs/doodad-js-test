@@ -122,8 +122,7 @@ module.exports = function(root, options) {
 								});
 							});
 						} else {
-							// TODO: "types.NotAvailable" error
-							throw new types.Error("Command not available.");
+							throw new types.NotAvailable("Command not available.");
 						};
 					},
 				},

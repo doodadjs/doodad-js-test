@@ -61,12 +61,16 @@
 					nodejs = doodad.NodeJs,
 					test = doodad.Test;
 					
+				var __Natives__ = {
+					windowParseInt: global.parseInt,
+					windowIsNaN: global.isNaN,
+				};
+					
 				var __Internal__ = {
 					stdout: null,
 				};
 				
-				// TODO: Remove "TestUnit" because it has been renamed to "TestModule", and kept for compatibility.
-				entries.TestUnit = entries.TestModule = entries.Module.$inherit(
+				entries.TestModule = entries.Module.$inherit(
 					/*typeProto*/
 					{
 						$TYPE_NAME: 'TestModuleEntry'
@@ -98,7 +102,7 @@
 					if (!units) {
 						units = namespace.CHILDREN = [];
 						for (var name in namespace) {
-							if (types.hasKey(namespace, name)) {
+							if (types.has(namespace, name)) {
 								var nso = namespace[name];
 								if ((nso instanceof root.Namespace) && (nso.DD_PARENT === namespace)) {
 									var entry = namespaces.getEntry(nso.DD_FULL_NAME);
@@ -148,6 +152,7 @@
 						resultValue = result.valueOf(),
 						depth = types.get(options, 'depth', 0),
 						mode = types.get(options, 'mode', null),
+						inherited = types.get(options, 'inherited', false),
 						success = true;
 					if (mode === 'is') {
 						success = types.is(result, [expected]);
@@ -177,18 +182,38 @@
 						var resultCount = 0;
 						success = success && !!resultValue;
 						if (success) {
-							for (var key in expectedValue) {
-								if (Object.prototype.hasOwnProperty.call(expectedValue, key)) {
-									if (!Object.prototype.hasOwnProperty.call(resultValue, key)) {
-										success = false;
-										break;
+							var keys;
+							if (global.Object.keys) {
+								keys = global.Object.keys(expectedValue);
+							} else {
+								keys = [];
+								for (var key in expectedValue) {
+									if (global.Object.prototype.hasOwnProperty.call(expectedValue, key)) {
+										keys.push(key);
 									};
-									if (!test.compare(expectedValue[key], resultValue[key], {depth: depth})) {
-										success = false;
-										break;
-									};
-									expectedCount++;
 								};
+							};
+							if (global.Object.getOwnPropertySymbols) {
+								keys.push.apply(keys, global.Object.getOwnPropertySymbols(expectedValue));
+							};
+							for (var i = 0; i < keys.length; i++) {
+								var key = keys[i];
+								if (inherited) {
+									if (!(key in resultValue)) {
+										success = false;
+										break;
+									};
+								} else {
+									if (!global.Object.prototype.hasOwnProperty.call(resultValue, key)) {
+										success = false;
+										break;
+									};
+								};
+								if (!test.compare(expectedValue[key], resultValue[key], {depth: depth})) {
+									success = false;
+									break;
+								};
+								expectedCount++;
 							};
 						};
 					} else if ((depth >= 0) && (mode === 'array') && types.get(options, 'contains', false)) {
@@ -285,6 +310,7 @@
 							if (!options) {
 								options = {};
 							};
+							var sourceOpts = {};
 							var mode = types.get(options, 'mode', null),
 								isEval = types.get(options, 'eval', false),
 								expectedStr = "Expected: " + 
@@ -300,7 +326,7 @@
 											('Is ' + (isEval && types.isString(expected) ? expected : (types.isFunction(expected) ? types.getFunctionName(expected) : types.getFunctionName(expected.constructor))))
 										: 
 											((mode === 'compare') ? 'Equals ' : '') + 
-											(isEval && types.isString(expected) ? expected : types.toSource(expected, types.get(options, 'depth', 0)))
+											(isEval && types.isString(expected) ? expected : types.toSource(expected, types.get(options, 'depth', 0), sourceOpts))
 									),
 								expectedCls = 'expected',
 								params = Array.prototype.slice.call(arguments, 2);
@@ -339,7 +365,8 @@
 												if (isEval && types.isString(val)) {
 													return val;
 												} else {
-													return types.toSource(val, types.get(options, 'depth', 0));
+													var sourceOpts = {};
+													return types.toSource(val, types.get(options, 'depth', 0), sourceOpts);
 												};
 											}).join(', ') + 
 										");");
@@ -411,7 +438,7 @@
 										};
 										time += console.timeEnd("Time");
 									};
-									if (isNaN(time)) {
+									if (__Natives__.windowIsNaN(time)) {
 										time = null;
 									};
 								} else {
@@ -425,12 +452,16 @@
 									resultStr += result.toString();
 									resultCls += ' error';
 								} else {
+									var sourceOpts = {};
+									if (types.get(options, 'inherited', false)) {
+										sourceOpts.inherited = true;
+									};
 									resultStr += 
 											((mode === 'isinstance') ? 
 												'Instance Of ' + (types.isFunction(result) ? result.name : (types.isObjectLike(result) ? result.constructor.name : '????')) + 
-												' (' + types.toSource(result, types.get(options, 'depth', 0)) + ')'
+												' (' + types.toSource(result, types.get(options, 'depth', 0), sourceOpts) + ')'
 											: 
-												types.toSource(result, types.get(options, 'depth', 0))
+												types.toSource(result, types.get(options, 'depth', 0), sourceOpts)
 											); 
 									result = types.toObject(result);
 								};
@@ -557,7 +588,7 @@
 							};
 						};
 					} catch(ex) {
-						if (!(ex instanceof types.ScriptAbortedError)) {
+						if (!(ex instanceof types.ScriptInterruptedError)) {
 							io.stderr.write(ex);
 							io.stderr.flush();
 						};
@@ -600,7 +631,7 @@
 								if (this.currentRun) {
 									this.currentRun.setAttribute('selected', 'false');
 								};
-								if (!isNaN(this.currentFailed)) {
+								if (!__Natives__.windowIsNaN(this.currentFailed)) {
 									var runElement = this.failedRuns[this.currentFailed];
 									if (runElement) {
 										this.currentRun = runElement;
@@ -618,11 +649,11 @@
 							click: types.bind(state, function(ev) { // JS click
 								try {
 									if (ev instanceof global.Event) {
-										this.currentFailed = parseInt(ev.currentTarget.getAttribute('failedIndex'));
+										this.currentFailed = __Natives__.windowParseInt(ev.currentTarget.getAttribute('failedIndex'));
 										this.move();
 									};
 								} catch(ex) {
-									if (!(ex instanceof types.ScriptAbortedError)) {
+									if (!(ex instanceof types.ScriptInterruptedError)) {
 										io.stderr.write(ex);
 										io.stderr.flush();
 									};
@@ -630,24 +661,24 @@
 							}),
 							prev: types.bind(state, function(ev) { // JS click
 								try {
-									if (isNaN(this.currentFailed)) {
+									if (__Natives__.windowIsNaN(this.currentFailed)) {
 										var index;
 										if (this.currentRun) {
-											index = parseInt(this.currentRun.getAttribute('index'));
+											index = __Natives__.windowParseInt(this.currentRun.getAttribute('index'));
 										} else {
 											index = 0;
 										};
 										var run = this.runElements[index];
 										while (run) {
-											this.currentFailed = parseInt(this.currentRun.getAttribute('failedIndex'));
-											if (!isNaN(this.currentFailed)) {
+											this.currentFailed = __Natives__.windowParseInt(this.currentRun.getAttribute('failedIndex'));
+											if (!__Natives__.windowIsNaN(this.currentFailed)) {
 												break;
 											};
 											index++;
 											run = this.runElements[index];
 										};
 									};
-									if (!isNaN(this.currentFailed)) {
+									if (!__Natives__.windowIsNaN(this.currentFailed)) {
 										this.currentFailed--;
 										if (this.currentFailed < 0) {
 											this.currentFailed = this.failedRuns.length - 1;
@@ -657,7 +688,7 @@
 									ev.preventDefault();
 									return false;
 								} catch(ex) {
-									if (!(ex instanceof types.ScriptAbortedError)) {
+									if (!(ex instanceof types.ScriptInterruptedError)) {
 										io.stderr.write(ex);
 										io.stderr.flush();
 									};
@@ -665,24 +696,24 @@
 							}),
 							next: types.bind(state, function(ev) { // JS click
 								try {
-									if (isNaN(this.currentFailed)) {
+									if (__Natives__.windowIsNaN(this.currentFailed)) {
 										var index;
 										if (this.currentRun) {
-											index = parseInt(this.currentRun.getAttribute('index'));
+											index = __Natives__.windowParseInt(this.currentRun.getAttribute('index'));
 										} else {
 											index = this.runElements.length - 1;
 										};
 										var run = this.runElements[index];
 										while (this.currentRun) {
-											this.currentFailed = parseInt(this.currentRun.getAttribute('failedIndex'));
-											if (!isNaN(this.currentFailed)) {
+											this.currentFailed = __Natives__.windowParseInt(this.currentRun.getAttribute('failedIndex'));
+											if (!__Natives__.windowIsNaN(this.currentFailed)) {
 												break;
 											};
 											index--;
 											run = this.runElements[index];
 										};
 									};
-									if (!isNaN(this.currentFailed)) {
+									if (!__Natives__.windowIsNaN(this.currentFailed)) {
 										this.currentFailed++;
 										if (this.currentFailed >= this.failedRuns.length) {
 											this.currentFailed = 0;
@@ -692,7 +723,7 @@
 									ev.preventDefault();
 									return false;
 								} catch(ex) {
-									if (!(ex instanceof types.ScriptAbortedError)) {
+									if (!(ex instanceof types.ScriptInterruptedError)) {
 										io.stderr.write(ex);
 										io.stderr.flush();
 									};
@@ -703,7 +734,7 @@
 									this.currentFailed = 0;
 									this.move(true);
 								} catch(ex) {
-									if (!(ex instanceof types.ScriptAbortedError)) {
+									if (!(ex instanceof types.ScriptInterruptedError)) {
 										io.stderr.write(ex);
 										io.stderr.flush();
 									};
@@ -714,7 +745,7 @@
 									this.currentFailed = this.failedRuns.length - 1;;
 									this.move(true);
 								} catch(ex) {
-									if (!(ex instanceof types.ScriptAbortedError)) {
+									if (!(ex instanceof types.ScriptInterruptedError)) {
 										io.stderr.write(ex);
 										io.stderr.flush();
 									};
@@ -794,7 +825,7 @@
 							};
 						};
 					} catch(ex) {
-						if (!(ex instanceof types.ScriptAbortedError)) {
+						if (!(ex instanceof types.ScriptInterruptedError)) {
 							io.stderr.write(ex);
 							io.stderr.flush();
 						};
@@ -824,7 +855,7 @@
 									ev.preventDefault();
 									return false;
 								} catch(ex) {
-									if (!(ex instanceof types.ScriptAbortedError)) {
+									if (!(ex instanceof types.ScriptInterruptedError)) {
 										io.stderr.write(ex);
 										io.stderr.flush();
 									};
@@ -846,7 +877,7 @@
 									ev.preventDefault();
 									return false;
 								} catch(ex) {
-									if (!(ex instanceof types.ScriptAbortedError)) {
+									if (!(ex instanceof types.ScriptInterruptedError)) {
 										io.stderr.write(ex);
 										io.stderr.flush();
 									};
@@ -868,7 +899,7 @@
 									ev.preventDefault();
 									return false;
 								} catch(ex) {
-									if (!(ex instanceof types.ScriptAbortedError)) {
+									if (!(ex instanceof types.ScriptInterruptedError)) {
 										io.stderr.write(ex);
 										io.stderr.flush();
 									};
@@ -919,7 +950,7 @@
 								unit = test.getUnit(name);
 							test.moveToUnit(unit);
 						} catch(ex) {
-							if (!(ex instanceof types.ScriptAbortedError)) {
+							if (!(ex instanceof types.ScriptInterruptedError)) {
 								io.stderr.write(ex);
 								io.stderr.flush();
 							};
@@ -980,7 +1011,7 @@
 								test.runUnit(unit);
 								ok = true;
 							} catch(ex) {
-								if (!(ex instanceof types.ScriptAbortedError)) {
+								if (!(ex instanceof types.ScriptInterruptedError)) {
 									io.stderr.write(ex);
 									io.stderr.flush();
 								};

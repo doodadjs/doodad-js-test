@@ -55,7 +55,7 @@
 					var root = global.createRoot(global.DD_MODULES, options),
 						namespaces = root.Doodad.Namespaces;
 					
-					namespaces.loadNamespaces(global.DD_MODULES, startup, options, false)
+					namespaces.load(global.DD_MODULES, startup, options, false)
 						['catch'](function(err) {
 							alert(err);
 						});

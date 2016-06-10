@@ -251,9 +251,7 @@ module.exports = function(root, options) {
 				status = request.responseStatus;
 			if (status >= 300) {
 				const stream = request.getResponseStream();
-				if (stream) {
-					stream.write(String(status));
-				};
+				stream.write(String(status));
 			};
 		};
 

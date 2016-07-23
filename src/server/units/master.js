@@ -29,7 +29,7 @@ const MAX_CPUS = 4,
 	cluster = require('cluster'),
 	util = require('util');
 
-module.exports = function(root, options) {
+module.exports = function(root, options, _shared) {
 	const doodad = root.Doodad,
 		namespaces = doodad.Namespaces,
 		types = doodad.Types,
@@ -65,7 +65,7 @@ module.exports = function(root, options) {
 		
 		const success = test.run();
 		if (!success) {
-			process.exit(1);
+			tools.abortScript(1);
 		};
 		
 		if (process.stdout.isTTY && process.stdin.setRawMode) {
@@ -78,12 +78,18 @@ module.exports = function(root, options) {
 				infoColor: 'Green',
 				warnColor: 'Yellow',
 				errorColor: 'Red',
+				locals: {
+					root: root,
+					doodad: doodad,
+					types: types,
+					tools: tools,
+				},
 				commands: {
 					stats: function() {
 						if (cpus > 1) {
 							const output = {};
 							let count = types.keys(cluster.workers).length;
-							return new Promise(function(resolve, reject) {
+							return Promise.create(function statsPromise(resolve, reject) {
 								const timeId = setTimeout(function() {
 									reject(output);
 								}, 1000 * 60 * 2);
@@ -106,7 +112,7 @@ module.exports = function(root, options) {
 						if (cpus > 1) {
 							const output = {};
 							let count = types.keys(cluster.workers).length;
-							return new Promise(function(resolve, reject) {
+							return Promise.create(function pingPromise(resolve, reject) {
 								const timeId = setTimeout(function() {
 									reject(output);
 								}, 1000 * 60 * 2);
@@ -125,6 +131,8 @@ module.exports = function(root, options) {
 							throw new types.NotAvailable("Command not available.");
 						};
 					},
+					//getAttribute: _shared.getAttribute,
+					//setAttribute: _shared.setAttribute,
 				},
 			});
 			term.listen();
@@ -154,9 +162,5 @@ module.exports = function(root, options) {
 	require('doodad-js-terminal').add(DD_MODULES);
 	require('doodad-js-test').add(DD_MODULES);
 
-	namespaces.load(DD_MODULES, startup)
-		['catch'](function(err) {
-			console.error(err.stack);
-			process.exit(1);
-		});
+	return namespaces.load(DD_MODULES, startup);
 };

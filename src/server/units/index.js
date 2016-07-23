@@ -27,10 +27,7 @@
 
 const cluster = require('cluster');
 
-let root,
-	namespaces;
-	
-function startup() {
+function startup(root, _shared) {
 	const doodad = root.Doodad,
 		tools = doodad.Tools,
 		files = tools.Files;
@@ -43,9 +40,9 @@ function startup() {
 	};
 	
 	if (cluster.isMaster) {
-		require('./master.js')(root, options);
+		return require('./master.js')(root, options, _shared);
 	} else {
-		require('./worker.js')(root, options);
+		return require('./worker.js')(root, options, _shared);
 	};
 };
 
@@ -63,14 +60,14 @@ require('doodad-js-ipc').add(DD_MODULES);
 require('doodad-js-cluster').add(DD_MODULES);
 require('doodad-js-safeeval').add(DD_MODULES);
 
-root = require('doodad-js').createRoot(DD_MODULES);
+const root = require('doodad-js').createRoot(DD_MODULES);
 
-namespaces = root.Doodad.Namespaces;
-
-return namespaces.load(DD_MODULES, startup, options)
-		['catch'](function (err) {
-			console.error(err.stack);
-			process.exit(1);
+return root.Doodad.Namespaces.load(DD_MODULES, startup, options)
+		['catch'](function(err) {
+			err && !err.trapped && console.error(err.stack);
+			if (!process.exitCode) {
+				process.exitCode = 1;
+			};
 		});
 
 

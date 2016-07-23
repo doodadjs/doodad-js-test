@@ -33,7 +33,7 @@ Then start 'doodad-js-test' server :
     node .
 ```
 
-On the command prompt (">>>"), you can try :
+At the command prompt (">>>"), you can try :
 ```
     help
 ```

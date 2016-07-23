@@ -133,6 +133,10 @@
 				{
 					"class": "Make.Task",
 					"name": "browserify"
+				},
+				{
+					"class": "Make.Task",
+					"name": "webpack"
 				}
 			]
 		},
@@ -204,10 +208,32 @@
 					"source": "%SOURCEDIR%/browserify/main.js",
 					"destination": "%INSTALLDIR%/%PACKAGENAME%/browserify/bundle.js",
 					"minify": false
+				},
+				
+				{
+					"class": "Make.Folder.Create",
+					"destination": "%INSTALLDIR%/%PACKAGENAME%/webpack"
+				},
+				{
+					"class": "Make.File.Copy",
+					"source": "%SOURCEDIR%/webpack/index.html",
+					"destination": "%INSTALLDIR%/%PACKAGENAME%/webpack/index.html"
+				},
+				{
+					"class": "Make.Webpack.Bundle",
+					"source": "%SOURCEDIR%/webpack/main.js",
+					"destination": "%INSTALLDIR%/%PACKAGENAME%/webpack/bundle.js"
 				}
 			]
 		},
 		"browserify": {
+			"operations": [
+				{
+					"class": "Make.Generate.Package"
+				}
+			]
+		},
+		"webpack": {
 			"operations": [
 				{
 					"class": "Make.Generate.Package"

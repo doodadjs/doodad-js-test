@@ -1,6 +1,5 @@
-//! REPLACE_BY("// Copyright 2016 Claude Petit, licensed under Apache License version 2.0\n", true)
 // dOOdad - Object-oriented programming framework
-// File: index.js - Test startup file for NodeJs
+// File: main.js - Module startup file for 'browserify'.
 // Project home: https://sourceforge.net/projects/doodad-js/
 // Trunk: svn checkout svn://svn.code.sf.net/p/doodad-js/code/trunk doodad-js-code
 // Author: Claude Petit, Quebec city
@@ -21,34 +20,26 @@
 //	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //	See the License for the specific language governing permissions and
 //	limitations under the License.
-//! END_REPLACE()
 
-"use strict";
-
-const DD_MODULES = {};
-const loader = require("../../common/widgets/MyWidget_loader.js");
-loader.add(DD_MODULES);
-
-require('doodad-js-unicode').add(DD_MODULES);
-require('doodad-js-locale').add(DD_MODULES);
-require('doodad-js-safeeval').add(DD_MODULES);
-require('doodad-js-loader').add(DD_MODULES);
-
-const DD_SCRIPTS = [];
-loader.addScripts(DD_SCRIPTS);
-
-const root = require('doodad-js').createRoot(DD_MODULES),
-	doodad = root.Doodad,
-	namespaces = doodad.Namespaces;
-
-function startup() {
-	return doodad.Loader.loadScripts(DD_SCRIPTS);
+window.onload = function() {
+	var options = {};
+	options['Doodad.Modules'] = {
+		modulesUri: '../..',
+	};
+	
+	var root = require('doodad-js').createRoot(window.DD_MODULES, options);
+	
+	var modules = {};
+	require('doodad-js-unicode').add(modules);
+	require('doodad-js-locale').add(modules);
+	require('doodad-js-dates').add(modules);
+	
+	function startup() {
+		alert(root.Doodad.Tools.Dates.strftime("%c", new Date()));
+	};
+	
+	root.Doodad.Namespaces.load(modules, startup)
+		['catch'](function(err) {
+			console.log(err);
+		});
 };
-
-namespaces.load(DD_MODULES, startup)
-	['catch'](function(err) {
-		err && !err.trapped && console.error(err.stack);
-		if (!process.exitCode) {
-			process.exitCode = 1;
-		};
-	});

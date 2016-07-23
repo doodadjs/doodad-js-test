@@ -43,7 +43,14 @@
 		DD_MODULES['Doodad.Test'] = {
 			version: /*! REPLACE_BY(TO_SOURCE(VERSION(MANIFEST("name")))) */ null /*! END_REPLACE() */,
 
-			create: function create(root, /*optional*/_options) {
+			proto: {
+				TESTS_COUNT: 0,
+				FAILED_TESTS: 0,
+				CHILDREN: null,
+				CURRENT_UNIT: null,
+			},
+
+			create: function create(root, /*optional*/_options, _shared) {
 				"use strict";
 				
 				root.enableAsserts();
@@ -61,34 +68,29 @@
 					nodejs = doodad.NodeJs,
 					test = doodad.Test;
 					
-				var __Natives__ = {
+				types.complete(_shared.Natives, {
 					windowParseInt: global.parseInt,
 					windowIsNaN: global.isNaN,
-				};
+				});
 					
 				var __Internal__ = {
 					stdout: null,
 				};
 				
-				entries.TestModule = entries.Module.$inherit(
+				entries.TestModule = types.INIT(entries.Module.$inherit(
 					/*typeProto*/
 					{
 						$TYPE_NAME: 'TestModuleEntry'
 					}
-				);
+				));
 				
-				entries.TestPackage = entries.Package.$inherit(
+				entries.TestPackage = types.INIT(entries.Package.$inherit(
 					/*typeProto*/
 					{
 						$TYPE_NAME: 'TestPackageEntry'
 					}
-				);
+				));
 				
-				test.TESTS_COUNT = 0;
-				test.FAILED_TESTS = 0;
-				test.CHILDREN = null;
-				test.CURRENT_UNIT = null;
-
 				test.setOutput = function setOutput(stream) {
 					__Internal__.stdout = stream;
 				};
@@ -105,8 +107,8 @@
 							if (types.has(namespace, name)) {
 								var nso = namespace[name];
 								if ((nso instanceof root.Namespace) && (nso.DD_PARENT === namespace)) {
-									var entry = namespaces.getEntry(nso.DD_FULL_NAME);
-									if (entry instanceof entries.TestModule) {
+									var unit = namespaces.get(nso.DD_FULL_NAME, entries.TestModule);
+									if (unit) {
 										var pos,
 											len = units.length,
 											priority = (types.isNothing(nso.priority) ? 20 : nso.priority);
@@ -114,12 +116,12 @@
 											var item = units[pos];
 											if (item.priority > priority) {
 												priority = null;
-												units.splice(pos, 0, entry);
+												units.splice(pos, 0, uniy);
 												break;
 											};
 										};
 										if (priority !== null) {
-											units.push(entry);
+											units.push(unit);
 										};
 									};
 								};
@@ -130,14 +132,7 @@
 				};
 				
 				test.getUnit = function getUnit(name) {
-					var entry = namespaces.getEntry(name);
-					if (!entry) {
-						return null;
-					};
-					if (!(entry instanceof entries.TestModule)) {
-						return null;
-					};
-					return entry;
+					return namespaces.get(name, entries.TestModule);
 				};
 				
 				test.EmptySlot = function EmptySlot() {};
@@ -375,13 +370,13 @@
 								if (html) {
 									printOpts.attrs = 'class="name"';
 								};
-								stream.print(command, printOpts);
+								stream.print(command.replace(/[~]/g, '~~'), printOpts);
 								
 								printOpts = {};
 								if (html) {
 									printOpts.attrs = ('class="' + expectedCls + '"');
 								};
-								stream.print(expectedStr, printOpts);
+								stream.print(expectedStr.replace(/[~]/g, '~~'), printOpts);
 								
 								if (isEval) {
 									try {
@@ -402,7 +397,7 @@
 								resultStr = "Got: ";
 								resultCls = 'got';
 								var time = null,
-									repetitions = (options.repetitions || 1);
+									repetitions = types.get(options, 'repetitions', 1);
 									
 								if (__Internal__.performanceEnabled) {
 									time = 0;
@@ -438,7 +433,7 @@
 										};
 										time += console.timeEnd("Time");
 									};
-									if (__Natives__.windowIsNaN(time)) {
+									if (_shared.Natives.windowIsNaN(time)) {
 										time = null;
 									};
 								} else {
@@ -456,6 +451,9 @@
 									if (types.get(options, 'inherited', false)) {
 										sourceOpts.inherited = true;
 									};
+									if (!types.get(options, 'showFunctions', false)) {
+										sourceOpts.includeFunctions = false;
+									};
 									resultStr += 
 											((mode === 'isinstance') ? 
 												'Instance Of ' + (types.isFunction(result) ? result.name : (types.isObjectLike(result) ? result.constructor.name : '????')) + 
@@ -470,7 +468,7 @@
 								if (html) {
 									printOpts.attrs = ('class="' + resultCls + '"');
 								};
-								stream.print(resultStr, printOpts);
+								stream.print(resultStr.replace(/[~]/g, '~~'), printOpts);
 								
 								result = (types.get(options, 'compareFn', null) || test.compare)(expected, result, options);
 							};
@@ -482,7 +480,7 @@
 								if (html) {
 									printOpts.attrs = ('class="' + resultCls + '"');
 								};
-								stream.print(resultStr, printOpts);
+								stream.print(resultStr.replace(/[~]/g, '~~'), printOpts);
 								
 								result = false;
 							};
@@ -499,15 +497,15 @@
 							if (html) {
 								printOpts.attrs = ('class="' + resultCls + '"');
 							};
-							stream.print(resultStr, printOpts);
+							stream.print(resultStr.replace(/[~]/g, '~~'), printOpts);
 							
-							resultStr = "Time: " + ((time === null) ? 'Not available' : (String(time) + ' ms' + ((repetitions > 1) ? (' / ' + repetitions + ' = ' + String(time / repetitions) + ' ms') : ''))),
+							resultStr = "Time: " + ((time === null) ? 'Not available' : (types.toString(time) + ' ms' + ((repetitions > 1) ? (' / ' + repetitions + ' = ' + types.toString(time / repetitions) + ' ms') : ''))),
 							resultCls = 'time',
 							printOpts = {};
 							if (html) {
 								printOpts.attrs = ('class="' + resultCls + '"');
 							};
-							stream.print(resultStr, printOpts);
+							stream.print(resultStr.replace(/[~]/g, '~~'), printOpts);
 							
 							var note = types.get(options, 'note', null);
 							if (note) {
@@ -515,7 +513,7 @@
 								if (html) {
 									printOpts.attrs = 'class="note"';
 								};
-								stream.print("Note: " + note, printOpts);
+								stream.print("Note: " + note.replace(/[~]/g, '~~'), printOpts);
 							};
 							
 							if (html) {
@@ -539,19 +537,19 @@
 					};
 				};
 				
-				test.runUnit = function runUnit(entry, /*optional*/options) {
+				test.runUnit = function runUnit(unit, /*optional*/options) {
 					var stream = test.getOutput(),
 						html = types._implements(stream, io.HtmlOutputStream);
 					if (html) {
-						stream.openElement({tag: 'div', attrs: 'class="unit" title="' + entry.spec.name + '"'});
-						stream.print(entry.spec.name, {attrs: 'class="name"'});
+						stream.openElement({tag: 'div', attrs: 'class="unit" title="' + unit.DD_FULL_NAME + '"'});
+						stream.print(unit.DD_FULL_NAME, {attrs: 'class="name"'});
 					} else {
-						stream.print(entry.spec.name);
+						stream.print(unit.DD_FULL_NAME);
 					};
-					if ((entry.namespace !== test) && entry.namespace.run) {
-						entry.namespace.run(entry, options);
+					if ((unit !== test) && unit.run) {
+						unit.run(root, options);
 					};
-					test.runChildren(entry, options);
+					test.runChildren(unit, options);
 					if (html) {
 						stream.flush({flushElement: true});
 						stream.closeElement();
@@ -560,8 +558,8 @@
 					};
 				};
 				
-				test.runChildren = function runChildren(entry) {
-					var units = test.getUnits(entry.namespace);
+				test.runChildren = function runChildren(unit) {
+					var units = test.getUnits(unit);
 					for (var i = 0; i < units.length; i++) {
 						test.runUnit(units[i]);
 					};
@@ -609,12 +607,13 @@
 					
 					if (test.FAILED_TESTS) {
 						stream.openElement({tag: 'div', attrs: 'class="failedPopup bindMe"'});
-						stream.write('<a id="failedBookmark"></a><button class="prevFailed bindMe">Previous</button><button class="nextFailed bindMe">Next</button><span class="failedOf bindMe"></span>');
+						stream.write('<a id="failedBookmark" class="failedToolbar bindMe"></a><button class="prevFailed bindMe">Previous</button><button class="nextFailed bindMe">Next</button><span class="failedOf bindMe"></span>');
 						stream.flush({flushElement: true});
 						var popup = stream.element;
 						stream.closeElement();
 						
-						var	prevButton = popup.getElementsByClassName('prevFailed bindMe')[0],
+						var	failedToolbar = popup.getElementsByClassName('failedToolbar bindMe')[0],
+							prevButton = popup.getElementsByClassName('prevFailed bindMe')[0],
 							nextButton = popup.getElementsByClassName('nextFailed bindMe')[0];
 							
 						types.extend(state, {
@@ -631,7 +630,7 @@
 								if (this.currentRun) {
 									this.currentRun.setAttribute('selected', 'false');
 								};
-								if (!__Natives__.windowIsNaN(this.currentFailed)) {
+								if (!_shared.Natives.windowIsNaN(this.currentFailed)) {
 									var runElement = this.failedRuns[this.currentFailed];
 									if (runElement) {
 										this.currentRun = runElement;
@@ -645,11 +644,16 @@
 									anchor: 'failedBookmark',
 								});
 								tools.setCurrentLocation(url, true, true);
+								if (scroll && failedToolbar) {
+									if (failedToolbar.scrollIntoView) {
+										failedToolbar.scrollIntoView(true);
+									};
+								};
 							},
 							click: types.bind(state, function(ev) { // JS click
 								try {
 									if (ev instanceof global.Event) {
-										this.currentFailed = __Natives__.windowParseInt(ev.currentTarget.getAttribute('failedIndex'));
+										this.currentFailed = _shared.Natives.windowParseInt(ev.currentTarget.getAttribute('failedIndex'));
 										this.move();
 									};
 								} catch(ex) {
@@ -661,24 +665,24 @@
 							}),
 							prev: types.bind(state, function(ev) { // JS click
 								try {
-									if (__Natives__.windowIsNaN(this.currentFailed)) {
+									if (_shared.Natives.windowIsNaN(this.currentFailed)) {
 										var index;
 										if (this.currentRun) {
-											index = __Natives__.windowParseInt(this.currentRun.getAttribute('index'));
+											index = _shared.Natives.windowParseInt(this.currentRun.getAttribute('index'));
 										} else {
 											index = 0;
 										};
 										var run = this.runElements[index];
 										while (run) {
-											this.currentFailed = __Natives__.windowParseInt(this.currentRun.getAttribute('failedIndex'));
-											if (!__Natives__.windowIsNaN(this.currentFailed)) {
+											this.currentFailed = _shared.Natives.windowParseInt(this.currentRun.getAttribute('failedIndex'));
+											if (!_shared.Natives.windowIsNaN(this.currentFailed)) {
 												break;
 											};
 											index++;
 											run = this.runElements[index];
 										};
 									};
-									if (!__Natives__.windowIsNaN(this.currentFailed)) {
+									if (!_shared.Natives.windowIsNaN(this.currentFailed)) {
 										this.currentFailed--;
 										if (this.currentFailed < 0) {
 											this.currentFailed = this.failedRuns.length - 1;
@@ -696,24 +700,24 @@
 							}),
 							next: types.bind(state, function(ev) { // JS click
 								try {
-									if (__Natives__.windowIsNaN(this.currentFailed)) {
+									if (_shared.Natives.windowIsNaN(this.currentFailed)) {
 										var index;
 										if (this.currentRun) {
-											index = __Natives__.windowParseInt(this.currentRun.getAttribute('index'));
+											index = _shared.Natives.windowParseInt(this.currentRun.getAttribute('index'));
 										} else {
 											index = this.runElements.length - 1;
 										};
 										var run = this.runElements[index];
 										while (this.currentRun) {
-											this.currentFailed = __Natives__.windowParseInt(this.currentRun.getAttribute('failedIndex'));
-											if (!__Natives__.windowIsNaN(this.currentFailed)) {
+											this.currentFailed = _shared.Natives.windowParseInt(this.currentRun.getAttribute('failedIndex'));
+											if (!_shared.Natives.windowIsNaN(this.currentFailed)) {
 												break;
 											};
 											index--;
 											run = this.runElements[index];
 										};
 									};
-									if (!__Natives__.windowIsNaN(this.currentFailed)) {
+									if (!_shared.Natives.windowIsNaN(this.currentFailed)) {
 										this.currentFailed++;
 										if (this.currentFailed >= this.failedRuns.length) {
 											this.currentFailed = 0;
@@ -786,7 +790,7 @@
 				};
 				
 				test.showUnitName = function showUnitName() {
-					var name = (test.CURRENT_UNIT ? test.CURRENT_UNIT.spec.name : ''),
+					var name = (test.CURRENT_UNIT ? test.CURRENT_UNIT.DD_FULL_NAME : ''),
 						stream = test.getOutput(),
 						root = stream.element,
 						elements = Array.prototype.slice.call(root.getElementsByClassName("unitName"), 0); // <PRB> Returned objects collection is dynamic
@@ -795,11 +799,11 @@
 					};
 				};
 
-				test.moveToUnit = function moveToUnit(entry) {
+				test.moveToUnit = function moveToUnit(unit) {
 					var url = tools.getCurrentLocation();
-					if (entry) {
+					if (unit) {
 						url = url.set({
-							args: url.args.set('unit', entry.spec.name, true),
+							args: url.args.set('unit', unit.DD_FULL_NAME, true),
 						});
 					} else {
 						url = url.set({
@@ -864,7 +868,7 @@
 							prev: types.bind(state, function(ev) { // JS click
 								try {
 									if (test.CURRENT_UNIT) {
-										var units = test.getUnits(test.CURRENT_UNIT.namespace.DD_PARENT),
+										var units = test.getUnits(test.CURRENT_UNIT.DD_PARENT),
 											unit = test.CURRENT_UNIT,
 											pos = tools.findItem(units, unit);
 										if (pos <= 0) {
@@ -886,7 +890,7 @@
 							next: types.bind(state, function(ev) { // JS click
 								try {
 									if (test.CURRENT_UNIT) {
-										var units = test.getUnits(test.CURRENT_UNIT.namespace.DD_PARENT),
+										var units = test.getUnits(test.CURRENT_UNIT.DD_PARENT),
 											unit = test.CURRENT_UNIT,
 											pos = tools.findItem(units, unit);
 										if ((pos < 0) || (pos >= units.length - 1)) {
@@ -922,13 +926,13 @@
 				var __buildIndexItems__ = function(namespace) {
 					var html = '<ul>';
 
-					var entries = test.getUnits(namespace),
-						len = entries.length;
+					var units = test.getUnits(namespace),
+						len = units.length;
 					for (var i = 0; i < len; i++) {
 						// Sorry for using the same variable
-						var entry = entries[i];
-						html += '<li><a href="#" unitname="' + entry.spec.name + '" class="indexMenuItem bindMe">' + tools.escapeHtml(entry.spec.name) + '</a></li>';
-						html += __buildIndexItems__(entry.namespace);
+						var unit = units[i];
+						html += '<li><a href="#" unitname="' + unit.DD_FULL_NAME + '" class="indexMenuItem bindMe">' + tools.escapeHtml(unit.DD_FULL_NAME) + '</a></li>';
+						html += __buildIndexItems__(unit);
 					};
 					
 					return html + '</ul>';
@@ -1012,6 +1016,7 @@
 								ok = true;
 							} catch(ex) {
 								if (!(ex instanceof types.ScriptInterruptedError)) {
+									debugger;
 									io.stderr.write(ex);
 									io.stderr.flush();
 								};

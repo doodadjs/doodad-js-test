@@ -96,21 +96,27 @@
 					},
 					
 					// Test property with "value"
-					message: doodad.PROPERTY({
-						value: null,
-						writable: true,
-					}),
+					message: (types.hasDefinePropertyEnabled() ? 
+						doodad.PROPERTY({
+							value: null,
+							writable: true,
+						}) : 
+						doodad.PUBLIC(null)
+					),
 					
 					// Test property with "get" and "set"
 					__value: 1,
-					value: doodad.PROPERTY({
-						get: function() {
-							return this.__value;
-						},
-						set: function(value) {
-							this.__value = value;
-						},
-					}),
+					value: (types.hasDefinePropertyEnabled() ? 
+						doodad.PROPERTY({
+							get: function() {
+								return this.__value;
+							},
+							set: function(value) {
+								this.__value = value;
+							},
+						}) :
+						doodad.PUBLIC(1)
+					),
 					
 					// Test private
 					myPrivateAttr: doodad.PRIVATE("private"),
@@ -246,12 +252,14 @@
 					$TYPE_NAME: 'MyWidget',
 					
 					// Test property overriding
-					_value: 1,
-					value: doodad.PROPERTY({
-						get: doodad.OVERRIDE(function() {
-							return this._super() + 1;
-						}),
-					}),
+					value: (types.hasDefinePropertyEnabled() ?
+						doodad.PROPERTY({
+							get: doodad.OVERRIDE(function() {
+								return this._super() + 1;
+							}),
+						}) :
+						doodad.PUBLIC(2)
+					),
 
 					// Test private override
 					/*

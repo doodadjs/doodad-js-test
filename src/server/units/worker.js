@@ -128,7 +128,7 @@ module.exports = function(root, options, _shared) {
 				handlers: [
 					{
 						handler: function(request) {
-							request.getResponseStream().write("Hello !");
+							request.getResponseStream({contentType: 'text/plain'}).write("Hello !");
 						},
 					},
 				],
@@ -138,7 +138,7 @@ module.exports = function(root, options, _shared) {
 				handlers: [
 					{
 						handler: function(request) {
-							request.getResponseStream().write("Bonjour !");
+							request.getResponseStream({contentType: 'text/plain'}).write("Bonjour !");
 						},
 					},
 				],

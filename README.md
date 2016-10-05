@@ -40,9 +40,9 @@ At the command prompt (">>>"), you can try :
 
 Open your favorite browser (a recent and graphical one with Javascript enabled), then go to : " http://localhost:8080/ ". 
 
-You should get redirected to " http://localhost:8080/nodejs/static/doodad-js-test/widgets/test.html ". 
+You should get redirected to " http://localhost:8080/app/doodad-js-test/widgets/test.html ". 
 
-Then, try this URL : " http://localhost:8080/nodejs/static/doodad-js-test/units/Test.html ". 
+Then, try this URL : " http://localhost:8080/app/doodad-js-test/units/Test.html ". 
 
 ## Other available packages
 

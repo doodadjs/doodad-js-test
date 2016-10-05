@@ -1,10 +1,9 @@
 {
 	"//": "Encoding: utf8",
 	"//": "",
-	"//": "    dOOdad - Object-oriented programming framework",
+	"//": "    doodad-js  -  Object-oriented programming framework",
 	"//": "    File: make.json - Make data file",
-	"//": "    Project home: https://sourceforge.net/projects/doodad-js/",
-	"//": "    Trunk: svn checkout svn://svn.code.sf.net/p/doodad-js/code/trunk doodad-js-code",
+	"//": "    Project home: https://github.com/doodadjs/",
 	"//": "    Author: Claude Petit, Quebec city",
 	"//": "    Contact: doodadjs [at] gmail.com",
 	"//": "    Note: I'm still in alpha-beta stage, so expect to find some bugs or incomplete parts !",
@@ -162,9 +161,10 @@
 					"destination": "%INSTALLDIR%/%PACKAGENAME%/widgets"
 				},
 				{
-					"class": "Make.File.Copy",
+					"class": "Make.File.Javascript",
 					"source": "%SOURCEDIR%/common/widgets/MyWidget.js",
-					"destination": "%INSTALLDIR%/%PACKAGENAME%/widgets/MyWidget.js"
+					"destination": "%INSTALLDIR%/%PACKAGENAME%/widgets/MyWidget.js",
+					"runDirectives": true
 				},
 				{
 					"class": "Make.File.Javascript",
@@ -173,9 +173,10 @@
 					"runDirectives": true
 				},
 				{
-					"class": "Make.File.Copy",
+					"class": "Make.File.Javascript",
 					"source": "%SOURCEDIR%/common/widgets/MyWidget_loader.js",
-					"destination": "%INSTALLDIR%/%PACKAGENAME%/widgets/MyWidget_loader.js"
+					"destination": "%INSTALLDIR%/%PACKAGENAME%/widgets/MyWidget_loader.js",
+					"runDirectives": true
 				},
 				{
 					"class": "Make.File.Javascript",

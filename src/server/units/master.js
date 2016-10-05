@@ -1,8 +1,7 @@
 //! REPLACE_BY("// Copyright 2016 Claude Petit, licensed under Apache License version 2.0\n", true)
-// dOOdad - Object-oriented programming framework
+// doodad-js - Object-oriented programming framework
 // File: master.js - Test startup file for NodeJs
-// Project home: https://sourceforge.net/projects/doodad-js/
-// Trunk: svn checkout svn://svn.code.sf.net/p/doodad-js/code/trunk doodad-js-code
+// Project home: https://github.com/doodadjs/
 // Author: Claude Petit, Quebec city
 // Contact: doodadjs [at] gmail.com
 // Note: I'm still in alpha-beta stage, so expect to find some bugs or incomplete parts !
@@ -25,9 +24,7 @@
 
 "use strict";
 
-const MAX_CPUS = 4,
-	cluster = require('cluster'),
-	util = require('util');
+const MAX_CPUS = 4;
 
 module.exports = function(root, options, _shared) {
 	const doodad = root.Doodad,
@@ -38,13 +35,17 @@ module.exports = function(root, options, _shared) {
 		nodejs = doodad.NodeJs,
 		
 		nodeOs = require('os'),
+		cluster = require('cluster'),
+		util = require('util'),
+		
 		Promise = types.getPromise();
+
 
 	function startup() {
 		const cpus = Math.min(nodeOs.cpus().length, MAX_CPUS);
 
 		function startWorkers() {
-			tools.Files.mkdir(options.jsCachePath);
+			tools.Files.mkdir(options.cachePath);
 			
 			cluster.setupMaster({
 				silent: true,
@@ -56,7 +57,7 @@ module.exports = function(root, options, _shared) {
 				};
 			} else {
 				options.noCluster = true;
-				require('./worker.js')(root, options);
+				require('./worker.js')(root, options, _shared);
 			};
 		};
 		
@@ -78,6 +79,7 @@ module.exports = function(root, options, _shared) {
 				infoColor: 'Green',
 				warnColor: 'Yellow',
 				errorColor: 'Red',
+				restricted: false,
 				locals: {
 					root: root,
 					doodad: doodad,
@@ -131,36 +133,35 @@ module.exports = function(root, options, _shared) {
 							throw new types.NotAvailable("Command not available.");
 						};
 					},
-					//getAttribute: _shared.getAttribute,
-					//setAttribute: _shared.setAttribute,
+					getAttribute: _shared.getAttribute,
+					setAttribute: _shared.setAttribute,
 				},
 			});
-			term.listen();
-			
+			term.onListen.attachOnce(null, function(ev) {
+				term.ask(tools.format('Safe to delete folder "~0~" and its content [yes/NO] ?', [options.cachePath.toString()]), function(resp) {
+					resp = resp.toLowerCase();
+					if (resp === 'yes') {
+						tools.Files.rmdir(options.cachePath, {force: true});
+						console.info(tools.format('Folder "~0~" deleted.', [options.cachePath.toString()]));
+					};
+					
+					startWorkers();
+				});
+			});
 			nodejs.Console.capture(function(name, args) {
 				term.consoleWrite(name, args);
 			});
-
-			term.ask(tools.format('Safe to delete folder "~0~" and its content [yes/NO] ?', [options.jsCachePath.toString()]), new doodad.Callback(this, function(resp) {
-				resp = resp.toLowerCase();
-				if (resp === 'yes') {
-					tools.Files.rmdir(options.jsCachePath, {force: true});
-					console.info(tools.format('Folder "~0~" deleted.', [options.jsCachePath.toString()]));
-				};
-				
-				startWorkers();
-			}));
+			term.listen();
 		} else {
 			startWorkers();
 		};
 	};
 
 	const DD_MODULES = {};
-	
 	require('doodad-js/tests.js').add(DD_MODULES);
 	require('doodad-js-safeeval/tests.js').add(DD_MODULES);
 	require('doodad-js-terminal').add(DD_MODULES);
 	require('doodad-js-test').add(DD_MODULES);
 
-	return namespaces.load(DD_MODULES, startup);
+	return namespaces.load(DD_MODULES, startup, {secret: _shared.SECRET});
 };

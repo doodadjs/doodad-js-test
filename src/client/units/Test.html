@@ -14,6 +14,8 @@
 		<script async src="../../doodad-js-safeeval/tests.js"></script>
 		<script async src="../../doodad-js-test/index.js"></script>
 		<script async src="../../lib/sax/sax.js"></script>
+        <script src="../../lib/moment/moment.min.js"></script>
+        <script src="../../lib/moment-timezone/moment-timezone.min.js"></script>
 		
 		<!--IE8 <script>
 			// <PRB> "es6-promise" needs "Array.isArray"
@@ -39,23 +41,28 @@
 						var test = root.Doodad.Test,
 							clientIO = root.Doodad.Client.IO;
 
-						test.setOutput(new clientIO.DomOutputStream({autoFlush: true}));
+						test.setOutput(new clientIO.DomOutputStream({ autoFlush: false }));
 						test.run();
-						
-						window.DD_ROOT = root;
 					};
 					
 					var global = window;
 					
 					var options = {};
+
 					options['Doodad.Modules'] = {
 						modulesUri: '../..',
+					};
+
+					options['Doodad.Tools.Dates.Moment'] = {
+					    dataUri: '/app/lib/moment-timezone/data/',
 					};
 
 					var root = global.createRoot(global.DD_MODULES, options),
 						namespaces = root.Doodad.Namespaces;
 					
-					namespaces.load(global.DD_MODULES, startup, options, false)
+					window.DD_ROOT = root; // For tests
+
+					namespaces.load(global.DD_MODULES, startup, options)
 						['catch'](function(err) {
 							alert(err);
 						});

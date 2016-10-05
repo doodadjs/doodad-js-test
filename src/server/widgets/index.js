@@ -1,8 +1,7 @@
 //! REPLACE_BY("// Copyright 2016 Claude Petit, licensed under Apache License version 2.0\n", true)
-// dOOdad - Object-oriented programming framework
+// doodad-js - Object-oriented programming framework
 // File: index.js - Test startup file for NodeJs
-// Project home: https://sourceforge.net/projects/doodad-js/
-// Trunk: svn checkout svn://svn.code.sf.net/p/doodad-js/code/trunk doodad-js-code
+// Project home: https://github.com/doodadjs/
 // Author: Claude Petit, Quebec city
 // Contact: doodadjs [at] gmail.com
 // Note: I'm still in alpha-beta stage, so expect to find some bugs or incomplete parts !
@@ -25,27 +24,24 @@
 
 "use strict";
 
-const DD_MODULES = {};
-const loader = require("../../common/widgets/MyWidget_loader.js");
-loader.add(DD_MODULES);
+const SECRET = Symbol();
 
+const options = {secret: SECRET};
+
+const DD_MODULES = {};
 require('doodad-js-unicode').add(DD_MODULES);
 require('doodad-js-locale').add(DD_MODULES);
 require('doodad-js-safeeval').add(DD_MODULES);
 require('doodad-js-loader').add(DD_MODULES);
+require("../../common/widgets/MyWidget_loader.js").add(DD_MODULES);
 
-const DD_SCRIPTS = [];
-loader.addScripts(DD_SCRIPTS);
-
-const root = require('doodad-js').createRoot(DD_MODULES),
+const root = require('doodad-js').createRoot(DD_MODULES, options),
 	doodad = root.Doodad,
 	namespaces = doodad.Namespaces;
 
-function startup() {
-	return doodad.Loader.loadScripts(DD_SCRIPTS);
-};
+doodad.Types.trapUnhandledRejections();
 
-namespaces.load(DD_MODULES, startup)
+namespaces.load(DD_MODULES, null, options)
 	['catch'](function(err) {
 		err && !err.trapped && console.error(err.stack);
 		if (!process.exitCode) {

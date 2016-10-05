@@ -1,7 +1,6 @@
-// dOOdad - Object-oriented programming framework
+// doodad-js - Object-oriented programming framework
 // File: main.js - Module startup file for 'browserify'.
-// Project home: https://sourceforge.net/projects/doodad-js/
-// Trunk: svn checkout svn://svn.code.sf.net/p/doodad-js/code/trunk doodad-js-code
+// Project home: https://github.com/doodadjs/
 // Author: Claude Petit, Quebec city
 // Contact: doodadjs [at] gmail.com
 // Note: I'm still in alpha-beta stage, so expect to find some bugs or incomplete parts !
@@ -27,7 +26,7 @@ window.onload = function() {
 		modulesUri: '../..',
 	};
 	
-	var root = require('doodad-js').createRoot(window.DD_MODULES, options);
+	var root = require('doodad-js').createRoot(null, options);
 	
 	var modules = {};
 	require('doodad-js-unicode').add(modules);

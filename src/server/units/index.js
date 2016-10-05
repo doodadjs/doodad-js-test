@@ -1,8 +1,7 @@
 //! REPLACE_BY("// Copyright 2016 Claude Petit, licensed under Apache License version 2.0\n", true)
-// dOOdad - Object-oriented programming framework
+// doodad-js - Object-oriented programming framework
 // File: index.js - Test startup file for NodeJs
-// Project home: https://sourceforge.net/projects/doodad-js/
-// Trunk: svn checkout svn://svn.code.sf.net/p/doodad-js/code/trunk doodad-js-code
+// Project home: https://github.com/doodadjs/
 // Author: Claude Petit, Quebec city
 // Contact: doodadjs [at] gmail.com
 // Note: I'm still in alpha-beta stage, so expect to find some bugs or incomplete parts !
@@ -25,6 +24,8 @@
 
 "use strict";
 
+const SECRET = Symbol();
+
 const cluster = require('cluster');
 
 function startup(root, _shared) {
@@ -36,7 +37,7 @@ function startup(root, _shared) {
 	tools.Files.mkdir(cachePath, {makeParents: true});
 	
 	const options = {
-		jsCachePath: cachePath.combine('./jsCache/', {os: 'linux'}),
+		cachePath: cachePath,
 	};
 	
 	if (cluster.isMaster) {
@@ -47,10 +48,11 @@ function startup(root, _shared) {
 };
 
 const options = {
+	secret: SECRET,
+//	startup: {fromSource: true},
 };
 
 const DD_MODULES = {};
-
 require('doodad-js-unicode').add(DD_MODULES);
 require('doodad-js-locale').add(DD_MODULES);
 require('doodad-js-dates').add(DD_MODULES);
@@ -60,9 +62,11 @@ require('doodad-js-ipc').add(DD_MODULES);
 require('doodad-js-cluster').add(DD_MODULES);
 require('doodad-js-safeeval').add(DD_MODULES);
 
-const root = require('doodad-js').createRoot(DD_MODULES);
+const root = require('doodad-js').createRoot(DD_MODULES, options);
 
-return root.Doodad.Namespaces.load(DD_MODULES, startup, options)
+root.Doodad.Types.trapUnhandledRejections();
+
+root.Doodad.Namespaces.load(DD_MODULES, startup, options)
 		['catch'](function(err) {
 			err && !err.trapped && console.error(err.stack);
 			if (!process.exitCode) {
@@ -72,7 +76,7 @@ return root.Doodad.Namespaces.load(DD_MODULES, startup, options)
 
 
 /* Cross-Origin (simple request) : Should return an index file with appropriated headers
-GET /nodejs/static/doodad-js-test/ HTTP/1.0
+GET /app/doodad-js-test/ HTTP/1.0
 Content-Type: text/html
 User-Agent: HTTPTool/1.0
 Origin: www.test.local
@@ -81,7 +85,7 @@ Host: www.doodad-js.local
 */
 
 /* Cross-Origin (full request) : Should return appropriated headers, without content
-OPTIONS /nodejs/static/doodad-js-test/ HTTP/1.0
+OPTIONS /app/doodad-js-test/ HTTP/1.0
 Content-Type: text/html
 User-Agent: HTTPTool/1.0
 Origin: www.test.local
@@ -106,4 +110,42 @@ Content-Type: application/json
 Content-Length: 384
 
 [{"jsonrpc": "2.0", "method": "getService", "params": ["MyService"], "id": 1},{"jsonrpc": "2.0", "method": "callService", "params": [-1, "hello"], "id": 2},{"jsonrpc": "2.0", "method": "callService", "params": [-1, "hello"], "id": 3},{"jsonrpc": "2.0", "method": "callService", "params": [-1, "hello"], "id": 4},{"jsonrpc": "2.0", "method": "releaseService", "params": [-1], "id": 5}]
+*/
+
+/* Should return the content and headers. Request should not be aborted or stalled.
+GET /app/doodad-js/common/Doodad.js HTTP/1.0
+Accept: application/javascript
+
+*/
+
+/* CacheHandler: First request should generate the cache file and send headers and result. Subsequent requests should send the file and its headers from cache. In both case, content should be minified.
+GET /app/lib/sax/sax.js HTTP/1.0
+Accept: application/javascript
+
+*/
+
+/* CacheHandler: First request should generate the cache file and send headers and result compressed. Subsequent requests should send the file and its headers from cache. In both case, content should be minified.
+GET /app/lib/sax/sax.js HTTP/1.0
+Accept: application/javascript
+Accept-Encoding: gzip
+
+*/
+
+/* Should send the headers only
+HEAD /app/lib/sax/sax.js HTTP/1.0
+Accept: application/javascript
+
+*/
+
+/* Should return folder's content in JSON
+GET /app/doodad-js-locale/locales/ HTTP/1.0
+Accept: application/json
+
+*/
+
+/* Should return folder's content in JSON compressed
+GET /app/doodad-js-locale/locales/ HTTP/1.0
+Accept: application/json
+Accept-Encoding: gzip
+
 */

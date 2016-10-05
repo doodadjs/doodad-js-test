@@ -2,11 +2,6 @@
 <html>
 	<body>
 		<script async src="../../doodad-js/bundle_debug.js"></script>
-		<script async src="../../doodad-js-unicode/index.js"></script>
-		<script async src="../../doodad-js-locale/index.js"></script>
-		<script async src="../../doodad-js-safeeval/index.js"></script>
-		<script async src="../../doodad-js-loader/index.js"></script> 
-		<script async src="./MyWidget_loader.js"></script>
 		
 		<!--IE8 <script>
 			// <PRB> "es6-promise" needs "Array.isArray"
@@ -18,34 +13,35 @@
 		</script>-->
 		<script src="../../lib/es6-promise/es6-promise.min.js"></script>
 		
-		<script>
+        <script>
 			(function() {
 				"use strict";
-			
+
 				var __prevOnLoad__ = window.onload;
 				window.onload = function onload(ev) {
 					if (__prevOnLoad__) {
 						__prevOnLoad__.call(this, ev);
 					};
 
-					var options = {};
+					var SECRET = ((typeof Symbol === 'function') ? Symbol() : []);
+
+				    var options = {secret: SECRET};
+
 					options['Doodad.Modules'] = {
 						modulesUri: '../..',
 					};
-					
+
 					var root = window.createRoot(window.DD_MODULES, options),
 						doodad = root.Doodad,
-						namespaces = doodad.Namespaces,
-						types = doodad.Types;
+						modules = doodad.Modules;
 
-					function startup() {
-						return doodad.Loader.loadScripts(window.DD_SCRIPTS);
-					};
-						
-					namespaces.load(window.DD_MODULES, startup, options, false)
-						['catch'](function(err) {
-							console.error(err);
-						});
+					modules.load({
+						'doodad-js-unicode': {},
+						'doodad-js-locale': {},
+						'doodad-js-safeeval': {},
+						'doodad-js-loader': {},
+						'doodad-js-test': {'widgets/MyWidget_loader.js': {}},
+					}, options);
 				};
 			}).call((typeof global !== 'undefined') ? global : ((typeof window !== 'undefined') ? window : this));
 		</script>

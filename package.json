@@ -1,6 +1,6 @@
 {
   "name": "doodad-js-test",
-  "version": "1.9.1",
+  "version": "1.10.0",
   "stage": "a",
   "description": "doodad-js Test application",
   "files": [
@@ -11,7 +11,16 @@
     "test"
   ],
   "optionalDependencies": {
-    "es6-promise": "^3.0.2"
+    "es6-promise": "^3.0.2",
+	"moment": "^2.15.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/doodadjs/doodad-js-test.git"
+  },
+  "bugs": {
+    "url": "https://github.com/doodadjs/doodad-js-test/issues",
+    "email": "doodadjs@gmail.com"
   },
   "tonicExampleFilename": "tonic.js"
 }

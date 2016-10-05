@@ -1,8 +1,9 @@
+//! BEGIN_MODULE()
+
 //! REPLACE_BY("// Copyright 2016 Claude Petit, licensed under Apache License version 2.0\n", true)
-// dOOdad - Object-oriented programming framework
+// doodad-js - Object-oriented programming framework
 // File: MyWidget.js - Test file
-// Project home: https://sourceforge.net/projects/doodad-js/
-// Trunk: svn checkout svn://svn.code.sf.net/p/doodad-js/code/trunk doodad-js-code
+// Project home: https://github.com/doodadjs/
 // Author: Claude Petit, Quebec city
 // Contact: doodadjs [at] gmail.com
 // Note: I'm still in alpha-beta stage, so expect to find some bugs or incomplete parts !
@@ -23,26 +24,12 @@
 //	limitations under the License.
 //! END_REPLACE()
 
-(function() {
-	var global = this;
-
-	var exports = {};
-	
-	//! BEGIN_REMOVE()
-	if ((typeof process === 'object') && (typeof module === 'object')) {
-	//! END_REMOVE()
-		//! IF_DEF("serverSide")
-			module.exports = exports;
-		//! END_IF()
-	//! BEGIN_REMOVE()
-	};
-	//! END_REMOVE()
-	
-	exports.add = function add(DD_MODULES) {
+module.exports = {
+	add: function add(DD_MODULES) {
 		DD_MODULES = (DD_MODULES || {});
-		DD_MODULES['MyWidget'] = {
+		DD_MODULES['MyWidget/root'] = {
 			type: 'Application',
-			version: '0d',
+			version: /*! REPLACE_BY(TO_SOURCE(VERSION(MANIFEST("name")))) */ null /*! END_REPLACE()*/,
 			dependencies: [
 				{
 					name: 'doodad-js',
@@ -58,7 +45,7 @@
 				}, 
 			],
 			
-			create: function create(root, /*optional*/_options) {
+			create: function create(root, /*optional*/_options, _shared) {
 				"use strict";
 
 				//===================================
@@ -134,13 +121,13 @@
 						return 1;
 					}),
 					
-					render: doodad.OVERRIDE(function render(stream) {
-						stream.write('<span' + this.renderAttributes(['main', 'mergeTest']) + '>' + tools.escapeHtml(this.message || '', this.document) + '</span>');
+					render: doodad.OVERRIDE(function render() {
+						this.stream.write('<span' + this.renderAttributes(['main', 'mergeTest']) + '>' + tools.escapeHtml(this.message || '', this.document) + '</span>');
 					}),
 				}));
 
 				var finalStep;
-				if (nodejs) {
+				if (nodejs && nodejs.isServer()) {
 					finalStep = MyWidgetStep1;
 				} else {
 					var MyWidgetStep2 = doodad.REGISTER(doodad.BASE(MyWidgetStep1.$extend(
@@ -232,7 +219,7 @@
 							};
 							*/
 							
-							//throw new exceptions.Error("test");
+							//throw new types.Error("test");
 							
 						})),
 						
@@ -286,12 +273,16 @@
 				// Init
 				//===================================
 				return function init(/*options*/) {
+					var Promise = types.getPromise();
+					
 					var colors = ['white', 'red', 'magenta', 'green', 'black', 'yellow', 'blue', 'pink', 'gray', 'acqua', 'brown', 'gold', 'silver'];
 					
-					var createMyWidget = function createMyWidget(name, message) {
+					var createMyWidget = function createMyWidget(name, message, stream) {
 						var color;
 
 						var myWidget = new me.MyWidget();
+						
+						myWidget.setStream(stream);
 						
 						var id = myWidget.getIdentity();
 						id.id = id.name = id.class = name;
@@ -318,62 +309,40 @@
 						return myWidget;
 					};
 					
-					if (nodejs) {
-						var myWidget = createMyWidget('myWidget1', 'Console !');
+					if (nodejs && nodejs.isServer()) {
 						var stream = new io.HtmlOutputStream();
 						stream.pipe(io.stdout);
-						myWidget.render(stream);
-						stream.flush();
+						var myWidget = createMyWidget('myWidget1', 'Console !', stream);
+						return myWidget.render();
 					} else {
-						var myWidget = createMyWidget('myWidget1', 'Hello !');
-						myWidget.onRender.attach(null, function onRender(ev) {alert('render 1')});
-						myWidget.render('test1');
+						var myWidget1 = createMyWidget('myWidget1', 'Hello !', 'test1');
+						myWidget1.onRender.attach(null, function onRender(ev) {alert('render 1')});
 
-						var myWidget = createMyWidget('myWidget2', 'Salut !');
-						myWidget.onRender.attach(null, function onRender(ev) {alert('render 2')});
-						myWidget.render('test2');
+						var myWidget2 = createMyWidget('myWidget2', 'Salut !', 'test2');
+						myWidget2.onRender.attach(null, function onRender(ev) {alert('render 2')});
 						
-						// Test "destroy"
-						var myWidget = createMyWidget('myWidget3', 'Ciao !');
-						myWidget.onRender.attach(null, function onRender(ev) {alert('render 3')});
-						//myWidget.render('test3');
-						myWidget.destroy();
+						//// Test "destroy"
+						//var myWidget3 = createMyWidget('myWidget3', 'Ciao !', 'test3');
+						//myWidget3.onRender.attach(null, function onRender(ev) {alert('render 3')});
+						////myWidget3.render('test3');
+						//myWidget3.destroy();
 						
-						var myWidget = createMyWidget('myWidget3', 'Ciao !');
-						myWidget.onRender.attach(null, function onRender(ev) {alert('render 3')});
-						myWidget.render('test3');
-						
-						// Test "RENAMED"
-						alert(myWidget.renamedFunction()); // Must be "Rename me ! Done"
-						
-						// Test "_superFrom"
-						alert(myWidget.getVersion()); // Must be "2"
-						
+						var myWidget3 = createMyWidget('myWidget3', 'Ciao !', 'test3');
+						myWidget3.onRender.attach(null, function onRender(ev) {alert('render 3')});
+
+						return Promise.all([ myWidget1.render(), myWidget2.render(), myWidget3.render() ])
+							.then(function doSomeTestsPromise() {
+								// Test "RENAMED"
+								alert(myWidget1.renamedFunction()); // Must be "Rename me ! Done"
+								
+								// Test "_superFrom"
+								alert(myWidget1.getVersion()); // Must be "2"
+							});
 					};
 				};
 			},
 		};
-		
 		return DD_MODULES;
-	};
-	
-	//! BEGIN_REMOVE()
-	if ((typeof process !== 'object') || (typeof module !== 'object')) {
-	//! END_REMOVE()
-		//! IF_UNDEF("serverSide")
-			// <PRB> export/import are not yet supported in browsers
-			global.DD_MODULES = exports.add(global.DD_MODULES);
-		//! END_IF()
-	//! BEGIN_REMOVE()
-	};
-	//! END_REMOVE()
-}).call(
-	//! BEGIN_REMOVE()
-	(typeof window !== 'undefined') ? window : ((typeof global !== 'undefined') ? global : this)
-	//! END_REMOVE()
-	//! IF_DEF("serverSide")
-	//! 	INJECT("global")
-	//! ELSE()
-	//! 	INJECT("window")
-	//! END_IF()
-);
+	},
+};
+//! END_MODULE()

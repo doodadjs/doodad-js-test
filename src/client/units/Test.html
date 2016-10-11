@@ -5,14 +5,14 @@
 	</head>
 	<body>
 		<script async src="../../doodad-js/bundle_debug.js"></script>
-		<script async src="../../doodad-js/tests.js"></script>
-		<script async src="../../doodad-js-unicode/index.js"></script>
-		<script async src="../../doodad-js-locale/index.js"></script>
-		<script async src="../../doodad-js-dates/index.js"></script>
-		<script async src="../../doodad-js-io/index.js"></script>
-		<script async src="../../doodad-js-safeeval/index.js"></script>
-		<script async src="../../doodad-js-safeeval/tests.js"></script>
-		<script async src="../../doodad-js-test/index.js"></script>
+		<script async src="../../doodad-js/doodad-js_tests.js"></script>
+		<script async src="../../doodad-js-unicode/doodad-js-unicode_debug.js"></script>
+		<script async src="../../doodad-js-locale/doodad-js-locale_debug.js"></script>
+		<script async src="../../doodad-js-dates/doodad-js-dates_debug.js"></script>
+		<script async src="../../doodad-js-io/doodad-js-io_debug.js"></script>
+		<script async src="../../doodad-js-safeeval/doodad-js-safeeval_debug.js"></script>
+		<script async src="../../doodad-js-safeeval/doodad-js-safeeval_tests.js"></script>
+		<script async src="../../doodad-js-test/doodad-js-test_debug.js"></script>
 		<script async src="../../lib/sax/sax.js"></script>
         <script src="../../lib/moment/moment.min.js"></script>
         <script src="../../lib/moment-timezone/moment-timezone.min.js"></script>
@@ -57,7 +57,7 @@
 					    dataUri: '/app/lib/moment-timezone/data/',
 					};
 
-					var root = global.createRoot(global.DD_MODULES, options),
+				    var root = global.createRoot(global.DD_MODULES, options),
 						namespaces = root.Doodad.Namespaces;
 					
 					window.DD_ROOT = root; // For tests

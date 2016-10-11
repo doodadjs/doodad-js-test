@@ -43,17 +43,20 @@ module.exports = function(root, options, _shared) {
 	function startup() {
 		const nodejsCluster = nodejs.Cluster;
 
+		let messenger = null;
 		if (!options.noCluster) {
-			const messenger = new nodejsCluster.ClusterMessenger(server.Ipc.ServiceManager);
+			messenger = new nodejsCluster.ClusterMessenger(server.Ipc.ServiceManager);
 			messenger.connect();
 				
 			const con = messenger.getInterface(ioInterfaces.IConsole);
 			
+			// Captures "console.XXX()"
 			nodejs.Console.capture(function(fn, args) {
 				// TODO: Do like "Terminal.consoleWrite"
 				con[fn].call(con, '<W:' + cluster.worker.id + '>  ' + args[0]);
 			});
 			
+			// Captures "tools.log()"
 			_shared.consoleHook = function consoleHook(level, message) {
 				// TODO: Do like "Terminal.consoleWrite"
 				var fn;
@@ -134,6 +137,8 @@ module.exports = function(root, options, _shared) {
 			console.warn("The data of the library 'moment-timezone' are not available. Serving the library's data to the client browser will be disabled.");
 		};
 
+		const staticMimeTypes = ['application/javascript; charset=utf-8', 'application/x-javascript; charset=utf-8', 'text/html; charset=utf-8', 'text/css; charset=utf-8', 'application/json; charset=utf-8', 'text/json; charset=utf-8', '*/*'];
+
 		const handlers = [
 			//{
 			//	handler: server.Http.UpgradeInsecureRequestsHandler,
@@ -169,7 +174,7 @@ module.exports = function(root, options, _shared) {
 						handlers: [
 							{
 								handler: function(request) {
-									request.getResponseStream({contentType: 'text/plain'}).write("Hello !");
+									request.response.getStream({contentType: 'text/plain; charset=utf-8'}).then(stream => stream.write("Hello !"));
 								},
 							},
 						],
@@ -179,7 +184,7 @@ module.exports = function(root, options, _shared) {
 						handlers: [
 							{
 								handler: function(request) {
-									request.getResponseStream({contentType: 'text/plain'}).write("Bonjour !");
+									request.response.getStream({contentType: 'text/plain; charset=utf-8'}).then(stream => stream.write("Bonjour !"));
 								},
 							},
 						],
@@ -203,8 +208,8 @@ module.exports = function(root, options, _shared) {
 							{
 								handler: nodejs.Server.Http.CompressionHandler,
 								mimeTypes: ['application/javascript; charset=utf-8', 'application/x-javascript; charset=utf-8', 'text/html; charset=utf-8', 'text/css; charset=utf-8', 'application/json; charset=utf-8', 'text/json; charset=utf-8'],
-								//encodings: 'gzip',  // to force 'gzip'
-								//encodings: 'deflate',  // to force 'deflate'
+								//encodings: ['gzip'],  // to force 'gzip'
+								//encodings: ['deflate'],  // to force 'deflate'
 							},
 							{
 								handler: new server.Http.Routes({
@@ -246,6 +251,7 @@ module.exports = function(root, options, _shared) {
 												handler: nodejs.Server.Http.StaticPage,
 												path: files.Path.parse(require.resolve('doodad-js')).set({file: null}).combine('./dist/doodad-js/', {os: 'linux'}),
 												showFolders: true,
+												mimeTypes: staticMimeTypes,
 											},
 										],
 									},
@@ -255,15 +261,7 @@ module.exports = function(root, options, _shared) {
 												handler: nodejs.Server.Http.StaticPage,
 												path: files.Path.parse(require.resolve('doodad-js-dates')).set({file: null}).combine('./dist/doodad-js-dates/', {os: 'linux'}),
 												showFolders: true,
-											},
-										],
-									},
-									'/doodad-js-http': {
-										handlers: [
-											{
-												handler: nodejs.Server.Http.StaticPage,
-												path: files.Path.parse(require.resolve('doodad-js-http')).set({file: null}).combine('./dist/doodad-js-http/', {os: 'linux'}),
-												showFolders: true,
+												mimeTypes: staticMimeTypes,
 											},
 										],
 									},
@@ -273,6 +271,7 @@ module.exports = function(root, options, _shared) {
 												handler: nodejs.Server.Http.StaticPage,
 												path: files.Path.parse(require.resolve('doodad-js-io')).set({file: null}).combine('./dist/doodad-js-io/', {os: 'linux'}),
 												showFolders: true,
+												mimeTypes: staticMimeTypes,
 											},
 										],
 									},
@@ -282,6 +281,7 @@ module.exports = function(root, options, _shared) {
 												handler: nodejs.Server.Http.StaticPage,
 												path: files.Path.parse(require.resolve('doodad-js-locale')).set({file: null}).combine('./dist/doodad-js-locale/', {os: 'linux'}),
 												showFolders: true,
+												mimeTypes: staticMimeTypes,
 											},
 										],
 									},
@@ -291,6 +291,7 @@ module.exports = function(root, options, _shared) {
 												handler: nodejs.Server.Http.StaticPage,
 												path: files.Path.parse(require.resolve('doodad-js-mime')).set({file: null}).combine('./dist/doodad-js-mime/', {os: 'linux'}),
 												showFolders: true,
+												mimeTypes: staticMimeTypes,
 											},
 										],
 									},
@@ -300,6 +301,7 @@ module.exports = function(root, options, _shared) {
 												handler: nodejs.Server.Http.StaticPage,
 												path: files.Path.parse(require.resolve('doodad-js-minifiers')).set({file: null}).combine('./dist/doodad-js-minifiers/', {os: 'linux'}),
 												showFolders: true,
+												mimeTypes: staticMimeTypes,
 											},
 										],
 									},
@@ -309,6 +311,7 @@ module.exports = function(root, options, _shared) {
 												handler: nodejs.Server.Http.StaticPage,
 												path: files.Path.parse(require.resolve('doodad-js-templates')).set({file: null}).combine('./dist/doodad-js-templates/', {os: 'linux'}),
 												showFolders: true,
+												mimeTypes: staticMimeTypes,
 											},
 										],
 									},
@@ -318,6 +321,7 @@ module.exports = function(root, options, _shared) {
 												handler: nodejs.Server.Http.StaticPage,
 												path: files.Path.parse(require.resolve('doodad-js-test')).set({file: null}).combine('./dist/doodad-js-test/', {os: 'linux'}),
 												showFolders: true,
+												mimeTypes: staticMimeTypes,
 											},
 										],
 									},
@@ -327,6 +331,7 @@ module.exports = function(root, options, _shared) {
 												handler: nodejs.Server.Http.StaticPage,
 												path: files.Path.parse(require.resolve('doodad-js-widgets')).set({file: null}).combine('./dist/doodad-js-widgets/', {os: 'linux'}),
 												showFolders: true,
+												mimeTypes: staticMimeTypes,
 											},
 										],
 									},
@@ -336,16 +341,17 @@ module.exports = function(root, options, _shared) {
 												handler: nodejs.Server.Http.StaticPage,
 												path: files.Path.parse(require.resolve('doodad-js-xml')).set({file: null}).combine('./dist/doodad-js-xml/', {os: 'linux'}),
 												showFolders: true,
+												mimeTypes: staticMimeTypes,
 											},
 										],
 									},
 									'/doodad-js-loader': {
 										handlers: [
 											{
-								mimeTypes: ['application/javascript; charset=utf-8', 'application/x-javascript; charset=utf-8', 'text/html; charset=utf-8', 'text/css; charset=utf-8', 'application/json; charset=utf-8', 'text/json; charset=utf-8', '*/*'],
 												handler: nodejs.Server.Http.StaticPage,
 												path: files.Path.parse(require.resolve('doodad-js-loader')).set({file: null}).combine('./dist/doodad-js-loader/', {os: 'linux'}),
 												showFolders: true,
+												mimeTypes: staticMimeTypes,
 											},
 										],
 									},
@@ -355,6 +361,7 @@ module.exports = function(root, options, _shared) {
 												handler: nodejs.Server.Http.StaticPage,
 												path: files.Path.parse(require.resolve('doodad-js-safeeval')).set({file: null}).combine('./dist/doodad-js-safeeval/', {os: 'linux'}),
 												showFolders: true,
+												mimeTypes: staticMimeTypes,
 											},
 										],
 									},
@@ -364,56 +371,57 @@ module.exports = function(root, options, _shared) {
 												handler: nodejs.Server.Http.StaticPage,
 												path: files.Path.parse(require.resolve('doodad-js-unicode')).set({file: null}).combine('./dist/doodad-js-unicode/', {os: 'linux'}),
 												showFolders: true,
+												mimeTypes: staticMimeTypes,
 											},
 										],
 									},
 									'/lib/sax': saxPath && {
-										mimeTypes: ['application/javascript; charset=utf-8', 'application/x-javascript; charset=utf-8'],
 										handlers: [
 											{
 												handler: nodejs.Server.Http.JavascriptPage,
 												path: saxPath,
 												showFolders: true,
+												mimeTypes: staticMimeTypes,
 											},
 										],
 									},
 									'/lib/es6-promise': promisePath && {
-										mimeTypes: ['application/javascript; charset=utf-8', 'application/x-javascript; charset=utf-8'],
 										handlers: [
 											{
 												handler: nodejs.Server.Http.StaticPage,
 												path: promisePath,
 												showFolders: true,
+												mimeTypes: staticMimeTypes,
 											},
 										],
 									},
 									'/lib/moment': momentPath && {
-										mimeTypes: ['application/javascript; charset=utf-8', 'application/x-javascript; charset=utf-8'],
 										handlers: [
 											{
 												handler: nodejs.Server.Http.StaticPage,
 												path: momentPath,
 												showFolders: true,
+												mimeTypes: staticMimeTypes,
 											},
 										],
 									},
 									'/lib/moment-timezone': momentTzPath && {
-										mimeTypes: ['application/javascript; charset=utf-8', 'application/x-javascript; charset=utf-8'],
 										handlers: [
 											{
 												handler: nodejs.Server.Http.StaticPage,
 												path: momentTzPath,
 												showFolders: true,
+												mimeTypes: staticMimeTypes,
 											},
 										],
 									},
 									'/lib/moment-timezone/data': momentTzDataPath && {
-										mimeTypes: ['application/json; charset=utf-8', 'text/json; charset=utf-8'],
 										handlers: [
 											{
 												handler: nodejs.Server.Http.StaticPage,
 												path: momentTzDataPath,
 												showFolders: true,
+												mimeTypes: staticMimeTypes,
 											},
 										],
 									},
@@ -456,7 +464,7 @@ module.exports = function(root, options, _shared) {
 			request.response.onStatus.attach(null, onstatus);
 		};
 
-		const service = new nodejs.Server.Http.Server(handlers /*, {validHosts: ['www.doodad-js.local']}*/);
+		const service = new nodejs.Server.Http.Server(handlers, {messenger: messenger /*, validHosts: ['www.doodad-js.local']*/});
 		service.onError.attach(null, onerror);
 		service.onNewRequest.attach(null, onrequest);
 		service.listen({
@@ -464,7 +472,7 @@ module.exports = function(root, options, _shared) {
 			port: 8080,
 		});
 
-		const service2 = new nodejs.Server.Http.Server(handlers /*, {validHosts: ['www.doodad-js.local']}*/);
+		const service2 = new nodejs.Server.Http.Server(handlers, {messenger: messenger /*, validHosts: ['www.doodad-js.local']*/});
 		service2.onError.attach(null, onerror);
 		service2.onNewRequest.attach(null, onrequest);
 		service2.listen({

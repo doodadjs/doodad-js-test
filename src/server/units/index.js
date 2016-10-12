@@ -149,3 +149,7 @@ Accept: application/json
 Accept-Encoding: gzip
 
 */
+
+/* JSON with GZIP
+curl -v --data-binary @test_json.gz --header "Content-Type: application/json; charset=utf-8" --header "Content-Encoding: gzip" http://192.168.0.101:8080/rpc
+*/

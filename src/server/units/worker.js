@@ -159,6 +159,9 @@ module.exports = function(root, options, _shared) {
 						//verbs: ['POST'],
 						handlers: [
 							{
+								handler: nodejs.Server.Http.CompressionBodyHandler,
+							},
+							{
 								handler: server.Http.JsonBodyHandler,
 								verbs: ['POST'],
 							},
@@ -251,6 +254,7 @@ module.exports = function(root, options, _shared) {
 												handler: nodejs.Server.Http.StaticPage,
 												path: files.Path.parse(require.resolve('doodad-js')).set({file: null}).combine('./dist/doodad-js/', {os: 'linux'}),
 												showFolders: true,
+												//mimeTypes: ['application/javascript; charset=utf-8', 'application/x-javascript; charset=utf-8'],  // TEST FILTER ON FOLDER DISPLAY
 												mimeTypes: staticMimeTypes,
 											},
 										],

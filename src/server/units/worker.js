@@ -159,6 +159,9 @@ module.exports = function(root, options, _shared) {
 						//verbs: ['POST'],
 						handlers: [
 							{
+								handler: server.Http.Base64BodyHandler,
+							},
+							{
 								handler: nodejs.Server.Http.CompressionBodyHandler,
 							},
 							{
@@ -169,6 +172,48 @@ module.exports = function(root, options, _shared) {
 								handler: server.Http.JsonRpc.Page,
 								service: server.Ipc.ServiceManager,
 								//batchLimit: 2,
+							},
+						],
+					},
+					'/url': {
+						verbs: ['POST'],
+						handlers: [
+							{
+								handler: server.Http.UrlBodyHandler,
+							},
+							{
+								handler: function(request) {
+									return request.getStream()
+										.then(function(input) {
+											return request.response.getStream({contentType: 'text/plain; charset=utf-8'})
+												.then(function(output) {
+													let obj = {},
+														key = null;
+													input.onReady.attach(this, function(ev) {
+														ev.preventDefault();
+														if (ev.data.raw === io.EOF) {
+															if (key) {
+																obj[key] = null;
+															};
+															output.write(JSON.stringify(obj));
+															output.write(io.EOF);
+														} else {
+															if (ev.data.mode === ev.data.Modes.Key) {
+																key = ev.data.valueOf();
+															} else if (key) {
+																obj[key] = ev.data.valueOf();
+																key = null;
+															};
+														};
+													});
+													input.listen();
+													return output.onEOF.promise()
+														.then(function(ev) {
+															// Return nothing
+														});
+												});
+										});
+								},
 							},
 						],
 					},

@@ -153,3 +153,31 @@ Accept-Encoding: gzip
 /* JSON with GZIP
 curl -v --data-binary @test_json.gz --header "Content-Type: application/json; charset=utf-8" --header "Content-Encoding: gzip" http://192.168.0.101:8080/rpc
 */
+
+/* JSON with GZIP + BASE64
+curl -v --data-binary @test_json.gz.base64 --header "Content-Type: application/json; charset=utf-8" --header "Content-Encoding: gzip" --header "Content-Transfer-Encoding: base64" http://192.168.0.101:8080/rpc
+*/
+
+/* URL-Encoded "a=1&b=2&c"
+POST /url/ HTTP/1.0
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 9
+
+a=1&b=2&c
+*/
+
+/* URL-Encoded "écho=éàëìîÿüç"
+POST /url/ HTTP/1.0
+Content-Type: application/x-www-form-urlencoded; charset=utf-8
+Content-Length: 58
+
+%C3%A9cho=%C3%A9%C3%A0%C3%AB%C3%AC%C3%AE%C3%BF%C3%BC%C3%A7
+*/
+
+/* URL-Encoded "a=écho"
+POST /url/ HTTP/1.0
+Content-Type: application/x-www-form-urlencoded; charset=latin1
+Content-Length: 14
+
+a=%E9%63%68%6F
+*/

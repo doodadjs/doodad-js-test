@@ -175,6 +175,71 @@ module.exports = function(root, options, _shared) {
 							},
 						],
 					},
+					'/multipart': {
+						verbs: ['POST'],
+						handlers: [
+							{
+								handler: server.Http.Base64BodyHandler,
+							},
+							{
+								handler: nodejs.Server.Http.CompressionBodyHandler,
+							},
+							{
+								handler: server.Http.FormMultipartBodyHandler,
+							},
+							{
+								handler: server.Http.TextBodyHandler,
+							},
+							{
+								handler: server.Http.UrlBodyHandler,
+							},
+							{
+								handler: function(request) {
+									const Promise = types.getPromise();
+									return request.getStream()
+										.then(function(mpStream) {
+											return request.response.getStream({contentType: 'text/plain; charset=utf-8'})
+												.then(function(resStream) {
+													const parse = function parse(reqStream) {
+														mpStream.listen();
+														reqStream.listen();
+														const promise = reqStream.onReady.promise(function(ev) {
+															ev.preventDefault();
+															const data = ev.data;
+															if (data.raw !== io.EOF) {
+																resStream.write(data.valueOf());
+																return parse(reqStream);
+															};
+														});
+														mpStream.flush({count: 1});
+														return promise;
+													};
+													const newPart = function newPart() {
+														mpStream.listen();
+														const promise = mpStream.onReady.promise(function(ev) {
+															ev.preventDefault();
+															const data = ev.data;
+															if (data.raw === io.BOF) {
+																return request.getStream()
+																	.then(function(reqStream) {
+																		return parse(reqStream)
+																	})
+																	.then(newPart);
+															};
+														});
+														mpStream.flush({count: 1});
+														return promise;
+													};
+													return newPart()
+														.then(function() {
+															// Return nothing
+														});
+												});
+										});
+								},
+							},
+						],
+					},
 					'/url': {
 						verbs: ['POST'],
 						handlers: [
@@ -207,7 +272,7 @@ module.exports = function(root, options, _shared) {
 														};
 													});
 													input.listen();
-													return output.onEOF.promise()
+													return input.onEOF.promise()
 														.then(function(ev) {
 															// Return nothing
 														});

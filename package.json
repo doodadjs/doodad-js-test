@@ -1,8 +1,7 @@
 {
   "name": "doodad-js-test",
-  "version": "1.10.0",
-  "stage": "a",
   "description": "doodad-js Test application",
+  "version": "0.0.0",
   "files": [
 	"tonic.js"
   ],

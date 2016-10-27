@@ -151,11 +151,11 @@ Accept-Encoding: gzip
 */
 
 /* JSON with GZIP
-curl -v --data-binary @test_json.gz --header "Content-Type: application/json; charset=utf-8" --header "Content-Encoding: gzip" http://192.168.0.101:8080/rpc
+curl -v --data-binary @test_json.gz --header "Content-Type: application/json; charset=utf-8" --header "Content-Encoding: gzip" http://127.0.0.1:8080/rpc
 */
 
 /* JSON with GZIP + BASE64
-curl -v --data-binary @test_json.gz.base64 --header "Content-Type: application/json; charset=utf-8" --header "Content-Encoding: gzip" --header "Content-Transfer-Encoding: base64" http://192.168.0.101:8080/rpc
+curl -v --data-binary @test_json.gz.base64 --header "Content-Type: application/json; charset=utf-8" --header "Content-Encoding: gzip" --header "Content-Transfer-Encoding: base64" http://127.0.0.1:8080/rpc
 */
 
 /* URL-Encoded "a=1&b=2&c"
@@ -180,4 +180,8 @@ Content-Type: application/x-www-form-urlencoded; charset=latin1
 Content-Length: 14
 
 a=%E9%63%68%6F
+*/
+
+/* Form Multi-part
+curl -v -F écho=écho -F hello=hello -F bonjour=bonjour -F ciao=ciao -F écho=écho -F hello=hello -F bonjour=bonjour -F ciao=ciao -F écho=écho -F hello=hello -F bonjour=bonjour -F ciao=ciao -F écho=écho -F hello=hello -F bonjour=bonjour -F ciao=ciao -F écho=écho -F hello=hello -F bonjour=bonjour -F ciao=ciao -F écho=écho -F hello=hello -F bonjour=bonjour -F ciao=ciao -F écho=écho -F hello=hello -F bonjour=bonjour -F ciao=ciao -F écho=écho -F hello=hello -F bonjour=bonjour -F ciao=ciao -F écho=écho -F hello=hello -F bonjour=bonjour -F ciao=ciao -F écho=écho -F hello=hello -F bonjour=bonjour -F ciao=ciao 127.0.0.1:8080/multipar
 */

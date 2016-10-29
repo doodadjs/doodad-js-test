@@ -21,23 +21,20 @@
 //	limitations under the License.
 
 window.onload = function() {
-	var options = {};
-	options['Doodad.Modules'] = {
-		modulesUri: '../..',
-	};
-	
-	var root = require('doodad-js').createRoot(null, options);
-	
 	var modules = {};
 	require('doodad-js-unicode').add(modules);
 	require('doodad-js-locale').add(modules);
 	require('doodad-js-dates').add(modules);
 	
-	function startup() {
-		alert(root.Doodad.Tools.Dates.strftime("%c", new Date()));
+	var options = {};
+	options['Doodad.Modules'] = {
+		modulesUri: '../..',
 	};
 	
-	root.Doodad.Namespaces.load(modules, startup)
+	require('doodad-js').createRoot(modules, options)
+		.then(function(root) {
+			alert(root.Doodad.Tools.Dates.strftime("%c", new Date()));
+		})
 		['catch'](function(err) {
 			console.log(err);
 		});

@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html>
-	<body>
-		<script async src="../../doodad-js/bundle_debug.js"></script>
-		
-		<!--IE8 <script>
-			// <PRB> "es6-promise" needs "Array.isArray"
-			if (!Array.isArray) {
-				Array.isArray = function(obj) {
-					return Object.prototype.toString.call(obj) === '[object Array]';
-				};
-			};
-		</script>-->
-		<script src="../../lib/es6-promise/es6-promise.min.js"></script>
-		
-        <script>
+<body>
+    <script async src="../../doodad-js/doodad-js_debug.js"></script>
+
+    <!--IE8 <script>
+        // <PRB> "es6-promise" needs "Array.isArray"
+        if (!Array.isArray) {
+            Array.isArray = function(obj) {
+                return Object.prototype.toString.call(obj) === '[object Array]';
+            };
+        };
+    </script>-->
+    <script src="../../lib/es6-promise/es6-promise.min.js"></script>
+
+    <script>
 			(function() {
 				"use strict";
 
@@ -23,32 +23,39 @@
 						__prevOnLoad__.call(this, ev);
 					};
 
+					var global = window;
+
 					var SECRET = ((typeof Symbol === 'function') ? Symbol() : []);
 
-				    var options = {secret: SECRET};
+					var options = {startup: {secret: SECRET}};
 
 					options['Doodad.Modules'] = {
 						modulesUri: '../..',
 					};
 
-					var root = window.createRoot(window.DD_MODULES, options),
-						doodad = root.Doodad,
-						modules = doodad.Modules;
+					global.createRoot(null, options)
+                        .then(function (root) {
+                            var doodad = root.Doodad,
+						        modules = doodad.Modules;
 
-					modules.load({
-						'doodad-js-unicode': {},
-						'doodad-js-locale': {},
-						'doodad-js-safeeval': {},
-						'doodad-js-loader': {},
-						'doodad-js-test': {'widgets/MyWidget_loader.js': {}},
-					}, options);
+                            return modules.load({
+                                'doodad-js-unicode': null,
+                                'doodad-js-locale': null,
+                                'doodad-js-safeeval': null,
+                                'doodad-js-loader': null,
+                                'doodad-js-test': {'widgets/MyWidget_loader.js': null},
+                            }, options);
+                        })
+				        ['catch'](function (err) {
+				            alert(err);
+				        });
 				};
 			}).call((typeof global !== 'undefined') ? global : ((typeof window !== 'undefined') ? window : this));
-		</script>
-		
-		<div id="test1"></div>
-		<div id="test2"></div>
-		<div id="test3"></div>
-		
-	</body>
+    </script>
+
+    <div id="test1"></div>
+    <div id="test2"></div>
+    <div id="test3"></div>
+
+</body>
 </html>

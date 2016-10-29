@@ -26,7 +26,9 @@
 
 const SECRET = Symbol();
 
-const options = {secret: SECRET};
+const options = {
+	startup: {secret: SECRET},
+};
 
 const DD_MODULES = {};
 require('doodad-js-unicode').add(DD_MODULES);
@@ -35,14 +37,8 @@ require('doodad-js-safeeval').add(DD_MODULES);
 require('doodad-js-loader').add(DD_MODULES);
 require("../../common/widgets/MyWidget_loader.js").add(DD_MODULES);
 
-const root = require('doodad-js').createRoot(DD_MODULES, options),
-	doodad = root.Doodad,
-	namespaces = doodad.Namespaces;
-
-doodad.Types.trapUnhandledRejections();
-
-namespaces.load(DD_MODULES, null, options)
-	['catch'](function(err) {
+require('doodad-js').createRoot(DD_MODULES, options)
+	.catch(err => {
 		err && !err.trapped && console.error(err.stack);
 		if (!process.exitCode) {
 			process.exitCode = 1;

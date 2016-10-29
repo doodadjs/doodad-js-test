@@ -163,5 +163,5 @@ module.exports = function(root, options, _shared) {
 	require('doodad-js-terminal').add(DD_MODULES);
 	require('doodad-js-test').add(DD_MODULES);
 
-	return namespaces.load(DD_MODULES, startup, {secret: _shared.SECRET});
+	return namespaces.load(DD_MODULES, {startup: {secret: _shared.SECRET}}, startup);
 };

@@ -33,6 +33,8 @@ function startup(root, _shared) {
 		tools = doodad.Tools,
 		files = tools.Files;
 					
+	root.Doodad.Types.trapUnhandledRejections();
+	
 	const cachePath = files.Path.parse(tools.Files.getTempFolder()).combine('./nodesjs/doodad-js/', {os: 'linux'});
 	tools.Files.mkdir(cachePath, {makeParents: true});
 	
@@ -62,17 +64,13 @@ require('doodad-js-ipc').add(DD_MODULES);
 require('doodad-js-cluster').add(DD_MODULES);
 require('doodad-js-safeeval').add(DD_MODULES);
 
-const root = require('doodad-js').createRoot(DD_MODULES, options);
-
-root.Doodad.Types.trapUnhandledRejections();
-
-root.Doodad.Namespaces.load(DD_MODULES, startup, options)
-		['catch'](function(err) {
-			err && !err.trapped && console.error(err.stack);
-			if (!process.exitCode) {
-				process.exitCode = 1;
-			};
-		});
+require('doodad-js').createRoot(DD_MODULES, options, startup)
+	.catch(err => {
+		err && !err.trapped && console.error(err.stack);
+		if (!process.exitCode) {
+			process.exitCode = 1;
+		};
+	});
 
 
 /* Cross-Origin (simple request) : Should return an index file with appropriated headers

@@ -59,7 +59,7 @@ module.exports = {
 										before: false,
 									},
 									initializers: [
-										function(root) {return root.Doodad.Modules.load({'doodad-js-io': {}}, {secret: _shared.SECRET})},
+										function(root) {return root.Doodad.Modules.load({'doodad-js-io': {}}, {startup: {secret: _shared.SECRET}})},
 									],
 								}
 							]
@@ -79,7 +79,7 @@ module.exports = {
 										before: false,
 									},
 									initializers: [
-										function(root) {return root.Doodad.Modules.load({'doodad-js-widgets': {}}, {secret: _shared.SECRET})},
+										function(root) {return root.Doodad.Modules.load({'doodad-js-widgets': {}}, {startup: {secret: _shared.SECRET}})},
 									],
 								}
 							]
@@ -114,7 +114,7 @@ module.exports = {
 												files['widgets/MyWidget.js'] = {};
 											};
 											var modules = {'doodad-js-test': files};
-											return root.Doodad.Modules.load(modules, {secret: _shared.SECRET});
+											return root.Doodad.Modules.load(modules, {startup: {secret: _shared.SECRET}});
 										},
 									],
 								}

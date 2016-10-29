@@ -1,52 +1,37 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<link rel="stylesheet" href="../../doodad-js-test/units/Test.css" />
-	</head>
-	<body>
-		<script async src="../../doodad-js/bundle_debug.js"></script>
-		<script async src="../../doodad-js/doodad-js_tests.js"></script>
-		<script async src="../../doodad-js-unicode/doodad-js-unicode_debug.js"></script>
-		<script async src="../../doodad-js-locale/doodad-js-locale_debug.js"></script>
-		<script async src="../../doodad-js-dates/doodad-js-dates_debug.js"></script>
-		<script async src="../../doodad-js-io/doodad-js-io_debug.js"></script>
-		<script async src="../../doodad-js-safeeval/doodad-js-safeeval_debug.js"></script>
-		<script async src="../../doodad-js-safeeval/doodad-js-safeeval_tests.js"></script>
-		<script async src="../../doodad-js-test/doodad-js-test_debug.js"></script>
-		<script async src="../../lib/sax/sax.js"></script>
-        <script src="../../lib/moment/moment.min.js"></script>
-        <script src="../../lib/moment-timezone/moment-timezone.min.js"></script>
-		
-		<!--IE8 <script>
-			// <PRB> "es6-promise" needs "Array.isArray"
-			if (!Array.isArray) {
-				Array.isArray = function(obj) {
-					return Object.prototype.toString.call(obj) === '[object Array]';
-				};
-			};
-		</script>-->
-		<script src="../../lib/es6-promise/es6-promise.min.js"></script>
-		
-		<script>
+<head>
+    <link rel="stylesheet" href="../../doodad-js-test/units/Test.css" />
+</head>
+<body>
+    <script async src="../../doodad-js/doodad-js_debug.js"></script>
+    <script async src="../../lib/uuid/uuid.min.js"></script>
+    <script async src="../../lib/sax/sax.js"></script>
+    <script src="../../lib/moment/moment.min.js"></script>
+    <script src="../../lib/moment-timezone/moment-timezone.min.js"></script>
+
+    <!--IE8 <script>
+        // <PRB> "es6-promise" needs "Array.isArray"
+        if (!Array.isArray) {
+            Array.isArray = function(obj) {
+                return Object.prototype.toString.call(obj) === '[object Array]';
+            };
+        };
+    </script>-->
+    <script src="../../lib/es6-promise/es6-promise.min.js"></script>
+
+    <script>
 			(function() {
 				"use strict";
-			
+
 				var	__prevOnLoad__ = window.onload;
 				window.onload = function testWindowOnLoad(ev) {
 					if (__prevOnLoad__) {
 						__prevOnLoad__.call(this, ev);
 					};
-					
-					function startup() {
-						var test = root.Doodad.Test,
-							clientIO = root.Doodad.Client.IO;
 
-						test.setOutput(new clientIO.DomOutputStream({ autoFlush: false }));
-						test.run();
-					};
-					
 					var global = window;
-					
+
 					var options = {};
 
 					options['Doodad.Modules'] = {
@@ -57,17 +42,38 @@
 					    dataUri: '/app/lib/moment-timezone/data/',
 					};
 
-				    var root = global.createRoot(global.DD_MODULES, options),
-						namespaces = root.Doodad.Namespaces;
-					
-					window.DD_ROOT = root; // For tests
+				    global.createRoot(null, options)
+					    .then(function(root) {
+					        global.DD_ROOT = root; // For tests
+					        return root;
+					    })
+                        .then(function (root) {
+                            var doodad = root.Doodad,
+						        modules = doodad.Modules;
 
-					namespaces.load(global.DD_MODULES, startup, options)
-						['catch'](function(err) {
+                            return modules.load({
+                                'doodad-js/tests' : {'doodad-js_tests.js' : null},
+                                'doodad-js-unicode': null,
+                                'doodad-js-locale': null,
+                                'doodad-js-dates': null,
+                                'doodad-js-io': null,
+                                'doodad-js-safeeval': null,
+                                'doodad-js-safeeval/tests': { 'doodad-js-safeeval_tests.js': null },
+                                'doodad-js-test': null,
+                            }, options);
+                        })
+				        .then(function (root) {
+				            var test = root.Doodad.Test,
+							    clientIO = root.Doodad.Client.IO;
+
+				            test.setOutput(new clientIO.DomOutputStream({ autoFlush: false }));
+				            return test.run();
+				        })
+				        ['catch'](function (err) {
 							alert(err);
 						});
 				};
 			}).call((typeof global !== 'undefined') ? global : ((typeof window !== 'undefined') ? window : this));
-		</script>
-	</body>
+    </script>
+</body>
 </html>

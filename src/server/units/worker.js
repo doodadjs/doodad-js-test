@@ -87,6 +87,16 @@ module.exports = function(root, options, _shared) {
 			}),
 		}));
 
+		let uuidFilePath;
+		try {
+			uuidFilePath = files.Path.parse(require.resolve('node-uuid/package.json'))
+				.set({file: ''})
+				.combine('./uuid.js', {os: 'linux'});
+			fs.statSync(uuidFilePath.toString());
+		} catch(ex) {
+			console.warn("The library 'node-uuid' is not available. Will use the old UUID generator.");
+		};
+		
 		let saxPath;
 		try {
 			saxPath = files.Path.parse(require.resolve('sax/package.json'))
@@ -489,6 +499,26 @@ module.exports = function(root, options, _shared) {
 											},
 										],
 									},
+									'/lib/uuid/uuid.js': uuidFilePath && {
+										handlers: [
+											{
+												handler: nodejs.Server.Http.StaticPage,
+												path: uuidFilePath,
+												showFolders: false,
+												mimeTypes: staticMimeTypes,
+											},
+										],
+									},
+									'/lib/uuid/uuid.min.js': uuidFilePath && {
+										handlers: [
+											{
+												handler: nodejs.Server.Http.JavascriptPage,
+												path: uuidFilePath,
+												showFolders: false,
+												mimeTypes: staticMimeTypes,
+											},
+										],
+									},
 									'/lib/sax': saxPath && {
 										handlers: [
 											{
@@ -608,5 +638,5 @@ module.exports = function(root, options, _shared) {
 	require('doodad-js-http').add(DD_MODULES);
 	require('doodad-js-http_jsonrpc').add(DD_MODULES);
 	
-	return namespaces.load(DD_MODULES, startup, {secret: _shared.SECRET});
+	return namespaces.load(DD_MODULES, {startup: {secret: _shared.SECRET}}, startup);
 };

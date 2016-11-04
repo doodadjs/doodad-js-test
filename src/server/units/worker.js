@@ -211,17 +211,22 @@ module.exports = function(root, options, _shared) {
 											return request.response.getStream({contentType: 'text/plain; charset=utf-8'})
 												.then(function(resStream) {
 													const parse = function parse(reqStream) {
-														mpStream.listen();
 														reqStream.listen();
 														const promise = reqStream.onReady.promise(function(ev) {
-															ev.preventDefault();
 															const data = ev.data;
+															ev.preventDefault();
 															if (data.raw !== io.EOF) {
-																resStream.write(data.valueOf());
-																return parse(reqStream);
+																data.consumed = true;  // Will be consumed later
+																return resStream.writeAsync(data.valueOf())
+																	.then(function() {
+																		data.consumed = false;
+																		reqStream.__consumeData(data);
+																		return parse(reqStream);
+																	});
 															};
 														});
-														mpStream.flush({count: 1});
+														mpStream.flush();
+														reqStream.flush({count: 1});
 														return promise;
 													};
 													const newPart = function newPart() {
@@ -231,9 +236,7 @@ module.exports = function(root, options, _shared) {
 															const data = ev.data;
 															if (data.raw === io.BOF) {
 																return request.getStream()
-																	.then(function(reqStream) {
-																		return parse(reqStream)
-																	})
+																	.then(parse)
 																	.then(newPart);
 															};
 														});

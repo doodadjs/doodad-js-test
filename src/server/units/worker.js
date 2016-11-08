@@ -208,6 +208,82 @@ module.exports = function(root, options, _shared) {
 									const Promise = types.getPromise();
 									return request.getStream()
 										.then(function(mpStream) {
+											// TODO: Write an helper function for that
+											// TODO: Try "rxjs" (Observables), but I doubt it will be as fast
+											mpStream.setOptions({flushMode: 'half'});
+											return request.response.getStream({contentType: 'text/plain; charset=utf-8'})
+												.then(function(resStream) {
+													return Promise.create(function onReadyHook(mpResolve, mpReject) {
+														const state = {aborted: false, mpStreamEnd: null};
+														let mpStreamReadyCb, mpStreamErrorCb;
+														state.mpStreamEnd = function(err) {
+															mpStream.onReady.detach(null, mpStreamReadyCb);
+															mpStream.onError.detach(null, mpStreamErrorCb);
+															if (err) {
+																state.aborted = true;
+																mpReject(err);
+															} else {
+																mpResolve(/* returns nothing*/);
+															};
+														};
+														mpStream.onReady.attach(null, mpStreamReadyCb = function(ev) {
+															ev.preventDefault();
+															if (ev.data.raw === io.BOF) {
+																ev.data.delayed = true;
+																mpStream.onReady.detach(null, mpStreamReadyCb);
+																request.getStream()
+																	.then(function(reqStream) {
+																		return !state.aborted && Promise.create(function onReadyHook(reqResolve, reqReject) {
+																			let reqStreamReadyCb, reqStreamErrorCb;
+																			const reqStreamEnd = function(err) {
+																				reqStream.onReady.detach(null, reqStreamReadyCb);
+																				reqStream.onError.detach(null, reqStreamErrorCb);
+																				if (err) {
+																					reqReject(err);
+																				} else {
+																					if (!state.aborted) {
+																						mpStream.onReady.attach(null, mpStreamReadyCb);
+																						mpStream.listen();
+																						mpStream.flush();
+																					};
+																					reqResolve();
+																				};
+																			};
+																			reqStream.onReady.attach(null, reqStreamReadyCb = function(ev) {
+																				ev.preventDefault();
+																				if (state.aborted || (ev.data.raw === io.EOF)) {
+																					reqStreamEnd();
+																				} else {
+																					ev.data.delayed = true;   // Will be ocnsumed later
+																					resStream.write(ev.data.valueOf(), {callback: function() {
+																						reqStream.__consumeData(ev.data);
+																					}});
+																				};
+																			});
+																			reqStream.onError.attachOnce(null, reqStreamErrorCb = function(ev) {
+																				reqStreamEnd(ev.error);
+																			});
+																			reqStream.listen();
+																			mpStream.flush();
+																			reqStream.flush();
+																			mpStream.__consumeData(ev.data);
+																		});
+																	})
+																	.catch(state.mpStreamEnd);
+															} else {
+																state.mpStreamEnd();
+															};
+														});
+														mpStream.onError.attachOnce(null, mpStreamErrorCb = function(ev) {
+															state.mpStreamEnd(ev.error);
+														});
+														mpStream.listen();
+														mpStream.flush();
+													}, this);
+												});
+
+
+/* CUTE, BUT SLOW
 											return request.response.getStream({contentType: 'text/plain; charset=utf-8'})
 												.then(function(resStream) {
 													const parse = function parse(reqStream) {
@@ -248,6 +324,7 @@ module.exports = function(root, options, _shared) {
 															// Return nothing
 														});
 												});
+*/
 										});
 								},
 							},
@@ -318,9 +395,9 @@ module.exports = function(root, options, _shared) {
 					'/app': {
 						//verbs: ['GET', 'HEAD'],
 						handlers: [
-							//{
-							//	handler: server.Http.CrossOriginHandler, 
-							//},
+							{
+								handler: server.Http.CrossOriginHandler, 
+							},
 							{
 								handler: server.Http.ClientCrashHandler,
 							},
@@ -591,7 +668,7 @@ module.exports = function(root, options, _shared) {
 		];
 
 		function onerror(ev) {
-			console.error(ev.error.stack);
+			ev.preventDefault();
 		};
 
 		function onstatus(ev) {
@@ -607,6 +684,7 @@ module.exports = function(root, options, _shared) {
 
 		function onrequest(ev) {
 			const request = ev.data.request;
+			request.onError.attach(null, onerror);
 			request.response.onError.attach(null, onerror);
 			request.response.onStatus.attach(null, onstatus);
 		};

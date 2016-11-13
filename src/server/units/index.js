@@ -50,8 +50,7 @@ function startup(root, _shared) {
 };
 
 const options = {
-	secret: SECRET,
-//	startup: {fromSource: true},
+	startup: {secret: SECRET},
 };
 
 const DD_MODULES = {};

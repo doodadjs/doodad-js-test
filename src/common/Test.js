@@ -554,7 +554,12 @@ module.exports = {
 					};
 				};
 				
-				var __showFailsOnReady__ = function onReady(ev) {
+				var __showFailsOnData__ = function onData(ev) {
+					// Prevent unmanaged keys from going into the buffer.
+					ev.preventDefault();
+				};
+
+				var __showFailsOnKey__ = function onKey(ev) {
 					var prevent = false;
 					try {
 						var key = ev.data;
@@ -582,7 +587,6 @@ module.exports = {
 					} finally {
 						if (prevent) {
 							ev.preventDefault();
-							return false;
 						};
 					};
 				};
@@ -773,7 +777,8 @@ module.exports = {
 					if (test.FAILED_TESTS) {
 						state.move(true);
 						
-						io.stdin.onReady.attach(state, __showFailsOnReady__);
+						io.stdin.onKey.attach(state, __showFailsOnKey__);
+						io.stdin.onData.attach(state, __showFailsOnData__);
 						io.stdin.listen();
 					};
 				};
@@ -803,7 +808,12 @@ module.exports = {
 					tools.setCurrentLocation(url);
 				};
 
-				var __showNavigatorOnReady__ = function onReady(ev) {
+				var __showNavigatorOnData__ = function onData(ev) {
+					// Prevent unmanaged keys from going into the buffer.
+					ev.preventDefault();
+				};
+
+				var __showNavigatorOnKey__ = function onKey(ev) {
 					var prevent = false;
 					try {
 						var key = ev.data;
@@ -825,7 +835,6 @@ module.exports = {
 					} finally {
 						if (prevent) {
 							ev.preventDefault();
-							return false;
 						};
 					};
 				};
@@ -908,7 +917,8 @@ module.exports = {
 					nextButton.onclick = state.next;
 					nextButton.className = nextButton.className.replace('bindMe', '');
 
-					io.stdin.onReady.attach(state, __showNavigatorOnReady__);
+					io.stdin.onKey.attach(state, __showNavigatorOnKey__);
+					io.stdin.onData.attach(state, __showNavigatorOnData__)
 					io.stdin.listen();
 				};
 				

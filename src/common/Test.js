@@ -555,38 +555,26 @@ module.exports = {
 				};
 				
 				var __showFailsOnData__ = function onData(ev) {
-					// Prevent unmanaged keys from going into the buffer.
+					// Prevent managed and unmanaged keys from going into the buffer.
 					ev.preventDefault();
 				};
 
 				var __showFailsOnKey__ = function onKey(ev) {
-					var prevent = false;
-					try {
-						var key = ev.data;
-						if (!key.functionKeys) {
-							var scanCode = key.scanCode;
-							if (scanCode === io.KeyboardScanCodes.UpArrow) {
-								prevent = true;
-								this.prev(ev);
-							} else if (scanCode === io.KeyboardScanCodes.DownArrow) {
-								prevent = true;
-								this.next(ev);
-							} else if (scanCode === io.KeyboardScanCodes.Home) {
-								prevent = true;
-								this.first(ev);
-							} else if (scanCode === io.KeyboardScanCodes.End) {
-								prevent = true;
-								this.last(ev);
-							};
-						};
-					} catch(ex) {
-						if (!(ex instanceof types.ScriptInterruptedError)) {
-							io.stderr.write(ex);
-							io.stderr.flush();
-						};
-					} finally {
-						if (prevent) {
-							ev.preventDefault();
+					var key = ev.data;
+					if (!key.functionKeys) {
+						var scanCode = key.scanCode;
+						if (scanCode === io.KeyboardScanCodes.UpArrow) {
+							ev.preventDefault(); // prevent key from being applied by the browser
+							this.prev(ev);
+						} else if (scanCode === io.KeyboardScanCodes.DownArrow) {
+							ev.preventDefault(); // prevent key from being applied by the browser
+							this.next(ev);
+						} else if (scanCode === io.KeyboardScanCodes.Home) {
+							ev.preventDefault(); // prevent key from being applied by the browser
+							this.first(ev);
+						} else if (scanCode === io.KeyboardScanCodes.End) {
+							ev.preventDefault(); // prevent key from being applied by the browser
+							this.last(ev);
 						};
 					};
 				};
@@ -809,32 +797,20 @@ module.exports = {
 				};
 
 				var __showNavigatorOnData__ = function onData(ev) {
-					// Prevent unmanaged keys from going into the buffer.
+					// Prevent managed and unmanaged keys from going into the buffer.
 					ev.preventDefault();
 				};
 
 				var __showNavigatorOnKey__ = function onKey(ev) {
-					var prevent = false;
-					try {
-						var key = ev.data;
-						if (!key.functionKeys) {
-							var scanCode = key.scanCode;
-							if (scanCode === io.KeyboardScanCodes.LeftArrow) {
-								prevent = true;
-								this.prev(ev);
-							} else if (scanCode === io.KeyboardScanCodes.RightArrow) {
-								prevent = true;
-								this.next(ev);
-							};
-						};
-					} catch(ex) {
-						if (!(ex instanceof types.ScriptInterruptedError)) {
-							io.stderr.write(ex);
-							io.stderr.flush();
-						};
-					} finally {
-						if (prevent) {
-							ev.preventDefault();
+					var key = ev.data;
+					if (!key.functionKeys) {
+						var scanCode = key.scanCode;
+						if (scanCode === io.KeyboardScanCodes.LeftArrow) {
+							ev.preventDefault(); // prevent key from being applied by the browser
+							this.prev(ev);
+						} else if (scanCode === io.KeyboardScanCodes.RightArrow) {
+							ev.preventDefault(); // prevent key from being applied by the browser
+							this.next(ev);
 						};
 					};
 				};

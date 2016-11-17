@@ -29,8 +29,7 @@ Linux :
 
 Then start 'doodad-js-test' server :
 ```bash
-    cd doodad-js-test/src/server/units
-    node .
+    npm start
 ```
 
 At the command prompt (">>>"), you can try :

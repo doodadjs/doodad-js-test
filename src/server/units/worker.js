@@ -702,8 +702,8 @@ module.exports = function(root, options, _shared) {
 		service2.onNewRequest.attach(null, onrequest);
 		service2.listen({
 			protocol: 'https',
-			certFile: 'www.doodad-js.local.crt',
-			keyFile: 'www.doodad-js.local.key',
+			certFile: __dirname + tools.getOS().dirChar + 'www.doodad-js.local.crt',
+			keyFile: __dirname + tools.getOS().dirChar + 'www.doodad-js.local.key',
 			target: '0.0.0.0', 
 			port: 8181,
 		});

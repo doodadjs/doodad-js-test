@@ -672,13 +672,13 @@ module.exports = function(root, options, _shared) {
 		};
 
 		function onstatus(ev) {
-			const request = ev.obj,
-				status = request.responseStatus;
+			const response = ev.obj,
+				status = response.status;
 			if (status >= 300) {
-				if (!request.hasResponseStream()) {
-					const stream = request.getResponseStream({contentType: 'text/plain', encoding: 'utf-8'});
-					stream.write(types.toString(status));
-				};
+				ev.preventDefault();
+				ev.data.promise = ev.data.promise
+					.then(() => response.getStream({contentType: 'text/plain', encoding: 'utf-8'}))
+					.then(stream => stream.write(types.toString(status)));
 			};
 		};
 

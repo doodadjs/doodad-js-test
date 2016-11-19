@@ -13,8 +13,7 @@
     "start":  "node ./src/server/units/index.js"
   },
   "optionalDependencies": {
-    "es6-promise": "^3.0.2",
-	"moment": "^2.15.1"
+    "es6-promise": "^3.0.2"
   },
   "repository": {
     "type": "git",

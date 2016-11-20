@@ -87,16 +87,6 @@ module.exports = function(root, options, _shared) {
 			}),
 		}));
 
-		let uuidFilePath;
-		try {
-			uuidFilePath = files.Path.parse(require.resolve('node-uuid/package.json'))
-				.set({file: ''})
-				.combine('./uuid.js', {os: 'linux'});
-			fs.statSync(uuidFilePath.toString());
-		} catch(ex) {
-			console.warn("The library 'node-uuid' is not available. Will use the old UUID generator.");
-		};
-		
 		let saxPath;
 		try {
 			saxPath = files.Path.parse(require.resolve('sax/package.json'))
@@ -575,26 +565,6 @@ module.exports = function(root, options, _shared) {
 												handler: nodejs.Server.Http.StaticPage,
 												path: files.Path.parse(require.resolve('doodad-js-unicode')).set({file: null}).combine('./dist/doodad-js-unicode/', {os: 'linux'}),
 												showFolders: true,
-												mimeTypes: staticMimeTypes,
-											},
-										],
-									},
-									'/lib/uuid/uuid.js': uuidFilePath && {
-										handlers: [
-											{
-												handler: nodejs.Server.Http.StaticPage,
-												path: uuidFilePath,
-												showFolders: false,
-												mimeTypes: staticMimeTypes,
-											},
-										],
-									},
-									'/lib/uuid/uuid.min.js': uuidFilePath && {
-										handlers: [
-											{
-												handler: nodejs.Server.Http.JavascriptPage,
-												path: uuidFilePath,
-												showFolders: false,
 												mimeTypes: staticMimeTypes,
 											},
 										],

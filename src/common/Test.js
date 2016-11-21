@@ -66,29 +66,29 @@ module.exports = {
 					stdout: null,
 				};
 				
-				entries.TestModule = types.INIT(entries.Module.$inherit(
+				entries.ADD('TestModule', types.INIT(entries.Module.$inherit(
 					/*typeProto*/
 					{
 						$TYPE_NAME: 'TestModuleEntry'
 					}
-				));
+				)));
 				
-				entries.TestPackage = types.INIT(entries.Package.$inherit(
+				entries.ADD('TestPackage', types.INIT(entries.Package.$inherit(
 					/*typeProto*/
 					{
 						$TYPE_NAME: 'TestPackageEntry'
 					}
-				));
+				)));
 				
-				test.setOutput = function setOutput(stream) {
+				test.ADD('setOutput', function setOutput(stream) {
 					__Internal__.stdout = stream;
-				};
+				});
 
-				test.getOutput = function getOutput(stream) {
+				test.ADD('getOutput', function getOutput(stream) {
 					return __Internal__.stdout || io.stdout;
-				};
+				});
 
-				test.getUnits = function getUnits(namespace) {
+				test.ADD('getUnits', function getUnits(namespace) {
 					var units = namespace.CHILDREN;
 					if (!units) {
 						units = namespace.CHILDREN = [];
@@ -118,18 +118,18 @@ module.exports = {
 						};
 					};
 					return units;
-				};
+				});
 				
-				test.getUnit = function getUnit(name) {
+				test.ADD('getUnit', function getUnit(name) {
 					return namespaces.get(name, entries.TestModule);
-				};
+				});
 				
 				test.EmptySlot = function EmptySlot() {};
 				test.EmptySlot.prototype.toString = function() {return "<empty>";};
 				test.EmptySlot.prototype.toSource = function() {return "undefined";};
-				test.EmptySlot = new test.EmptySlot();
+				test.ADD('EmptySlot', new test.EmptySlot());
 				
-				test.compare = function compare(expected, result, /*optional*/options) {
+				test.ADD('compare', function compare(expected, result, /*optional*/options) {
 					expected = types.toObject(expected);
 					result = types.toObject(result);
 					var expectedValue = expected.valueOf(),
@@ -268,13 +268,13 @@ module.exports = {
 							);
 					};
 					return (!types.get(options, 'not', false) === success);
-				};
+				});
 
 				__Internal__.performanceEnabled = !!(global.performance && global.performance.now);
 				__Internal__.processHrTimeEnabled = !__Internal__.performanceEnabled && !!(nodejs && global.process.hrtime);
 				__Internal__.consoleTimingEnabled = !__Internal__.processHrTimeEnabled && !!(global.console && global.console.time && global.console.timeEnd);
 					
-				test.prepareCommand = function prepareCommand(fn, fnName) {
+				test.ADD('prepareCommand', function prepareCommand(fn, fnName) {
 					var stream = test.getOutput(),
 						html = types._implements(stream, io.HtmlOutputStream),
 						dom = (clientIO ? (stream instanceof clientIO.DomOutputStream) : false);
@@ -524,9 +524,9 @@ module.exports = {
 							};
 						},
 					};
-				};
+				});
 				
-				test.runUnit = function runUnit(unit, /*optional*/options) {
+				test.ADD('runUnit', function runUnit(unit, /*optional*/options) {
 					var stream = test.getOutput(),
 						html = types._implements(stream, io.HtmlOutputStream);
 					if (html) {
@@ -545,14 +545,14 @@ module.exports = {
 					} else {
 						stream.flush();
 					};
-				};
+				});
 				
-				test.runChildren = function runChildren(unit) {
+				test.ADD('runChildren', function runChildren(unit) {
 					var units = test.getUnits(unit);
 					for (var i = 0; i < units.length; i++) {
 						test.runUnit(units[i]);
 					};
-				};
+				});
 				
 				var __showFailsOnData__ = function onData(ev) {
 					// Prevent managed and unmanaged keys from going into the buffer.
@@ -579,7 +579,7 @@ module.exports = {
 					};
 				};
 				
-				test.showFails = function showFails() {
+				test.ADD('showFails', function showFails() {
 					var stream = test.getOutput(),
 						root = stream.element,
 						runElements = Array.prototype.slice.call(root.getElementsByClassName("run bindMe"), 0), // <PRB> Returned objects collection is dynamic
@@ -769,9 +769,9 @@ module.exports = {
 						io.stdin.onData.attach(state, __showFailsOnData__);
 						io.stdin.listen();
 					};
-				};
+				});
 				
-				test.showUnitName = function showUnitName() {
+				test.ADD('showUnitName', function showUnitName() {
 					var name = (test.CURRENT_UNIT ? test.CURRENT_UNIT.DD_FULL_NAME : ''),
 						stream = test.getOutput(),
 						root = stream.element,
@@ -779,9 +779,9 @@ module.exports = {
 					for (var i = 0; i < elements.length; i++) {
 						elements[i].textContent = name;
 					};
-				};
+				});
 
-				test.moveToUnit = function moveToUnit(unit) {
+				test.ADD('moveToUnit', function moveToUnit(unit) {
 					var url = tools.getCurrentLocation();
 					if (unit) {
 						url = url.set({
@@ -794,7 +794,7 @@ module.exports = {
 						});
 					};
 					tools.setCurrentLocation(url);
-				};
+				});
 
 				var __showNavigatorOnData__ = function onData(ev) {
 					// Prevent managed and unmanaged keys from going into the buffer.
@@ -815,7 +815,7 @@ module.exports = {
 					};
 				};
 				
-				test.showNavigator = function showNavigator() {
+				test.ADD('showNavigator', function showNavigator() {
 					var stream = test.getOutput();
 					stream.openElement({tag: 'div', attrs: 'class="navigator"'});
 					stream.write('<button class="index bindMe">Index</button><button class="prevUnit bindMe">&lt;&lt;&lt;</button><span class="unitName"></span><button class="nextUnit bindMe">&gt;&gt;&gt;</button>');
@@ -896,7 +896,7 @@ module.exports = {
 					io.stdin.onKey.attach(state, __showNavigatorOnKey__);
 					io.stdin.onData.attach(state, __showNavigatorOnData__)
 					io.stdin.listen();
-				};
+				});
 				
 				var __buildIndexItems__ = function(namespace) {
 					var html = '<ul>';
@@ -913,7 +913,7 @@ module.exports = {
 					return html + '</ul>';
 				};
 				
-				test.showIndex = function showIndex(unit) {
+				test.ADD('showIndex', function showIndex(unit) {
 					var stream = test.getOutput();
 					stream.openElement({tag: 'div', attrs: 'class="indexMenu"'});
 					stream.write(__buildIndexItems__(test));
@@ -943,9 +943,9 @@ module.exports = {
 						element.className = '';
 						element.onclick = click;
 					};
-				};
+				});
 				
-				test.run = function run(/*optional*/options) {
+				test.ADD('run', function run(/*optional*/options) {
 					var success = true;
 
 					test.FAILED_TESTS = 0;
@@ -1048,7 +1048,7 @@ module.exports = {
 					};
 					
 					return success;
-				};
+				});
 				
 			},
 		};

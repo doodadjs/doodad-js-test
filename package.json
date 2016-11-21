@@ -10,7 +10,8 @@
     "test"
   ],
   "scripts": {
-    "start":  "node ./src/server/units/index.js"
+    "start":  "node ./src/server/units/index.js",
+	"test": "npm start"
   },
   "optionalDependencies": {
     "es6-promise": "^3.0.2"

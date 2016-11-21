@@ -35,6 +35,10 @@ function startup(root, _shared) {
 					
 	tools.trapUnhandledErrors();
 	
+	// <PRB> Node.js doesn't include the application's path, even when the application is a package.
+	const file = files.Path.parse(module.filename).set({ file: null }).combine('../../../..', { os: 'linux' }).toString();
+	require('app-module-path').addPath(file);
+
 	const cachePath = files.Path.parse(tools.Files.getTempFolder()).combine('./nodesjs/doodad-js/', {os: 'linux'});
 	tools.Files.mkdir(cachePath, {makeParents: true});
 	

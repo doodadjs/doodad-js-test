@@ -67,8 +67,13 @@ require('doodad-js-ipc').add(DD_MODULES);
 require('doodad-js-cluster').add(DD_MODULES);
 require('doodad-js-safeeval').add(DD_MODULES);
 
-require('doodad-js').createRoot(DD_MODULES, options, startup);
-
+require('doodad-js').createRoot(DD_MODULES, options, startup)
+	.catch(err => {
+		err && !err.trapped && console.error(err.stack);
+		if (!process.exitCode) {
+			process.exitCode = 1;
+		};
+	});
 
 /* Cross-Origin (simple request) : Should return an index file with appropriated headers
 GET /app/doodad-js-test/ HTTP/1.0

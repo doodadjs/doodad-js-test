@@ -47,7 +47,10 @@
                                 'doodad-js-loader': null,
                                 'doodad-js-test': {'widgets/MyWidget_loader.js': null},
                             }, options);
-                        });
+                        })
+				        ['catch'](function (err) {
+				            alert(err);
+				        });
 				};
 			}).call((typeof global !== 'undefined') ? global : ((typeof window !== 'undefined') ? window : this));
     </script>

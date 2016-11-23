@@ -127,7 +127,7 @@ module.exports = {
 				}));
 
 				var finalStep;
-				if (nodejs && nodejs.isServer()) {
+				if (root.serverSide) {
 					finalStep = MyWidgetStep1;
 				} else {
 					var MyWidgetStep2 = doodad.REGISTER(doodad.BASE(MyWidgetStep1.$extend(
@@ -309,7 +309,7 @@ module.exports = {
 						return myWidget;
 					};
 					
-					if (nodejs && nodejs.isServer()) {
+					if (root.serverSide) {
 						var stream = new io.HtmlOutputStream();
 						stream.pipe(io.stdout);
 						var myWidget = createMyWidget('myWidget1', 'Console !', stream);

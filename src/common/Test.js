@@ -967,8 +967,10 @@ module.exports = {
 					if (name) {
 						unit = test.getUnit(name);
 						if (!unit) {
-							test.moveToUnit(null);
-							return;
+							if (!root.serverSide) {
+								test.moveToUnit(null);
+							};
+							return false;
 						};
 					} else {
 						if (dom) {

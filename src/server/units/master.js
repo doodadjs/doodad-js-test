@@ -158,8 +158,8 @@ module.exports = function(root, options, _shared) {
 	};
 
 	const DD_MODULES = {};
-	require('doodad-js/tests.js').add(DD_MODULES);
-	require('doodad-js-safeeval/tests.js').add(DD_MODULES);
+	require('doodad-js/test/tests.js').add(DD_MODULES);
+	require('doodad-js-safeeval/test/tests.js').add(DD_MODULES);
 	require('doodad-js-terminal').add(DD_MODULES);
 	require('doodad-js-test').add(DD_MODULES);
 

@@ -63,11 +63,16 @@
                             }, options);
                         })
 				        .then(function (root) {
-				            var test = root.Doodad.Test,
-							    clientIO = root.Doodad.Client.IO;
+				            var doodad = root.Doodad,
+                                tools = doodad.Tools,
+                                test = doodad.Test,
+				                clientIO = doodad.Client.IO;
+
+				            var args = tools.getCurrentLocation().args,
+			                    unitName = args.get('unit');
 
 				            test.setOutput(new clientIO.DomOutputStream({ flushMode: 'manual' }));
-				            return test.run();
+				            return test.run({name: unitName});
 				        })
 				        ['catch'](function (err) {
 							alert(err);

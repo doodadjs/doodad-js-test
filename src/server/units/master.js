@@ -62,98 +62,105 @@ module.exports = function(root, options, _shared) {
 		};
 		
 		const test = doodad.Test,
-			nodejsCluster = nodejs.Cluster;
-		
-		const success = test.run();
-		if (!success) {
-			tools.abortScript(1);
-		};
-		
-		if (process.stdout.isTTY && process.stdin.setRawMode) {
-			process.stdin.setRawMode(true);
-			
-			const messenger = new nodejsCluster.ClusterMessenger(server.Ipc.ServiceManager);
-			messenger.connect();
-			
-			const term = new nodejs.Terminal.Ansi.Javascript(0, {
-				infoColor: 'Green',
-				warnColor: 'Yellow',
-				errorColor: 'Red',
-				restricted: false,
-				locals: {
-					root: root,
-					doodad: doodad,
-					types: types,
-					tools: tools,
-				},
-				commands: {
-					stats: function() {
-						if (cpus > 1) {
-							const output = {};
-							let count = types.keys(cluster.workers).length;
-							return Promise.create(function statsPromise(resolve, reject) {
-								const timeId = setTimeout(function() {
-									reject(output);
-								}, 1000 * 60 * 2);
-								messenger.callService('MyService', 'stats', null, {
-									callback: function(err, result, worker) {
-										output['W:' + worker.id] = err || result;
-										count--;
-										if (count === 0) {
-											clearTimeout(timeId);
-											resolve(output);
-										};
-									},
-								});
-							});
-						} else {
-							return nodejs.Server.Http.Request.$getStats();
-						};
-					},
-					ping: function() {
-						if (cpus > 1) {
-							const output = {};
-							let count = types.keys(cluster.workers).length;
-							return Promise.create(function pingPromise(resolve, reject) {
-								const timeId = setTimeout(function() {
-									reject(output);
-								}, 1000 * 60 * 2);
-								messenger.ping({
-									callback: function(err, result, worker) {
-										output['W:' + worker.id] = err || result;
-										count--;
-										if (count === 0) {
-											clearTimeout(timeId);
-											resolve(output);
-										};
-									},
-								});
-							});
-						} else {
-							throw new types.NotAvailable("Command not available.");
-						};
-					},
-					getAttribute: _shared.getAttribute,
-					setAttribute: _shared.setAttribute,
-				},
-			});
-			term.onListen.attachOnce(null, function(ev) {
-				term.ask(tools.format('Safe to delete folder "~0~" and its content [yes/NO] ?', [options.cachePath.toString()]), function(resp) {
-					resp = resp.toLowerCase();
-					if (resp === 'yes') {
-						tools.Files.rmdir(options.cachePath, {force: true});
-						console.info(tools.format('Folder "~0~" deleted.', [options.cachePath.toString()]));
-					};
-					
-					startWorkers();
-				});
-			});
-			nodejs.Console.capture(function(name, args) {
-				term.consoleWrite(name, args);
-			});
-			term.listen();
+			args = tools.getCurrentLocation().args,
+			unitName = args.get('unit');
+	
+		if (unitName !== undefined) {
+			const success = test.run({name: (unitName || test.DD_FULL_NAME)});
+			if (success) {
+				tools.abortScript(0);
+			} else {
+				tools.abortScript(1);
+			};
 		} else {
-			startWorkers();
+			const nodejsCluster = nodejs.Cluster;
+
+			if (process.stdout.isTTY && process.stdin.setRawMode) {
+				process.stdin.setRawMode(true);
+			
+				const messenger = new nodejsCluster.ClusterMessenger(server.Ipc.ServiceManager);
+				messenger.connect();
+			
+				const term = new nodejs.Terminal.Ansi.Javascript(0, {
+					infoColor: 'Green',
+					warnColor: 'Yellow',
+					errorColor: 'Red',
+					restricted: false,
+					locals: {
+						root: root,
+						doodad: doodad,
+						types: types,
+						tools: tools,
+					},
+					commands: {
+						stats: function() {
+							if (cpus > 1) {
+								const output = {};
+								let count = types.keys(cluster.workers).length;
+								return Promise.create(function statsPromise(resolve, reject) {
+									const timeId = setTimeout(function() {
+										reject(output);
+									}, 1000 * 60 * 2);
+									messenger.callService('MyService', 'stats', null, {
+										callback: function(err, result, worker) {
+											output['W:' + worker.id] = err || result;
+											count--;
+											if (count === 0) {
+												clearTimeout(timeId);
+												resolve(output);
+											};
+										},
+									});
+								});
+							} else {
+								return nodejs.Server.Http.Request.$getStats();
+							};
+						},
+						ping: function() {
+							if (cpus > 1) {
+								const output = {};
+								let count = types.keys(cluster.workers).length;
+								return Promise.create(function pingPromise(resolve, reject) {
+									const timeId = setTimeout(function() {
+										reject(output);
+									}, 1000 * 60 * 2);
+									messenger.ping({
+										callback: function(err, result, worker) {
+											output['W:' + worker.id] = err || result;
+											count--;
+											if (count === 0) {
+												clearTimeout(timeId);
+												resolve(output);
+											};
+										},
+									});
+								});
+							} else {
+								throw new types.NotAvailable("Command not available.");
+							};
+						},
+						getAttribute: _shared.getAttribute,
+						setAttribute: _shared.setAttribute,
+					},
+				});
+				term.onListen.attachOnce(null, function(ev) {
+					term.ask(tools.format('Safe to delete folder "~0~" and its content [yes/NO] ?', [options.cachePath.toString()]), function(resp) {
+						resp = resp.toLowerCase();
+						if (resp === 'yes') {
+							tools.Files.rmdir(options.cachePath, {force: true});
+							console.info(tools.format('Folder "~0~" deleted.', [options.cachePath.toString()]));
+						};
+					
+						startWorkers();
+					});
+				});
+				nodejs.Console.capture(function(name, args) {
+					term.consoleWrite(name, args);
+				});
+				term.listen();
+			} else {
+				startWorkers();
+			};
 		};
 	};
 

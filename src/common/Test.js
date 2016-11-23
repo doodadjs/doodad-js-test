@@ -121,7 +121,7 @@ module.exports = {
 				});
 				
 				test.ADD('getUnit', function getUnit(name) {
-					return namespaces.get(name, entries.TestModule);
+					return (name === test.DD_FULL_NAME ? test : namespaces.get(name, entries.TestModule));
 				});
 				
 				test.EmptySlot = function EmptySlot() {};
@@ -954,8 +954,7 @@ module.exports = {
 						html = types._implements(stream, io.HtmlOutputStream),
 						dom = (clientIO ? (stream instanceof clientIO.DomOutputStream) : false);
 					
-					var args = tools.getCurrentLocation().args,
-						name = args.get('unit'),
+					var name = types.get(options, 'name'),
 						units = test.getUnits(test), // also initialize some attributes
 						unit,
 						isIndex = false,

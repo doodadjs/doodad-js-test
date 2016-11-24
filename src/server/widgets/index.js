@@ -39,8 +39,10 @@ require("../../common/widgets/MyWidget_loader.js").add(DD_MODULES);
 
 require('doodad-js').createRoot(DD_MODULES, options)
 	.catch(err => {
-		err && !err.trapped && console.error(err.stack);
-		if (!process.exitCode) {
-			process.exitCode = 1;
+		if (!err.bubble) {
+			!err.trapped && console.error(err.stack);
+			if (!process.exitCode) {
+				process.exitCode = 1;
+			};
 		};
 	});

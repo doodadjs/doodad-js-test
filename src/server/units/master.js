@@ -91,6 +91,9 @@ module.exports = function(root, options, _shared) {
 						doodad: doodad,
 						types: types,
 						tools: tools,
+						namespaces: namespaces,
+						io: doodad.IO,
+						nodejs: doodad.NodeJs,
 					},
 					commands: {
 						stats: function() {

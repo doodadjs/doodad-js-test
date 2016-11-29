@@ -663,8 +663,8 @@ module.exports = function(root, options, _shared) {
 		service.onError.attach(null, onerror);
 		service.onNewRequest.attach(null, onrequest);
 		service.listen({
-			target: '0.0.0.0', 
-			port: 8080,
+			target: options.listeningAddress, 
+			port: options.listeningPort,
 		});
 
 		const service2 = new nodejs.Server.Http.Server(handlers, {messenger: messenger /*, validHosts: ['www.doodad-js.local']*/});
@@ -674,8 +674,8 @@ module.exports = function(root, options, _shared) {
 			protocol: 'https',
 			certFile: __dirname + tools.getOS().dirChar + 'www.doodad-js.local.crt',
 			keyFile: __dirname + tools.getOS().dirChar + 'www.doodad-js.local.key',
-			target: '0.0.0.0', 
-			port: 8181,
+			target: options.listeningAddress, 
+			port: options.listeningSSLPort,
 		});
 	};
 	

@@ -44,6 +44,9 @@ function startup(root, _shared) {
 	
 	const options = {
 		cachePath: cachePath,
+		listeningAddress: '0.0.0.0', 
+		listeningPort: 8080,
+		listeningSSLPort: 8181,
 	};
 	
 	if (cluster.isMaster) {

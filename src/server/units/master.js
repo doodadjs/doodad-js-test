@@ -37,6 +37,7 @@ module.exports = function(root, options, _shared) {
 		nodeOs = require('os'),
 		cluster = require('cluster'),
 		util = require('util'),
+		child_process = require('child_process');
 		
 		Promise = types.getPromise();
 
@@ -144,6 +145,18 @@ module.exports = function(root, options, _shared) {
 						},
 						getAttribute: _shared.getAttribute,
 						setAttribute: _shared.setAttribute,
+						browser: function() {
+							let url = "http://";
+							url += (options.listeningAddress === '0.0.0.0' ? '127.0.0.1' : options.listeningAddress);
+							url += ':' + options.listeningPort;
+							url += '/';
+							const os = tools.getOS();
+							if (os.type === 'windows') {
+								child_process.spawn("start", [url], {shell: true});
+							} else {
+								term.consoleWrite('info', [url]);
+							};
+						},
 					},
 				});
 				term.onListen.attachOnce(null, function(ev) {

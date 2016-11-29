@@ -185,5 +185,5 @@ a=%E9%63%68%6F
 */
 
 /* Form Multi-part
-curl -v -F écho=écho -F hello=hello -F bonjour=bonjour -F ciao=ciao -F écho=écho -F hello=hello -F bonjour=bonjour -F ciao=ciao -F écho=écho -F hello=hello -F bonjour=bonjour -F ciao=ciao -F écho=écho -F hello=hello -F bonjour=bonjour -F ciao=ciao -F écho=écho -F hello=hello -F bonjour=bonjour -F ciao=ciao -F écho=écho -F hello=hello -F bonjour=bonjour -F ciao=ciao -F écho=écho -F hello=hello -F bonjour=bonjour -F ciao=ciao -F écho=écho -F hello=hello -F bonjour=bonjour -F ciao=ciao -F écho=écho -F hello=hello -F bonjour=bonjour -F ciao=ciao -F écho=écho -F hello=hello -F bonjour=bonjour -F ciao=ciao 127.0.0.1:8080/multipar
+curl -v -F écho=écho -F hello=hello -F bonjour=bonjour -F ciao=ciao -F écho=écho -F hello=hello -F bonjour=bonjour -F ciao=ciao -F écho=écho -F hello=hello -F bonjour=bonjour -F ciao=ciao -F écho=écho -F hello=hello -F bonjour=bonjour -F ciao=ciao -F écho=écho -F hello=hello -F bonjour=bonjour -F ciao=ciao -F écho=écho -F hello=hello -F bonjour=bonjour -F ciao=ciao -F écho=écho -F hello=hello -F bonjour=bonjour -F ciao=ciao -F écho=écho -F hello=hello -F bonjour=bonjour -F ciao=ciao -F écho=écho -F hello=hello -F bonjour=bonjour -F ciao=ciao -F écho=écho -F hello=hello -F bonjour=bonjour -F ciao=ciao 127.0.0.1:8080/multipart
 */

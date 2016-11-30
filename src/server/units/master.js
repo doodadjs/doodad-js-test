@@ -151,12 +151,18 @@ module.exports = function(root, options, _shared) {
 							url += ':' + options.listeningPort;
 							url += '/';
 							const os = tools.getOS();
+							let child = null;
 							if (os.name === 'win32') {
-								child_process.spawn("start", [url], {shell: true});
+								child = child_process.spawn("start", [url], {shell: true});
 							} else if (os.name === 'darwin') {
-								child_process.spawn("open", [url]);
+								child = child_process.spawn("open", [url]);
 							} else {
-								term.consoleWrite('info', [url]);
+								child = child_process.spawn("xdg-open", [url]);
+							};
+							if (child) {
+								child.on('error', function(err) {
+									term.consoleWrite('info', [url]);
+								});
 							};
 						},
 					},

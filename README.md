@@ -37,7 +37,7 @@ At the command prompt (">>>"), you can try :
     help
 ```
 
-Now, type the command "browser". It should open your favorite browser to the application's main page. 
+Wait about 5-10 seconds (the time all cluster children processes load), then type the command "browser". It should open your favorite browser to the application's main page. 
 
 ## Other available packages
 

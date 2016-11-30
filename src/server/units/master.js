@@ -151,6 +151,7 @@ module.exports = function(root, options, _shared) {
 							url += ':' + options.listeningPort;
 							url += '/';
 							const os = tools.getOS();
+							// Reference: http://www.dwheeler.com/essays/open-files-urls.html
 							let child = null;
 							if (os.name === 'win32') {
 								child = child_process.spawn("start", [url], {shell: true});

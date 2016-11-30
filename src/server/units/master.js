@@ -151,8 +151,10 @@ module.exports = function(root, options, _shared) {
 							url += ':' + options.listeningPort;
 							url += '/';
 							const os = tools.getOS();
-							if (os.type === 'windows') {
+							if (os.name === 'win32') {
 								child_process.spawn("start", [url], {shell: true});
+							} else if (os.name === 'darwin') {
+								child_process.spawn("open", [url]);
 							} else {
 								term.consoleWrite('info', [url]);
 							};

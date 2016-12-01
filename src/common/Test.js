@@ -66,19 +66,19 @@ module.exports = {
 					stdout: null,
 				};
 				
-				entries.ADD('TestModule', types.INIT(entries.Module.$inherit(
+				entries.REGISTER(entries.Module.$inherit(
 					/*typeProto*/
 					{
-						$TYPE_NAME: 'TestModuleEntry'
+						$TYPE_NAME: 'TestModule'
 					}
-				)));
+				));
 				
-				entries.ADD('TestPackage', types.INIT(entries.Package.$inherit(
+				entries.REGISTER(entries.Package.$inherit(
 					/*typeProto*/
 					{
-						$TYPE_NAME: 'TestPackageEntry'
+						$TYPE_NAME: 'TestPackage'
 					}
-				)));
+				));
 				
 				test.ADD('setOutput', function setOutput(stream) {
 					__Internal__.stdout = stream;

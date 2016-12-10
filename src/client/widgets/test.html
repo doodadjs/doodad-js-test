@@ -35,10 +35,17 @@
 
 					global.createRoot(null, options)
                         .then(function (root) {
+                            window.DD_ROOT = root;
+
                             var doodad = root.Doodad,
+                                types = doodad.Types,
 						        modules = doodad.Modules;
 
                             doodad.Tools.trapUnhandledErrors();
+
+                            var crossRealm = document.getElementById('crossRealm').contentWindow;
+
+                            alert(types.isType(crossRealm.DD_ROOT.Doodad.Types.Namespace) + ',' + types._instanceof(crossRealm.DD_ROOT.Doodad.Types, types.Namespace) + ',' + types._instanceof(crossRealm.DD_ROOT.Doodad.Types, types.Type) + ',' + types.isType(crossRealm.DD_ROOT.Doodad.Types.Type) + "  <=== Must be 'true,true,true,true'")
 
                             return modules.load({
                                 'doodad-js-unicode': null,
@@ -54,6 +61,8 @@
 				};
 			}).call((typeof global !== 'undefined') ? global : ((typeof window !== 'undefined') ? window : this));
     </script>
+
+    <iframe id="crossRealm" src="crossRealm.html"></iframe>
 
     <div id="test1"></div>
     <div id="test2"></div>

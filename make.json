@@ -196,6 +196,11 @@
 					"source": "%SOURCEDIR%/client/widgets/test.html",
 					"destination": "%INSTALLDIR%/%PACKAGENAME%/widgets/test.html"
 				},
+				{
+					"class": "Make.File.Copy",
+					"source": "%SOURCEDIR%/client/widgets/crossRealm.html",
+					"destination": "%INSTALLDIR%/%PACKAGENAME%/widgets/crossRealm.html"
+				},
 					
 				{
 					"class": "Make.Folder.Create",

@@ -45,7 +45,16 @@
 
                             var crossRealm = document.getElementById('crossRealm').contentWindow;
 
-                            alert(types.isType(crossRealm.DD_ROOT.Doodad.Types.Namespace) + ',' + types._instanceof(crossRealm.DD_ROOT.Doodad.Types, types.Namespace) + ',' + types._instanceof(crossRealm.DD_ROOT.Doodad.Types, types.Type) + ',' + types.isType(crossRealm.DD_ROOT.Doodad.Types.Type) + "  <=== Must be 'true,true,true,true'")
+                            alert(
+                                types.isType(crossRealm.DD_ROOT.Doodad.Types.Namespace) + ',' +
+                                types._instanceof(crossRealm.DD_ROOT.Doodad.Types, types.Namespace) + ',' +
+                                types._instanceof(crossRealm.DD_ROOT.Doodad.Types, types.Type) + ',' +
+                                types.isType(crossRealm.DD_ROOT.Doodad.Types.Type) + ',' +
+                                types._instanceof(new crossRealm.Object(), Object) + ',' +
+                                ((typeof Symbol === 'undefined') ? 'true' : types._instanceof(crossRealm.Object(crossRealm.Symbol()), Symbol)) + ',' +
+                                //types._instanceof(crossRealm.DD_ROOT.Doodad.Types.getPromise().resolve(), types.getPromise()) +  FAIL IN FIREFOX BECAUSE OF 'Function.prototype.toString' and 'class'
+                                "  <=== Must be all 'true'"
+                            );
 
                             return modules.load({
                                 'doodad-js-unicode': null,

@@ -52,7 +52,7 @@
                                 types.isType(crossRealm.DD_ROOT.Doodad.Types.Type) + ',' +
                                 types._instanceof(new crossRealm.Object(), Object) + ',' +
                                 ((typeof Symbol === 'undefined') ? 'true' : types._instanceof(crossRealm.Object(crossRealm.Symbol()), Symbol)) + ',' +
-                                //types._instanceof(crossRealm.DD_ROOT.Doodad.Types.getPromise().resolve(), types.getPromise()) +  FAIL IN FIREFOX BECAUSE OF 'Function.prototype.toString' and 'class'
+                                types._instanceof(crossRealm.DD_ROOT.Doodad.Types.getPromise().resolve(), types.getPromise()) +
                                 "  <=== Must be all 'true'"
                             );
 

@@ -45,16 +45,16 @@
 
                             var crossRealm = document.getElementById('crossRealm').contentWindow;
 
-                            alert(
-                                types.isType(crossRealm.DD_ROOT.Doodad.Types.Namespace) + ',' +
-                                types._instanceof(crossRealm.DD_ROOT.Doodad.Types, types.Namespace) + ',' +
-                                types._instanceof(crossRealm.DD_ROOT.Doodad.Types, types.Type) + ',' +
-                                types.isType(crossRealm.DD_ROOT.Doodad.Types.Type) + ',' +
-                                types._instanceof(new crossRealm.Object(), Object) + ',' +
-                                ((typeof Symbol === 'undefined') ? 'true' : types._instanceof(crossRealm.Object(crossRealm.Symbol()), Symbol)) + ',' +
-                                types._instanceof(crossRealm.DD_ROOT.Doodad.Types.getPromise().resolve(), types.getPromise()) +
-                                "  <=== Must be all 'true'"
-                            );
+                            var msg = '';
+                            msg += types.isType(crossRealm.DD_ROOT.Doodad.Types.Namespace) + ',';
+                            msg += types._instanceof(crossRealm.DD_ROOT.Doodad.Types, types.Namespace) + ',';
+                            msg += types._instanceof(crossRealm.DD_ROOT.Doodad.Types, types.Type) + ',';
+                            msg += types.isType(crossRealm.DD_ROOT.Doodad.Types.Type) + ',';
+                            msg += types._instanceof(new crossRealm.Object(), Object) + ',';
+                            msg += ((typeof Symbol === 'undefined') ? 'true' : types._instanceof(crossRealm.Object(crossRealm.Symbol()), Symbol)) + ',';
+                            msg += types.isPromise(crossRealm.DD_ROOT.Doodad.Types.getPromise().resolve());
+                            msg += "  <=== Must be all 'true'";
+                            alert(msg);
 
                             return modules.load({
                                 'doodad-js-unicode': null,

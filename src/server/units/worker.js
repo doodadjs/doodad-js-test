@@ -71,21 +71,21 @@ module.exports = function(root, options, _shared) {
 				};
 				con[fn].call(con, '<W:' + cluster.worker.id + '>  ' + message);
 			};
-		};
 
-		root.REGISTER(doodad.Object.$extend(
-						server.Ipc.MixIns.Service,
-		{
-			$TYPE_NAME: 'MyService',
+			root.REGISTER(doodad.Object.$extend(
+							server.Ipc.MixIns.Service,
+			{
+				$TYPE_NAME: 'MyService',
 			
-			hello: server.Ipc.CALLABLE(function hello(request) {
-				return "Hello world !";
-			}),
+				hello: server.Ipc.CALLABLE(function hello(request) {
+					return "Hello world !";
+				}),
 			
-			stats: server.Ipc.CALLABLE(function hello(request) {
-				return nodejs.Server.Http.Request.$getStats();
-			}),
-		}));
+				stats: server.Ipc.CALLABLE(function hello(request) {
+					return nodejs.Server.Http.Request.$getStats();
+				}),
+			}));
+		};
 
 		let saxPath;
 		try {

@@ -35,7 +35,7 @@ module.exports = function(root, options, _shared) {
 		nodejs = doodad.NodeJs,
 		
 		nodeOs = require('os'),
-		cluster = require('cluster'),
+		nodeCluster = require('cluster'),
 		util = require('util'),
 		child_process = require('child_process');
 		
@@ -48,17 +48,25 @@ module.exports = function(root, options, _shared) {
 		function startWorkers() {
 			tools.Files.mkdir(options.cachePath);
 			
-			cluster.setupMaster({
-				silent: true,
-			});
-			
 			if (cpus > 1) {
+				nodeCluster.setupMaster({
+					silent: true,
+				});
+
+				nodeCluster.on('exit', (worker, code, signal) => {
+					if (!signal) {
+						nodeCluster.fork();
+					};
+				});
+
 				for (let i = 0; i < cpus; i++) {
-					cluster.fork();
+					nodeCluster.fork();
 				};
+
 			} else {
 				options.noCluster = true;
 				require('./worker.js')(root, options, _shared);
+
 			};
 		};
 		
@@ -74,12 +82,12 @@ module.exports = function(root, options, _shared) {
 				tools.abortScript(1);
 			};
 		} else {
-			const nodejsCluster = nodejs.Cluster;
+			const cluster = nodejs.Cluster;
 
 			if (process.stdout.isTTY && process.stdin.setRawMode) {
 				process.stdin.setRawMode(true);
 			
-				const messenger = new nodejsCluster.ClusterMessenger(server.Ipc.ServiceManager);
+				const messenger = new cluster.ClusterMessenger(server.Ipc.ServiceManager);
 				messenger.connect();
 			
 				const term = new nodejs.Terminal.Ansi.Javascript(0, {
@@ -100,7 +108,7 @@ module.exports = function(root, options, _shared) {
 						stats: function() {
 							if (cpus > 1) {
 								const output = {};
-								let count = types.keys(cluster.workers).length;
+								let count = types.keys(nodeCluster.workers).length;
 								return Promise.create(function statsPromise(resolve, reject) {
 									const timeId = setTimeout(function() {
 										reject(output);
@@ -123,7 +131,7 @@ module.exports = function(root, options, _shared) {
 						ping: function() {
 							if (cpus > 1) {
 								const output = {};
-								let count = types.keys(cluster.workers).length;
+								let count = types.keys(nodeCluster.workers).length;
 								return Promise.create(function pingPromise(resolve, reject) {
 									const timeId = setTimeout(function() {
 										reject(output);

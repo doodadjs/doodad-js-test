@@ -155,27 +155,30 @@ module.exports = function(root, options, _shared) {
 				};
 			
 				const browser = function() {
-					return stats().then(function() {
-						let url = "http://";
-						url += (options.listeningAddress === '0.0.0.0' ? '127.0.0.1' : options.listeningAddress);
-						url += ':' + options.listeningPort;
-						url += '/';
-						const os = tools.getOS();
-						// Reference: http://www.dwheeler.com/essays/open-files-urls.html
-						let child = null;
-						if (os.name === 'win32') {
-							child = child_process.spawn("start", [url], {shell: true});
-						} else if (os.name === 'darwin') {
-							child = child_process.spawn("open", [url]);
-						} else {
-							child = child_process.spawn("xdg-open", [url]);
-						};
-						if (child) {
-							child.on('error', function(err) {
-								term.consoleWrite('info', [url]);
-							});
-						};
-					});
+					return Promise.try(function browserPromise() {
+							return stats();
+						})
+						.then(function() {
+							let url = "http://";
+							url += (options.listeningAddress === '0.0.0.0' ? '127.0.0.1' : options.listeningAddress);
+							url += ':' + options.listeningPort;
+							url += '/';
+							const os = tools.getOS();
+							// Reference: http://www.dwheeler.com/essays/open-files-urls.html
+							let child = null;
+							if (os.name === 'win32') {
+								child = child_process.spawn("start", [url], {shell: true});
+							} else if (os.name === 'darwin') {
+								child = child_process.spawn("open", [url]);
+							} else {
+								child = child_process.spawn("xdg-open", [url]);
+							};
+							if (child) {
+								child.on('error', function(err) {
+									term.consoleWrite('info', [url]);
+								});
+							};
+						});
 				};
 			
 				const term = new nodejs.Terminal.Ansi.Javascript(0, {

@@ -93,43 +93,29 @@ module.exports = function(root, options, _shared) {
 				const stats = function() {
 					if (cpus > 1) {
 						const TIMEOUT = 1000 * 60 * 2;
-						const TTL = 500;
 						const output = {};
-						const keys = types.keys(nodeCluster.workers);
-						let count = keys.length;
+						let count = types.keys(nodeCluster.workers).length;
 						return Promise.create(function statsPromise(resolve, reject) {
+							let retval;
 							const timeId = setTimeout(function() {
+								messenger.cancel(retval);
 								count = 0;
 								reject(output);
 							}, TIMEOUT);
-							let send, callback;
-							send = function(workerId) {
-								messenger.callService('MyService', 'stats', null, {
-									worker: workerId,
-									ttl: TTL, // ms
-									callback: callback,
-								});
-							};
-							callback = function(err, result, worker) {
-								if (count > 0) {
-									if (types._instanceof(err, types.TimeoutError)) {
-										send(worker.id);
-									} else if (types._instanceof(err, cluster.QueueLimitReached)) {
-										setTimeout(send, 100, worker.id);
-									} else {
+							retval = messenger.callService('MyService', 'stats', null, {
+								ttl: 500, // ms
+								retryDelay: 100, // ms
+								callback: function(err, result, worker) {
+									if (count > 0) {
 										output['W:' + worker.id] = err || result;
 										count--;
+										if (count === 0) {
+											clearTimeout(timeId);
+											resolve(output);
+										};
 									};
-									if (count === 0) {
-										clearTimeout(timeId);
-										resolve(output);
-									};
-								};
-							};
-							for (var i = 0; i < keys.length; i++) {
-								const id = nodeCluster.workers[keys[i]].id;
-								send(id);
-							};
+								},
+							});
 						});
 					} else {
 						return Promise.resolve(nodejs.Server.Http.Request.$getStats());
@@ -139,43 +125,29 @@ module.exports = function(root, options, _shared) {
 				const ping = function() {
 					if (cpus > 1) {
 						const TIMEOUT = 1000 * 60 * 2;
-						const TTL = 500;
 						const output = {};
-						const keys = types.keys(nodeCluster.workers);
-						let count = keys.length;
+						let count = types.keys(nodeCluster.workers).length;
 						return Promise.create(function pingPromise(resolve, reject) {
+							let retval;
 							const timeId = setTimeout(function() {
+								messenger.cancel(retval);
 								count = 0;
 								reject(output);
 							}, TIMEOUT);
-							let send, callback;
-							send = function(workerId) {
-								messenger.ping({
-									worker: workerId,
-									ttl: TTL, // ms
-									callback: callback,
-								});
-							};
-							callback = function(err, result, worker) {
-								if (count > 0) {
-									if (types._instanceof(err, types.TimeoutError)) {
-										send(worker.id);
-									} else if (types._instanceof(err, cluster.QueueLimitReached)) {
-										setTimeout(send, 100, worker.id);
-									} else {
+							retval = messenger.ping({
+								ttl: 500, // ms
+								retryDelay: 100, // ms
+								callback: function(err, result, worker) {
+									if (count > 0) {
 										output['W:' + worker.id] = err || result;
 										count--;
+										if (count === 0) {
+											clearTimeout(timeId);
+											resolve(output);
+										};
 									};
-									if (count === 0) {
-										clearTimeout(timeId);
-										resolve(output);
-									};
-								};
-							};
-							for (var i = 0; i < keys.length; i++) {
-								const id = nodeCluster.workers[keys[i]].id;
-								send(id);
-							};
+								},
+							});
 						});
 					} else {
 						return Promise.reject(new types.NotAvailable("Command not available."));

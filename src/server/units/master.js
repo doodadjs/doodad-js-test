@@ -90,6 +90,122 @@ module.exports = function(root, options, _shared) {
 				const messenger = new cluster.ClusterMessenger(server.Ipc.ServiceManager);
 				messenger.connect();
 			
+				const stats = function() {
+					if (cpus > 1) {
+						const TIMEOUT = 1000 * 60 * 2;
+						const TTL = 500;
+						const output = {};
+						const keys = types.keys(nodeCluster.workers);
+						let count = keys.length;
+						return Promise.create(function statsPromise(resolve, reject) {
+							const timeId = setTimeout(function() {
+								count = 0;
+								reject(output);
+							}, TIMEOUT);
+							let send, callback;
+							send = function(workerId) {
+								messenger.callService('MyService', 'stats', null, {
+									worker: workerId,
+									ttl: TTL, // ms
+									callback: callback,
+								});
+							};
+							callback = function(err, result, worker) {
+								if (count > 0) {
+									if (types._instanceof(err, types.TimeoutError)) {
+										send(worker.id);
+									} else if (types._instanceof(err, cluster.QueueLimitReached)) {
+										setTimeout(send, 100, worker.id);
+									} else {
+										output['W:' + worker.id] = err || result;
+										count--;
+									};
+									if (count === 0) {
+										clearTimeout(timeId);
+										resolve(output);
+									};
+								};
+							};
+							for (var i = 0; i < keys.length; i++) {
+								const id = nodeCluster.workers[keys[i]].id;
+								send(id);
+							};
+						});
+					} else {
+						return Promise.resolve(nodejs.Server.Http.Request.$getStats());
+					};
+				};
+			
+				const ping = function() {
+					if (cpus > 1) {
+						const TIMEOUT = 1000 * 60 * 2;
+						const TTL = 500;
+						const output = {};
+						const keys = types.keys(nodeCluster.workers);
+						let count = keys.length;
+						return Promise.create(function pingPromise(resolve, reject) {
+							const timeId = setTimeout(function() {
+								count = 0;
+								reject(output);
+							}, TIMEOUT);
+							let send, callback;
+							send = function(workerId) {
+								messenger.ping({
+									worker: workerId,
+									ttl: TTL, // ms
+									callback: callback,
+								});
+							};
+							callback = function(err, result, worker) {
+								if (count > 0) {
+									if (types._instanceof(err, types.TimeoutError)) {
+										send(worker.id);
+									} else if (types._instanceof(err, cluster.QueueLimitReached)) {
+										setTimeout(send, 100, worker.id);
+									} else {
+										output['W:' + worker.id] = err || result;
+										count--;
+									};
+									if (count === 0) {
+										clearTimeout(timeId);
+										resolve(output);
+									};
+								};
+							};
+							for (var i = 0; i < keys.length; i++) {
+								const id = nodeCluster.workers[keys[i]].id;
+								send(id);
+							};
+						});
+					} else {
+						return Promise.reject(new types.NotAvailable("Command not available."));
+					};
+				};
+			
+				const browser = function() {
+					return stats().then(function() {
+						let url = "http://";
+						url += (options.listeningAddress === '0.0.0.0' ? '127.0.0.1' : options.listeningAddress);
+						url += ':' + options.listeningPort;
+						url += '/';
+						const os = tools.getOS();
+						// Reference: http://www.dwheeler.com/essays/open-files-urls.html
+						let child = null;
+						if (os.name === 'win32') {
+							child = child_process.spawn("start", [url], {shell: true});
+						} else if (os.name === 'darwin') {
+							child = child_process.spawn("open", [url]);
+						} else {
+							child = child_process.spawn("xdg-open", [url]);
+						};
+						if (child) {
+							child.on('error', function(err) {
+								term.consoleWrite('info', [url]);
+							});
+						};
+					});
+				};
+			
 				const term = new nodejs.Terminal.Ansi.Javascript(0, {
 					infoColor: 'Green',
 					warnColor: 'Yellow',
@@ -105,75 +221,11 @@ module.exports = function(root, options, _shared) {
 						nodejs: doodad.NodeJs,
 					},
 					commands: {
-						stats: function() {
-							if (cpus > 1) {
-								const output = {};
-								let count = types.keys(nodeCluster.workers).length;
-								return Promise.create(function statsPromise(resolve, reject) {
-									const timeId = setTimeout(function() {
-										reject(output);
-									}, 1000 * 60 * 2);
-									messenger.callService('MyService', 'stats', null, {
-										callback: function(err, result, worker) {
-											output['W:' + worker.id] = err || result;
-											count--;
-											if (count === 0) {
-												clearTimeout(timeId);
-												resolve(output);
-											};
-										},
-									});
-								});
-							} else {
-								return nodejs.Server.Http.Request.$getStats();
-							};
-						},
-						ping: function() {
-							if (cpus > 1) {
-								const output = {};
-								let count = types.keys(nodeCluster.workers).length;
-								return Promise.create(function pingPromise(resolve, reject) {
-									const timeId = setTimeout(function() {
-										reject(output);
-									}, 1000 * 60 * 2);
-									messenger.ping({
-										callback: function(err, result, worker) {
-											output['W:' + worker.id] = err || result;
-											count--;
-											if (count === 0) {
-												clearTimeout(timeId);
-												resolve(output);
-											};
-										},
-									});
-								});
-							} else {
-								throw new types.NotAvailable("Command not available.");
-							};
-						},
+						stats: stats,
+						ping: ping,
 						getAttribute: _shared.getAttribute,
 						setAttribute: _shared.setAttribute,
-						browser: function() {
-							let url = "http://";
-							url += (options.listeningAddress === '0.0.0.0' ? '127.0.0.1' : options.listeningAddress);
-							url += ':' + options.listeningPort;
-							url += '/';
-							const os = tools.getOS();
-							// Reference: http://www.dwheeler.com/essays/open-files-urls.html
-							let child = null;
-							if (os.name === 'win32') {
-								child = child_process.spawn("start", [url], {shell: true});
-							} else if (os.name === 'darwin') {
-								child = child_process.spawn("open", [url]);
-							} else {
-								child = child_process.spawn("xdg-open", [url]);
-							};
-							if (child) {
-								child.on('error', function(err) {
-									term.consoleWrite('info', [url]);
-								});
-							};
-						},
+						browser: browser,
 					},
 				});
 				term.onListen.attachOnce(null, function(ev) {

@@ -155,10 +155,10 @@ module.exports = function(root, options, _shared) {
 				};
 			
 				const browser = function() {
-					return Promise.try(function browserPromise() {
+					return Promise.try(function browserPromise() { // Sets Promise's name to "browserPromise" instead of "statsPromise"
 							return stats();
 						})
-						.then(function() {
+						.thenCreate(function launchBrowser(result, resolve, reject) {
 							let url = "http://";
 							url += (options.listeningAddress === '0.0.0.0' ? '127.0.0.1' : options.listeningAddress);
 							url += ':' + options.listeningPort;
@@ -174,8 +174,15 @@ module.exports = function(root, options, _shared) {
 								child = child_process.spawn("xdg-open", [url]);
 							};
 							if (child) {
+								child.on('exit', function(code, signal) {
+									if (code === 0) {
+										resolve();
+									} else {
+										reject(new types.Error("Failed to start browser. Please manually navigate to ' ~0~ '.", [url]));
+									};
+								});
 								child.on('error', function(err) {
-									term.consoleWrite('info', [url]);
+									reject(new types.Error("Failed to start browser. Please manually navigate to ' ~0~ '.", [url]));
 								});
 							};
 						});

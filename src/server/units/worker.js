@@ -641,22 +641,22 @@ module.exports = function(root, options, _shared) {
 			ev.preventDefault();
 		};
 
-		function onstatus(ev) {
-			const response = ev.obj,
-				status = response.status;
-			if (status >= 300) {
-				ev.preventDefault();
-				ev.data.promise = ev.data.promise
-					.then(() => response.getStream({contentType: 'text/plain', encoding: 'utf-8'}))
-					.then(stream => stream.write(types.toString(status)));
-			};
-		};
+		//function onstatus(ev) {
+		//	const response = ev.obj,
+		//		status = response.status;
+		//	if (status >= 300) {
+		//		ev.preventDefault();
+		//		ev.data.promise = ev.data.promise
+		//			.then(() => response.getStream({contentType: 'text/plain', encoding: 'utf-8'}))
+		//			.then(stream => stream.write(types.toString(status)));
+		//	};
+		//};
 
 		function onrequest(ev) {
 			const request = ev.data.request;
 			request.onError.attach(null, onerror);
 			request.response.onError.attach(null, onerror);
-			request.response.onStatus.attach(null, onstatus);
+			//request.response.onStatus.attach(null, onstatus);
 		};
 
 		const service = new nodejs.Server.Http.Server(handlers, {messenger: messenger /*, validHosts: ['www.doodad-js.local']*/});

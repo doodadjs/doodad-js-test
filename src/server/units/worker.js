@@ -155,6 +155,32 @@ module.exports = function(root, options, _shared) {
 							},
 						],
 					},
+					'/form?id=(\\d{1,4})&mode=(view|edit)': {
+						handlers: [
+							{
+								handler: function(request) {
+									const handlerState = request.getHandlerState(),
+										args = handlerState.matcherResult.queryArgs;
+									return request.response.getStream({contentType: 'text/plain', encoding: 'utf-8'}).then(function(stream) {
+										stream.write((args.mode === 'edit' ? "Editing" : "Viewing") + " id " + args.id);
+									});
+								},
+							},
+						],
+					},
+					'/form/mode:(view|edit)/id:(\\d{1,4})': {
+						handlers: [
+							{
+								handler: function(request) {
+									const handlerState = request.getHandlerState(),
+										args = handlerState.matcherResult.urlArgs;
+									return request.response.getStream({contentType: 'text/plain', encoding: 'utf-8'}).then(function(stream) {
+										stream.write((args.mode === 'edit' ? "Editing" : "Viewing") + " id " + args.id);
+									});
+								},
+							},
+						],
+					},
 					'/rpc': {
 						//verbs: ['POST'],
 						handlers: [

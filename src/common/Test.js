@@ -1036,15 +1036,16 @@ module.exports = {
 							if (!unit) {
 								stream.print("End: There is nothing to test.");
 							} else if (!ok) {
-								stream.print("End: An error occurred while testing.");
+								io.stderr.print("End: An error occurred while testing.");
 								success = false;
 							} else if (test.FAILED_TESTS) {
-								stream.print("End: Some tests failed.");
+								io.stderr.print("End: Some tests failed.");
 								success = false;
 							} else {
 								stream.print("End: Every tests passed.    Total: " + test.TESTS_COUNT);
 							};
 							stream.flush();
+							io.stderr.flush();
 						};
 					};
 					

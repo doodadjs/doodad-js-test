@@ -37,12 +37,4 @@ require('doodad-js-safeeval').add(DD_MODULES);
 require('doodad-js-loader').add(DD_MODULES);
 require("../../common/widgets/MyWidget_loader.js").add(DD_MODULES);
 
-require('doodad-js').createRoot(DD_MODULES, options)
-	.catch(err => {
-		if (!err.bubble) {
-			!err.trapped && console.error(err.stack);
-			if (!process.exitCode) {
-				process.exitCode = 1;
-			};
-		};
-	});
+require('doodad-js').createRoot(DD_MODULES, options);

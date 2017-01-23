@@ -665,6 +665,7 @@ module.exports = function(root, options, _shared) {
 
 		function onerror(ev) {
 			ev.preventDefault();
+			console.error(ev.error);
 		};
 
 		function onstatus(ev) {

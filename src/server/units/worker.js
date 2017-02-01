@@ -226,7 +226,7 @@ module.exports = function(root, options, _shared) {
 										.then(function(mpStream) {
 											// TODO: Write an helper function for that
 											// TODO: Try "rxjs" (Observables), but I doubt it will be as fast
-											mpStream.setOptions({flushMode: 'half'});
+											mpStream.setOptions({flushMode: 'half', bufferSize: 1024});
 											return request.response.getStream({contentType: 'text/plain; charset=utf-8'})
 												.then(function(resStream) {
 													return Promise.create(function onReadyHook(mpResolve, mpReject) {

@@ -87,6 +87,8 @@ module.exports = function(root, options, _shared) {
 			}));
 		};
 
+		const currentPath = files.Path.parse(__dirname);
+		
 		let saxPath;
 		try {
 			saxPath = files.Path.parse(require.resolve('sax/package.json'))
@@ -700,8 +702,8 @@ module.exports = function(root, options, _shared) {
 		service2.onNewRequest.attach(null, onrequest);
 		service2.listen({
 			protocol: 'https',
-			certFile: __dirname + tools.getOS().dirChar + 'www.doodad-js.local.crt',
-			keyFile: __dirname + tools.getOS().dirChar + 'www.doodad-js.local.key',
+			certFile: currentPath.combine('www.doodad-js.local.crt'),
+			keyFile: currentPath.combine('www.doodad-js.local.key'),
 			target: options.listeningAddress, 
 			port: options.listeningSSLPort,
 		});

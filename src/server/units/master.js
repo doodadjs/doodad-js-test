@@ -37,7 +37,7 @@ module.exports = function(root, options, _shared) {
 		nodeOs = require('os'),
 		nodeCluster = require('cluster'),
 		util = require('util'),
-		child_process = require('child_process');
+		child_process = require('child_process'),
 		
 		Promise = types.getPromise();
 

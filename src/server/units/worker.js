@@ -142,6 +142,13 @@ module.exports = function(root, options, _shared) {
 		const staticMimeTypes = ['application/javascript; charset=utf-8', 'application/x-javascript; charset=utf-8', 'text/html; charset=utf-8', 'text/css; charset=utf-8', 'application/json; charset=utf-8', 'text/json; charset=utf-8', '*/*'];
 
 		const handlers = [
+			{
+				handler: server.Http.ContentSecurityPolicyHandler,
+				policy: "default-src 'self' 'unsafe-eval' 'unsafe-inline';",
+			},
+			//{
+			//	handler: server.Http.ContentSecurityPolicyReportHandler,
+			//},
 			//{
 			//	handler: server.Http.UpgradeInsecureRequestsHandler,
 			//	sslPort: 8181,

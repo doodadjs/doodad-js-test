@@ -46,7 +46,7 @@ module.exports = function(root, options, _shared) {
 		const cpus = Math.min(nodeOs.cpus().length, MAX_CPUS);
 
 		function startWorkers() {
-			tools.Files.mkdir(options.cachePath);
+			tools.Files.mkdir(options.cachePath, {makeParents: true});
 			
 			if (cpus > 1) {
 				nodeCluster.setupMaster({

@@ -157,6 +157,8 @@ module.exports = function(root, options, _shared) {
 			//	hstsSafe: true,
 			//},
 			{
+				caseSensitive: true,
+
 				handler: new server.Http.Routes({
 					'/': {
 						handlers: [

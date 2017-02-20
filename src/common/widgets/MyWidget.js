@@ -113,7 +113,7 @@ module.exports = {
 					
 					// Test RENAME
 					functionToRename: doodad.PUBLIC(function() {
-						return "Rename me !";
+						return "1";
 					}),
 					
 					// Test _superFrom
@@ -156,7 +156,7 @@ module.exports = {
 					
 						// Test RENAME
 						functionToRename: doodad.RENAME_OVERRIDE(function renamedFunction() {
-							return this._super() + " Done";
+							return this._super() + " ,2";
 						}),
 						
 						acquire: doodad.OVERRIDE(function acquire() {
@@ -332,11 +332,11 @@ module.exports = {
 
 						return Promise.all([ myWidget1.render(), myWidget2.render(), myWidget3.render() ])
 							.then(function doSomeTestsPromise() {
-								// Test "RENAMED"
-								alert(myWidget1.renamedFunction()); // Must be "Rename me ! Done"
-								
-								// Test "_superFrom"
-								alert(myWidget1.getVersion()); // Must be "2"
+								var msg = '';
+								msg += myWidget1.renamedFunction() + ',';
+								msg += myWidget1.getVersion() + ',';
+								msg += myWidget1.value
+								alert(msg + '<----- Must be "1,2,2,2"');
 							});
 					};
 				};

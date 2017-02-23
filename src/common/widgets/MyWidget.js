@@ -171,8 +171,8 @@ module.exports = {
 						}),
 						
 						// Test _superFrom
-						getVersion: doodad.REPLACE(function() {
-							return 2;
+						getVersion: doodad.OVERRIDE(function() {
+							return this._super() + 2;
 						}),
 					
 					})));
@@ -224,8 +224,8 @@ module.exports = {
 						})),
 						
 						// Test _superFrom
-						getVersion: doodad.REPLACE(function() {
-							return 4;
+						getVersion: doodad.OVERRIDE(function() {
+							return this._super() + 4;
 						}),
 					
 					})));
@@ -336,7 +336,7 @@ module.exports = {
 								msg += myWidget1.renamedFunction() + ',';
 								msg += myWidget1.getVersion() + ',';
 								msg += myWidget1.value
-								alert(msg + '<----- Must be "1,2,2,2"');
+								alert(msg + '<----- Must be "1,2,3,2"');
 							});
 					};
 				};

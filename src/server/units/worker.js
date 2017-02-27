@@ -147,6 +147,7 @@ module.exports = function(root, options, _shared) {
 			{
 				handler: server.Http.ContentSecurityPolicyHandler,
 				policy: "default-src 'self' 'unsafe-eval' 'unsafe-inline';",
+				mimeTypes: ['text/html'],
 			},
 			//{
 			//	handler: server.Http.ContentSecurityPolicyReportHandler,

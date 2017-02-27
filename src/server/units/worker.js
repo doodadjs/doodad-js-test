@@ -695,8 +695,10 @@ module.exports = function(root, options, _shared) {
 		];
 
 		function onerror(ev) {
-			ev.preventDefault();
-			console.error(ev.error);
+			if (!ev.prevent) {
+				ev.preventDefault();
+				console.error(ev.error);
+			};
 		};
 
 		function onstatus(ev) {
@@ -713,8 +715,6 @@ module.exports = function(root, options, _shared) {
 
 		function onrequest(ev) {
 			const request = ev.data.request;
-			request.onError.attach(null, onerror);
-			request.response.onError.attach(null, onerror);
 			request.response.onStatus.attach(null, onstatus);
 		};
 

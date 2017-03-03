@@ -43,31 +43,35 @@ module.exports = function(root, options, _shared) {
 
 
 	function startup() {
+		let ready = false;
+
 		const cpus = Math.min(nodeOs.cpus().length, MAX_CPUS);
 
 		function startWorkers() {
-			tools.Files.mkdir(options.cachePath, {makeParents: true});
+			return Promise.try(function tryStartWorkers() {
+				tools.Files.mkdir(options.cachePath, {makeParents: true});
 			
-			if (cpus > 1) {
-				nodeCluster.setupMaster({
-					silent: true,
-				});
+				if (cpus > 1) {
+					nodeCluster.setupMaster({
+						silent: true,
+					});
 
-				nodeCluster.on('exit', (worker, code, signal) => {
-					if (!signal) {
+					nodeCluster.on('exit', (worker, code, signal) => {
+						if (!signal) {
+							nodeCluster.fork();
+						};
+					});
+
+					for (let i = 0; i < cpus; i++) {
 						nodeCluster.fork();
 					};
-				});
 
-				for (let i = 0; i < cpus; i++) {
-					nodeCluster.fork();
+				} else {
+					options.noCluster = true;
+					return require('./worker.js')(root, options, _shared);
+
 				};
-
-			} else {
-				options.noCluster = true;
-				require('./worker.js')(root, options, _shared);
-
-			};
+			});
 		};
 		
 		const test = doodad.Test,
@@ -91,101 +95,107 @@ module.exports = function(root, options, _shared) {
 				messenger.connect();
 			
 				const stats = function() {
-					if (cpus > 1) {
-						const TIMEOUT = 1000 * 60 * 2;
-						const output = {};
-						let count = types.keys(nodeCluster.workers).length;
-						return Promise.create(function statsPromise(resolve, reject) {
-							let retval;
-							const timeId = setTimeout(function() {
-								messenger.cancel(retval);
-								count = 0;
-								reject(output);
-							}, TIMEOUT);
-							retval = messenger.callService('MyService', 'stats', null, {
-								ttl: 500, // ms
-								retryDelay: 100, // ms
-								callback: function(err, result, worker) {
-									if (count > 0) {
-										output['W:' + worker.id] = err || result;
-										count--;
-										if (count === 0) {
-											clearTimeout(timeId);
-											resolve(output);
+					if (ready) {
+						if (cpus > 1) {
+							const TIMEOUT = 1000 * 60 * 2;
+							const output = {};
+							let count = types.keys(nodeCluster.workers).length;
+							return Promise.create(function statsPromise(resolve, reject) {
+								let retval;
+								const timeId = setTimeout(function() {
+									messenger.cancel(retval);
+									count = 0;
+									reject(output);
+								}, TIMEOUT);
+								retval = messenger.callService('MyService', 'stats', null, {
+									ttl: 500, // ms
+									retryDelay: 100, // ms
+									callback: function(err, result, worker) {
+										if (count > 0) {
+											output['W:' + worker.id] = err || result;
+											count--;
+											if (count === 0) {
+												clearTimeout(timeId);
+												resolve(output);
+											};
 										};
-									};
-								},
+									},
+								});
 							});
-						});
-					} else {
-						return Promise.resolve(nodejs.Server.Http.Request.$getStats());
+						} else {
+							return Promise.resolve(nodejs.Server.Http.Request.$getStats());
+						};
 					};
 				};
 			
 				const ping = function() {
-					if (cpus > 1) {
-						const TIMEOUT = 1000 * 60 * 2;
-						const output = {};
-						let count = types.keys(nodeCluster.workers).length;
-						return Promise.create(function pingPromise(resolve, reject) {
-							let retval;
-							const timeId = setTimeout(function() {
-								messenger.cancel(retval);
-								count = 0;
-								reject(output);
-							}, TIMEOUT);
-							retval = messenger.ping({
-								ttl: 500, // ms
-								retryDelay: 100, // ms
-								callback: function(err, result, worker) {
-									if (count > 0) {
-										output['W:' + worker.id] = err || result;
-										count--;
-										if (count === 0) {
-											clearTimeout(timeId);
-											resolve(output);
+					if (ready) {
+						if (cpus > 1) {
+							const TIMEOUT = 1000 * 60 * 2;
+							const output = {};
+							let count = types.keys(nodeCluster.workers).length;
+							return Promise.create(function pingPromise(resolve, reject) {
+								let retval;
+								const timeId = setTimeout(function() {
+									messenger.cancel(retval);
+									count = 0;
+									reject(output);
+								}, TIMEOUT);
+								retval = messenger.ping({
+									ttl: 500, // ms
+									retryDelay: 100, // ms
+									callback: function(err, result, worker) {
+										if (count > 0) {
+											output['W:' + worker.id] = err || result;
+											count--;
+											if (count === 0) {
+												clearTimeout(timeId);
+												resolve(output);
+											};
 										};
-									};
-								},
+									},
+								});
 							});
-						});
-					} else {
-						return Promise.reject(new types.NotAvailable("Command not available."));
+						} else {
+							return Promise.reject(new types.NotAvailable("Command not available."));
+						};
 					};
 				};
 			
 				const browser = function() {
-					return Promise.try(function browserPromise() { // Sets Promise's name to "browserPromise" instead of "statsPromise"
-							return stats();
-						})
-						.thenCreate(function launchBrowser(result, resolve, reject) {
-							let url = "http://";
-							url += (options.listeningAddress === '0.0.0.0' ? '127.0.0.1' : options.listeningAddress);
-							url += ':' + options.listeningPort;
-							url += '/';
-							const os = tools.getOS();
-							// Reference: http://www.dwheeler.com/essays/open-files-urls.html
-							let child = null;
-							if (os.name === 'win32') {
-								child = child_process.spawn("start", [url], {shell: true});
-							} else if (os.name === 'darwin') {
-								child = child_process.spawn("open", [url]);
-							} else {
-								child = child_process.spawn("xdg-open", [url]);
-							};
-							if (child) {
-								child.on('exit', function(code, signal) {
-									if (code === 0) {
-										resolve();
-									} else {
+					if (ready) {
+						return Promise.try(function browserPromise() { // Sets Promise's name to "browserPromise" instead of "statsPromise"
+								return stats();
+							})
+							.thenCreate(function launchBrowser(result, resolve, reject) {
+								let url = "http://";
+								url += (options.listeningAddress === '0.0.0.0' ? '127.0.0.1' : options.listeningAddress);
+								url += ':' + options.listeningPort;
+								url += '/';
+								const os = tools.getOS();
+								// Reference: http://www.dwheeler.com/essays/open-files-urls.html
+								let child = null;
+								if (os.name === 'win32') {
+									child = child_process.spawn("start", [url], {shell: true});
+								} else if (os.name === 'darwin') {
+									child = child_process.spawn("open", [url]);
+								} else {
+									child = child_process.spawn("xdg-open", [url]);
+								};
+								if (child) {
+									child.on('exit', function(code, signal) {
+										if (code === 0) {
+											resolve();
+										} else {
+											reject(new types.Error("Failed to start browser. Please manually navigate to ' ~0~ '.", [url]));
+										};
+									});
+									child.on('error', function(err) {
 										reject(new types.Error("Failed to start browser. Please manually navigate to ' ~0~ '.", [url]));
-									};
-								});
-								child.on('error', function(err) {
-									reject(new types.Error("Failed to start browser. Please manually navigate to ' ~0~ '.", [url]));
-								});
-							};
-						});
+									});
+								};
+							});
+					};
 				};
 			
 				const term = new nodejs.Terminal.Ansi.Javascript(0, {
@@ -218,7 +228,8 @@ module.exports = function(root, options, _shared) {
 							console.info(tools.format('Folder "~0~" deleted.', [options.cachePath.toString()]));
 						};
 					
-						startWorkers();
+						startWorkers()
+							.then(() => {ready = true});
 					});
 				});
 				nodejs.Console.capture(function(name, args) {
@@ -226,7 +237,8 @@ module.exports = function(root, options, _shared) {
 				});
 				term.listen();
 			} else {
-				startWorkers();
+				return startWorkers()
+					.then(() => {ready = true});
 			};
 		};
 	};

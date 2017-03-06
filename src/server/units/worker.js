@@ -696,7 +696,7 @@ module.exports = function(root, options, _shared) {
 		];
 
 		function onerror(ev) {
-			if (!ev.prevent) {
+			if (!ev.error.trapped) {
 				ev.preventDefault();
 				console.error(ev.error);
 			};

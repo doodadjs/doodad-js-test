@@ -36,8 +36,7 @@ module.exports = function(root, options, _shared) {
 		
 		nodeOs = require('os'),
 		nodeCluster = require('cluster'),
-		util = require('util'),
-		child_process = require('child_process'),
+		nodeChildProcess = require('child_process'),
 		
 		Promise = types.getPromise();
 
@@ -176,11 +175,11 @@ module.exports = function(root, options, _shared) {
 								// Reference: http://www.dwheeler.com/essays/open-files-urls.html
 								let child = null;
 								if (os.name === 'win32') {
-									child = child_process.spawn("start", [url], {shell: true});
+									child = nodeChildProcess.spawn("start", [url], {shell: true});
 								} else if (os.name === 'darwin') {
-									child = child_process.spawn("open", [url]);
+									child = nodeChildProcess.spawn("open", [url]);
 								} else {
-									child = child_process.spawn("xdg-open", [url]);
+									child = nodeChildProcess.spawn("xdg-open", [url]);
 								};
 								if (child) {
 									child.on('exit', function(code, signal) {

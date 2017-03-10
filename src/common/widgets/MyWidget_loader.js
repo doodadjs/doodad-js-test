@@ -39,11 +39,11 @@ module.exports = {
 			create: function create(root, /*optional*/_options, _shared) {
 				"use strict";
 
-				var doodad = root.Doodad,
+				const doodad = root.Doodad,
 					loader = doodad.Loader;
 
 				return function init(options) {
-					var DD_SCRIPTS = [
+					const DD_SCRIPTS = [
 						{
 							description: "Load 'doodad-js-io'",
 							dependencies : [
@@ -107,13 +107,13 @@ module.exports = {
 									],
 									initializers: [
 										function(root) {
-											var files = {};
+											const files = {};
 											if (root.Doodad.NodeJs) {
 												files['src/common/widgets/MyWidget.js'] = {};
 											} else {
 												files['widgets/MyWidget.js'] = {};
 											};
-											var modules = {'doodad-js-test': files};
+											const modules = {'doodad-js-test': files};
 											return root.Doodad.Modules.load(modules, {startup: {secret: _shared.SECRET}});
 										},
 									],

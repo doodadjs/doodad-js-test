@@ -51,7 +51,7 @@ module.exports = {
 				//===================================
 				// Get namespaces
 				//===================================
-				var me = root.MyWidget,
+				const me = root.MyWidget,
 					doodad = root.Doodad,
 					mixIns = doodad.MixIns,
 					namespaces = doodad.Namespaces,
@@ -66,7 +66,7 @@ module.exports = {
 				//===================================
 				// MyWidget
 				//===================================
-				var MyWidgetStep1 = doodad.REGISTER(widgets.HtmlWidget.$extend(
+				const MyWidgetStep1 = doodad.REGISTER(widgets.HtmlWidget.$extend(
 				{
 					$TYPE_NAME: '__MyWidgetStep1__',
 					
@@ -126,11 +126,13 @@ module.exports = {
 					}),
 				}));
 
-				var finalStep;
 				if (root.serverSide) {
-					finalStep = MyWidgetStep1;
+					me.REGISTER(MyWidgetStep1.$extend(
+					{
+						$TYPE_NAME: 'MyWidget',
+					}));
 				} else {
-					var MyWidgetStep2 = doodad.REGISTER(doodad.BASE(MyWidgetStep1.$extend(
+					const MyWidgetStep2 = doodad.REGISTER(doodad.BASE(MyWidgetStep1.$extend(
 					{
 						$TYPE_NAME: '__MyWidgetStep2__',
 						
@@ -161,7 +163,7 @@ module.exports = {
 						
 						acquire: doodad.OVERRIDE(function acquire() {
 							this._super();
-							var span = client.getFirstElement(this.stream.element);
+							const span = client.getFirstElement(this.stream.element);
 							this.onJsClick.attach(span);
 						}),
 						
@@ -178,7 +180,7 @@ module.exports = {
 					})));
 					
 					// Test adding js event type
-					var MyWidgetStep3 = doodad.REGISTER(doodad.BASE(MyWidgetStep2.$extend(
+					const MyWidgetStep3 = doodad.REGISTER(doodad.BASE(MyWidgetStep2.$extend(
 					{
 						$TYPE_NAME: '__MyWidgetStep3__',
 						
@@ -191,7 +193,7 @@ module.exports = {
 					
 					})));
 					
-					var MyWidgetStep4 = doodad.REGISTER(doodad.BASE(MyWidgetStep3.$extend(
+					const MyWidgetStep4 = doodad.REGISTER(doodad.BASE(MyWidgetStep3.$extend(
 					{
 						$TYPE_NAME: '__MyWidgetStep4__',
 
@@ -230,76 +232,76 @@ module.exports = {
 					
 					})));
 					
-					finalStep = MyWidgetStep4;
+					// Test overriding js event handler
+					me.REGISTER(MyWidgetStep4.$extend(
+					{
+						$TYPE_NAME: 'MyWidget',
+					
+						// Test property overriding
+						value: (types.hasDefinePropertyEnabled() ?
+							doodad.PROPERTY({
+								get: doodad.OVERRIDE(function() {
+									return this._super() + 1;
+								}),
+							}) :
+							doodad.PUBLIC(2)
+						),
+
+						// Test private override
+						/*
+						myPrivateAttr: "private overridden",
+						myPrivateFn: doodad.OVERRIDE(function() {
+							return "private overriden";
+						}),
+						*/
+					
+						// Test RENAME (must respect the contract)
+						functionToRename: doodad.OVERRIDE(function functionToRename() {
+							return this.renamedFunction();
+						}),
+
+						// Test _superFrom
+						getVersion: doodad.REPLACE(function() {
+							return this._superFrom(MyWidgetStep2)();
+						}),
+				
+					}));
 				};
-				
-				// Test overriding js event handler
-				var MyWidget = me.REGISTER(finalStep.$extend(
-				{
-					$TYPE_NAME: 'MyWidget',
-					
-					// Test property overriding
-					value: (types.hasDefinePropertyEnabled() ?
-						doodad.PROPERTY({
-							get: doodad.OVERRIDE(function() {
-								return this._super() + 1;
-							}),
-						}) :
-						doodad.PUBLIC(2)
-					),
-
-					// Test private override
-					/*
-					myPrivateAttr: "private overridden",
-					myPrivateFn: doodad.OVERRIDE(function() {
-						return "private overriden";
-					}),
-					*/
-					
-					// Test RENAME (must respect the contract)
-					functionToRename: doodad.OVERRIDE(function functionToRename() {
-						return this.renamedFunction();
-					}),
-
-					// Test _superFrom
-					getVersion: doodad.REPLACE(function() {
-						return this._superFrom(MyWidgetStep2)();
-					}),
-				
-				}));
 					
 					
 				//===================================
 				// Init
 				//===================================
 				return function init(/*options*/) {
-					var Promise = types.getPromise();
+					const Promise = types.getPromise();
 					
-					var colors = ['white', 'red', 'magenta', 'green', 'black', 'yellow', 'blue', 'pink', 'gray', 'acqua', 'brown', 'gold', 'silver'];
+					const colors = ['white', 'red', 'magenta', 'green', 'black', 'yellow', 'blue', 'pink', 'gray', 'acqua', 'brown', 'gold', 'silver'];
 					
-					var createMyWidget = function createMyWidget(name, message, stream) {
-						var color;
+					const createMyWidget = function createMyWidget(name, message, stream) {
+						let color;
 
-						var myWidget = new me.MyWidget();
+						const myWidget = new me.MyWidget();
 						
 						myWidget.setStream(stream);
 						
-						var id = myWidget.getIdentity();
+						const id = myWidget.getIdentity();
 						id.id = id.name = id.class = name;
 						myWidget.setIdentity(id);
 						
+						let styles;
+
 						color = Math.floor(Math.random() * colors.length);
-						var styles = myWidget.getStyles();
+						styles = myWidget.getStyles();
 						styles.color = colors[color];
 						colors.splice(color, 1);
 						myWidget.setStyles(styles);
 						
-						var attributes = myWidget.getAttributes('mergeTest');
+						const attributes = myWidget.getAttributes('mergeTest');
 						attributes.class = 'mergeTest';
 						myWidget.setAttributes(attributes, 'mergeTest');
 						
 						color = Math.floor(Math.random() * colors.length);
-						var styles = myWidget.getStyles('mergeTest');
+						styles = myWidget.getStyles('mergeTest');
 						styles.backgroundColor = colors[color];
 						colors.splice(color, 1);
 						myWidget.setStyles(styles, 'mergeTest');
@@ -310,29 +312,29 @@ module.exports = {
 					};
 					
 					if (root.serverSide) {
-						var stream = new io.HtmlOutputStream();
+						const stream = new io.HtmlOutputStream();
 						stream.pipe(io.stdout);
-						var myWidget = createMyWidget('myWidget1', 'Console !', stream);
+						const myWidget = createMyWidget('myWidget1', 'Console !', stream);
 						return myWidget.render();
 					} else {
-						var myWidget1 = createMyWidget('myWidget1', 'Hello !', 'test1');
+						const myWidget1 = createMyWidget('myWidget1', 'Hello !', 'test1');
 						myWidget1.onRender.attach(null, function onRender(ev) {alert('render 1')});
 
-						var myWidget2 = createMyWidget('myWidget2', 'Salut !', 'test2');
+						const myWidget2 = createMyWidget('myWidget2', 'Salut !', 'test2');
 						myWidget2.onRender.attach(null, function onRender(ev) {alert('render 2')});
 						
 						//// Test "destroy"
-						//var myWidget3 = createMyWidget('myWidget3', 'Ciao !', 'test3');
+						//const myWidget3 = createMyWidget('myWidget3', 'Ciao !', 'test3');
 						//myWidget3.onRender.attach(null, function onRender(ev) {alert('render 3')});
 						////myWidget3.render('test3');
 						//myWidget3.destroy();
 						
-						var myWidget3 = createMyWidget('myWidget3', 'Ciao !', 'test3');
+						const myWidget3 = createMyWidget('myWidget3', 'Ciao !', 'test3');
 						myWidget3.onRender.attach(null, function onRender(ev) {alert('render 3')});
 
 						return Promise.all([ myWidget1.render(), myWidget2.render(), myWidget3.render() ])
 							.then(function doSomeTestsPromise() {
-								var msg = '';
+								let msg = '';
 								msg += myWidget1.renamedFunction() + ',';
 								msg += myWidget1.getVersion() + ',';
 								msg += myWidget1.value

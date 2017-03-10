@@ -18,17 +18,17 @@
 			(function() {
 				"use strict";
 
-				var __prevOnLoad__ = window.onload;
+				const __prevOnLoad__ = window.onload;
 				window.onload = function onload(ev) {
 					if (__prevOnLoad__) {
 						__prevOnLoad__.call(this, ev);
 					};
 
-					var global = window;
+					const global = window;
 
-					var SECRET = ((typeof Symbol === 'function') ? Symbol() : []);
+					const SECRET = ((typeof Symbol === 'function') ? Symbol() : []);
 
-					var options = {startup: {secret: SECRET}};
+					const options = {startup: {secret: SECRET}};
 
 					options['Doodad.Modules'] = {
 						modulesUri: '../..',
@@ -40,7 +40,7 @@
 
                             root.Doodad.Tools.trapUnhandledErrors();
                         })
-				        ['catch'](function (err) {
+				        .catch(function(err) {
 				            alert(err);
 				        });
 				};

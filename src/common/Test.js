@@ -45,7 +45,7 @@ module.exports = {
 				root.enableAsserts();
 				
 				// Unit test module entry
-				var doodad = root.Doodad,
+				const doodad = root.Doodad,
 					types = doodad.Types,
 					tools = doodad.Tools,
 					namespaces = doodad.Namespaces,
@@ -62,7 +62,7 @@ module.exports = {
 					windowIsNaN: global.isNaN,
 				});
 					
-				var __Internal__ = {
+				const __Internal__ = {
 					stdout: null,
 				};
 				
@@ -89,23 +89,22 @@ module.exports = {
 				});
 
 				test.ADD('getUnits', function getUnits(namespace) {
-					var units = namespace.CHILDREN;
+					let units = namespace.CHILDREN;
 					if (!units) {
 						units = namespace.CHILDREN = [];
-						for (var name in namespace) {
+						for (let name in namespace) {
 							if (types.has(namespace, name)) {
-								var nso = namespace[name];
-								if ((nso instanceof root.Namespace) && (nso.DD_PARENT === namespace)) {
-									var unit = namespaces.get(nso.DD_FULL_NAME, entries.TestModule);
+								const nso = namespace[name];
+								if (types._instanceof(nso, root.Namespace) && (nso.DD_PARENT === namespace)) {
+									const unit = namespaces.get(nso.DD_FULL_NAME, entries.TestModule);
 									if (unit) {
-										var pos,
-											len = units.length,
-											priority = (types.isNothing(nso.priority) ? 20 : nso.priority);
-										for (pos = 0; pos < len; pos++) {
-											var item = units[pos];
+										const len = units.length;
+										let priority = (types.isNothing(nso.priority) ? 20 : nso.priority);
+										for (let pos = 0; pos < len; pos++) {
+											const item = units[pos];
 											if (item.priority > priority) {
 												priority = null;
-												units.splice(pos, 0, uniy);
+												units.splice(pos, 0, unit);
 												break;
 											};
 										};
@@ -132,11 +131,11 @@ module.exports = {
 				test.ADD('compare', function compare(expected, result, /*optional*/options) {
 					expected = types.toObject(expected);
 					result = types.toObject(result);
-					var expectedValue = expected.valueOf(),
+					const expectedValue = expected.valueOf(),
 						resultValue = result.valueOf(),
-						depth = types.get(options, 'depth', 0),
+						inherited = types.get(options, 'inherited', false);
+					let depth = types.get(options, 'depth', 0),
 						mode = types.get(options, 'mode', null),
-						inherited = types.get(options, 'inherited', false),
 						success = true;
 					if (mode === 'is') {
 						success = types.is(result, [expected]);
@@ -162,16 +161,16 @@ module.exports = {
 						success = success && (resultValue ? (resultValue.message === expectedValue.message) : false);
 					} else if ((depth >= 0) && (mode === 'object')) {
 						depth--;
-						var expectedCount = 0;
-						var resultCount = 0;
+						let expectedCount = 0;
+						let resultCount = 0;
 						success = success && !!resultValue;
 						if (success) {
-							var keys;
+							let keys;
 							if (global.Object.keys) {
 								keys = global.Object.keys(expectedValue);
 							} else {
 								keys = [];
-								for (var key in expectedValue) {
+								for (let key in expectedValue) {
 									if (global.Object.prototype.hasOwnProperty.call(expectedValue, key)) {
 										keys.push(key);
 									};
@@ -180,8 +179,8 @@ module.exports = {
 							if (global.Object.getOwnPropertySymbols) {
 								keys.push.apply(keys, global.Object.getOwnPropertySymbols(expectedValue));
 							};
-							for (var i = 0; i < keys.length; i++) {
-								var key = keys[i];
+							for (let i = 0; i < keys.length; i++) {
+								const key = keys[i];
 								if (inherited) {
 									if (!(key in resultValue)) {
 										success = false;
@@ -202,14 +201,14 @@ module.exports = {
 						};
 					} else if ((depth >= 0) && (mode === 'array') && types.get(options, 'contains', false)) {
 						depth--;
-						var expectedCount = expectedValue.length,
+						const expectedCount = expectedValue.length,
 							resultCount = (resultValue ? resultValue.length : 0);
 						success = (expectedCount === resultCount);
 						if (success) {
-							for (var i = 0; i < expectedCount; i++) {
-								var val = expectedValue[i],
-									found = false;
-								for (var j = 0; j < resultCount; j++) {
+							for (let i = 0; i < expectedCount; i++) {
+								const val = expectedValue[i];
+								let found = false;
+								for (let j = 0; j < resultCount; j++) {
 									if (test.compare(val, resultValue[j], {depth: depth})) {
 										found = true;
 										break;
@@ -225,12 +224,12 @@ module.exports = {
 						depth--;
 						success = success && !!resultValue;
 						if (success) {
-							var len = Math.max(expectedValue.length, resultValue.length),
-								expectedCount = 0,
+							const len = Math.max(expectedValue.length, resultValue.length);
+							let expectedCount = 0,
 								resultCount = 0;
-							for (var i = 0; i < len; i++) {
+							for (let i = 0; i < len; i++) {
 								if (i in expectedValue) {
-									var val = expectedValue[i];
+									const val = expectedValue[i];
 									if (val !== test.EmptySlot) {
 										expectedCount++;
 									};
@@ -275,7 +274,7 @@ module.exports = {
 				__Internal__.consoleTimingEnabled = !__Internal__.processHrTimeEnabled && !!(global.console && global.console.time && global.console.timeEnd);
 					
 				test.ADD('prepareCommand', function prepareCommand(fn, fnName) {
-					var stream = test.getOutput(),
+					const stream = test.getOutput(),
 						html = types._implements(stream, io.HtmlOutputStream),
 						dom = (clientIO ? (stream instanceof clientIO.DomOutputStream) : false);
 					
@@ -286,7 +285,7 @@ module.exports = {
 						stream.print("Name: " + fnName);
 					};
 					
-					var ended = false;
+					let ended = false;
 						
 					return {
 						run: function (expected, /*optional*/options 	/**/ /*paramarray*/) {
@@ -294,10 +293,13 @@ module.exports = {
 							if (!options) {
 								options = {};
 							};
-							var sourceOpts = {};
-							var mode = types.get(options, 'mode', null),
-								isEval = types.get(options, 'eval', false),
-								expectedStr = "Expected: " + 
+
+							let sourceOpts;
+
+							sourceOpts = {};
+							const mode = types.get(options, 'mode', null),
+								isEval = types.get(options, 'eval', false);
+							const expectedStr = "Expected: " + 
 									(types.get(options, 'not', false) ? 'Not ' : '') + 
 									(types.get(options, 'contains', false) ? 'Contains ' : '') +
 									(
@@ -311,11 +313,10 @@ module.exports = {
 										: 
 											((mode === 'compare') ? 'Equals ' : '') + 
 											(isEval && types.isString(expected) ? expected : types.toSource(expected, types.get(options, 'depth', 0), sourceOpts))
-									),
-								expectedCls = 'expected',
-								params = Array.prototype.slice.call(arguments, 2);
+									);
+							const expectedCls = 'expected';
 								
-							var evalError = null;
+							let evalError = null;
 							if (isEval && types.isString(expected)) {
 								try {
 									expected = types.eval(expected, {window: global, global: global, EmptySlot: test.EmptySlot});
@@ -326,7 +327,7 @@ module.exports = {
 
 							test.TESTS_COUNT++;
 							
-							var	result,
+							let	result,
 								resultStr,
 								resultCls,
 								printOpts;
@@ -339,17 +340,19 @@ module.exports = {
 								};
 							};
 							
+							let params = Array.prototype.slice.call(arguments, 2);
+
 							if (!evalError) {
 								expected = types.toObject(expected);
 								
-								var command = "Command: " + (types.get(options, 'command', null) ||
+								const command = "Command: " + (types.get(options, 'command', null) ||
 										fnName + 
 										"(" + 
 										tools.map(params, function(val, key) {
 												if (isEval && types.isString(val)) {
 													return val;
 												} else {
-													var sourceOpts = {};
+													sourceOpts = {};
 													return types.toSource(val, types.get(options, 'depth', 0), sourceOpts);
 												};
 											}).join(', ') + 
@@ -382,16 +385,18 @@ module.exports = {
 								};
 							};
 
+							const repetitions = types.get(options, 'repetitions', 1);
+
+							let time = null;
+
 							if (!evalError) {
 								resultStr = "Got: ";
 								resultCls = 'got';
-								var time = null,
-									repetitions = types.get(options, 'repetitions', 1);
-									
+
 								if (__Internal__.performanceEnabled) {
 									time = 0;
-									for (var i = 0; i < repetitions; i++) {
-										var now = performance.now();
+									for (let i = 0; i < repetitions; i++) {
+										const now = performance.now();
 										try {
 											result = fn.apply(this, params);
 										} catch(ex) {
@@ -401,8 +406,8 @@ module.exports = {
 									};
 								} else if (__Internal__.processHrTimeEnabled) {
 									time = 0;
-									for (var i = 0; i < repetitions; i++) {
-										var now = process.hrtime();
+									for (let i = 0; i < repetitions; i++) {
+										let now = process.hrtime();
 										try {
 											result = fn.apply(this, params);
 										} catch(ex) {
@@ -413,7 +418,7 @@ module.exports = {
 									};
 								} else if (__Internal__.consoleTimingEnabled) {
 									time = 0;
-									for (var i = 0; i < repetitions; i++) {
+									for (let i = 0; i < repetitions; i++) {
 										console.time("Time");
 										try {
 											result = fn.apply(this, params);
@@ -436,7 +441,7 @@ module.exports = {
 									resultStr += result.toString();
 									resultCls += ' error';
 								} else {
-									var sourceOpts = {};
+									sourceOpts = {};
 									if (types.get(options, 'inherited', false)) {
 										sourceOpts.inherited = true;
 									};
@@ -496,7 +501,7 @@ module.exports = {
 							};
 							stream.print(resultStr.replace(/[~]/g, '~~'), printOpts);
 							
-							var note = types.get(options, 'note', null);
+							const note = types.get(options, 'note', null);
 							if (note) {
 								printOpts = {};
 								if (html) {
@@ -527,7 +532,7 @@ module.exports = {
 				});
 				
 				test.ADD('runUnit', function runUnit(unit, /*optional*/options) {
-					var stream = test.getOutput(),
+					const stream = test.getOutput(),
 						html = types._implements(stream, io.HtmlOutputStream);
 					if (html) {
 						stream.openElement({tag: 'div', attrs: 'class="unit" title="' + unit.DD_FULL_NAME + '"'});
@@ -548,21 +553,21 @@ module.exports = {
 				});
 				
 				test.ADD('runChildren', function runChildren(unit) {
-					var units = test.getUnits(unit);
-					for (var i = 0; i < units.length; i++) {
+					const units = test.getUnits(unit);
+					for (let i = 0; i < units.length; i++) {
 						test.runUnit(units[i]);
 					};
 				});
 				
-				var __showFailsOnData__ = function onData(ev) {
+				const __showFailsOnData__ = function onData(ev) {
 					// Prevent managed and unmanaged keys from going into the buffer.
 					ev.preventDefault();
 				};
 
-				var __showFailsOnKey__ = function onKey(ev) {
-					var key = ev.data;
+				const __showFailsOnKey__ = function onKey(ev) {
+					const key = ev.data;
 					if (!key.functionKeys) {
-						var scanCode = key.scanCode;
+						const scanCode = key.scanCode;
 						if (scanCode === io.KeyboardScanCodes.UpArrow) {
 							ev.preventDefault(); // prevent key from being applied by the browser
 							this.prev(ev);
@@ -580,7 +585,7 @@ module.exports = {
 				};
 				
 				test.ADD('showFails', function showFails() {
-					var stream = test.getOutput(),
+					const stream = test.getOutput(),
 						root = stream.element,
 						runElements = Array.prototype.slice.call(root.getElementsByClassName("run bindMe"), 0), // <PRB> Returned objects collection is dynamic
 						failedRuns = [],
@@ -590,10 +595,10 @@ module.exports = {
 						stream.openElement({tag: 'div', attrs: 'class="failedPopup bindMe"'});
 						stream.write('<a id="failedBookmark" class="failedToolbar bindMe"></a><button class="prevFailed bindMe">Previous</button><button class="nextFailed bindMe">Next</button><span class="failedOf bindMe"></span>');
 						stream.flush({flushElement: true});
-						var popup = stream.element;
+						const popup = stream.element;
 						stream.closeElement();
 						
-						var	failedToolbar = popup.getElementsByClassName('failedToolbar bindMe')[0],
+						const failedToolbar = popup.getElementsByClassName('failedToolbar bindMe')[0],
 							prevButton = popup.getElementsByClassName('prevFailed bindMe')[0],
 							nextButton = popup.getElementsByClassName('nextFailed bindMe')[0];
 							
@@ -612,7 +617,7 @@ module.exports = {
 									this.currentRun.setAttribute('selected', 'false');
 								};
 								if (!_shared.Natives.windowIsNaN(this.currentFailed)) {
-									var runElement = this.failedRuns[this.currentFailed];
+									const runElement = this.failedRuns[this.currentFailed];
 									if (runElement) {
 										this.currentRun = runElement;
 										runElement.setAttribute('selected', 'true');
@@ -620,7 +625,7 @@ module.exports = {
 										this.failedOf.textContent = 'Failure ' + (this.currentFailed + 1) + ' of ' + this.failedRuns.length + '. Total is ' + this.runElements.length + '.';
 									};
 								};
-								var url = tools.getCurrentLocation();
+								let url = tools.getCurrentLocation();
 								url = url.toString({
 									anchor: 'failedBookmark',
 								});
@@ -647,13 +652,13 @@ module.exports = {
 							prev: types.bind(state, function(ev) { // JS click
 								try {
 									if (_shared.Natives.windowIsNaN(this.currentFailed)) {
-										var index;
+										let index;
 										if (this.currentRun) {
 											index = _shared.Natives.windowParseInt(this.currentRun.getAttribute('index'));
 										} else {
 											index = 0;
 										};
-										var run = this.runElements[index];
+										let run = this.runElements[index];
 										while (run) {
 											this.currentFailed = _shared.Natives.windowParseInt(this.currentRun.getAttribute('failedIndex'));
 											if (!_shared.Natives.windowIsNaN(this.currentFailed)) {
@@ -682,13 +687,13 @@ module.exports = {
 							next: types.bind(state, function(ev) { // JS click
 								try {
 									if (_shared.Natives.windowIsNaN(this.currentFailed)) {
-										var index;
+										let index;
 										if (this.currentRun) {
 											index = _shared.Natives.windowParseInt(this.currentRun.getAttribute('index'));
 										} else {
 											index = this.runElements.length - 1;
 										};
-										var run = this.runElements[index];
+										let run = this.runElements[index];
 										while (this.currentRun) {
 											this.currentFailed = _shared.Natives.windowParseInt(this.currentRun.getAttribute('failedIndex'));
 											if (!_shared.Natives.windowIsNaN(this.currentFailed)) {
@@ -746,8 +751,8 @@ module.exports = {
 						nextButton.className = nextButton.className.replace('bindMe', '');
 					};
 					
-					for (var i = 0; i < runElements.length; i++) {
-						var runElement = runElements[i],
+					for (let i = 0; i < runElements.length; i++) {
+						const runElement = runElements[i],
 							resultElement = runElement.getElementsByClassName('result')[0];
 						runElement.setAttribute('index', i);
 						if (resultElement.className.indexOf('error') >= 0) {
@@ -772,17 +777,17 @@ module.exports = {
 				});
 				
 				test.ADD('showUnitName', function showUnitName() {
-					var name = (test.CURRENT_UNIT ? test.CURRENT_UNIT.DD_FULL_NAME : ''),
+					const name = (test.CURRENT_UNIT ? test.CURRENT_UNIT.DD_FULL_NAME : ''),
 						stream = test.getOutput(),
 						root = stream.element,
 						elements = Array.prototype.slice.call(root.getElementsByClassName("unitName"), 0); // <PRB> Returned objects collection is dynamic
-					for (var i = 0; i < elements.length; i++) {
+					for (let i = 0; i < elements.length; i++) {
 						elements[i].textContent = name;
 					};
 				});
 
 				test.ADD('moveToUnit', function moveToUnit(unit) {
-					var url = tools.getCurrentLocation();
+					let url = tools.getCurrentLocation();
 					if (unit) {
 						url = url.set({
 							args: url.args.set('unit', unit.DD_FULL_NAME, true),
@@ -796,15 +801,15 @@ module.exports = {
 					tools.setCurrentLocation(url);
 				});
 
-				var __showNavigatorOnData__ = function onData(ev) {
+				const __showNavigatorOnData__ = function onData(ev) {
 					// Prevent managed and unmanaged keys from going into the buffer.
 					ev.preventDefault();
 				};
 
-				var __showNavigatorOnKey__ = function onKey(ev) {
-					var key = ev.data;
+				const __showNavigatorOnKey__ = function onKey(ev) {
+					const key = ev.data;
 					if (!key.functionKeys) {
-						var scanCode = key.scanCode;
+						const scanCode = key.scanCode;
 						if (scanCode === io.KeyboardScanCodes.LeftArrow) {
 							ev.preventDefault(); // prevent key from being applied by the browser
 							this.prev(ev);
@@ -816,17 +821,20 @@ module.exports = {
 				};
 				
 				test.ADD('showNavigator', function showNavigator() {
-					var stream = test.getOutput();
+					const stream = test.getOutput();
 					stream.openElement({tag: 'div', attrs: 'class="navigator"'});
 					stream.write('<button class="index bindMe">Index</button><button class="prevUnit bindMe">&lt;&lt;&lt;</button><span class="unitName"></span><button class="nextUnit bindMe">&gt;&gt;&gt;</button>');
 					stream.flush({flushElement: true});
-					var root = stream.element;
+					const root = stream.element;
 					stream.closeElement();
 					
-					var indexButton = root.getElementsByClassName('index bindMe')[0],
+					const indexButton = root.getElementsByClassName('index bindMe')[0],
 						prevButton = root.getElementsByClassName('prevUnit bindMe')[0],
-						nextButton = root.getElementsByClassName('nextUnit bindMe')[0],
-						state = {
+						nextButton = root.getElementsByClassName('nextUnit bindMe')[0];
+
+					const state = {};
+
+					types.extend(state, {
 							index: types.bind(state, function(ev) { // JS click
 								try {
 									test.moveToUnit(null);
@@ -842,8 +850,8 @@ module.exports = {
 							prev: types.bind(state, function(ev) { // JS click
 								try {
 									if (test.CURRENT_UNIT) {
-										var units = test.getUnits(test.CURRENT_UNIT.DD_PARENT),
-											unit = test.CURRENT_UNIT,
+										const units = test.getUnits(test.CURRENT_UNIT.DD_PARENT);
+										let unit = test.CURRENT_UNIT,
 											pos = tools.findItem(units, unit);
 										if (pos <= 0) {
 											pos = units.length;
@@ -864,8 +872,8 @@ module.exports = {
 							next: types.bind(state, function(ev) { // JS click
 								try {
 									if (test.CURRENT_UNIT) {
-										var units = test.getUnits(test.CURRENT_UNIT.DD_PARENT),
-											unit = test.CURRENT_UNIT,
+										const units = test.getUnits(test.CURRENT_UNIT.DD_PARENT);
+										let unit = test.CURRENT_UNIT,
 											pos = tools.findItem(units, unit);
 										if ((pos < 0) || (pos >= units.length - 1)) {
 											pos = -1;
@@ -883,7 +891,7 @@ module.exports = {
 									};
 								};
 							}),
-						};
+						});
 						
 						
 					indexButton.onclick = state.index;
@@ -898,14 +906,14 @@ module.exports = {
 					io.stdin.listen();
 				});
 				
-				var __buildIndexItems__ = function(namespace) {
-					var html = '<ul>';
+				const __buildIndexItems__ = function(namespace) {
+					let html = '<ul>';
 
-					var units = test.getUnits(namespace),
+					const units = test.getUnits(namespace),
 						len = units.length;
-					for (var i = 0; i < len; i++) {
+					for (let i = 0; i < len; i++) {
 						// Sorry for using the same variable
-						var unit = units[i];
+						const unit = units[i];
 						html += '<li><a href="#" unitname="' + unit.DD_FULL_NAME + '" class="indexMenuItem bindMe">' + tools.escapeHtml(unit.DD_FULL_NAME) + '</a></li>';
 						html += __buildIndexItems__(unit);
 					};
@@ -914,18 +922,18 @@ module.exports = {
 				};
 				
 				test.ADD('showIndex', function showIndex(unit) {
-					var stream = test.getOutput();
+					const stream = test.getOutput();
 					stream.openElement({tag: 'div', attrs: 'class="indexMenu"'});
 					stream.write(__buildIndexItems__(test));
 					stream.flush({flushElement: true});
-					var root = stream.element;
+					const root = stream.element;
 					stream.closeElement();
 					
-					var elements = Array.prototype.slice.call(root.getElementsByClassName("indexMenuItem bindMe"), 0); // <PRB> Returned objects collection is dynamic
+					const elements = Array.prototype.slice.call(root.getElementsByClassName("indexMenuItem bindMe"), 0); // <PRB> Returned objects collection is dynamic
 						
-					var click = function(ev) {
+					const click = function(ev) {
 						try {
-							var name = ev.currentTarget.getAttribute('unitname'),
+							const name = ev.currentTarget.getAttribute('unitname'),
 								unit = test.getUnit(name);
 							test.moveToUnit(unit);
 						} catch(ex) {
@@ -938,25 +946,26 @@ module.exports = {
 						return false;
 					};
 						
-					for (var i = 0; i < elements.length; i++) {
-						var element = elements[i];
+					for (let i = 0; i < elements.length; i++) {
+						const element = elements[i];
 						element.className = '';
 						element.onclick = click;
 					};
 				});
 				
 				test.ADD('run', function run(/*optional*/options) {
-					var success = true;
+					let success = true;
 
 					test.FAILED_TESTS = 0;
 					
-					var stream = test.getOutput(),
+					const stream = test.getOutput(),
 						html = types._implements(stream, io.HtmlOutputStream),
 						dom = (clientIO ? (stream instanceof clientIO.DomOutputStream) : false);
 					
-					var name = types.get(options, 'name'),
-						units = test.getUnits(test), // also initialize some attributes
-						unit,
+					const name = types.get(options, 'name'),
+						units = test.getUnits(test); // also initialize some attributes
+
+					let unit,
 						isIndex = false,
 						ok = false;
 						
@@ -991,7 +1000,7 @@ module.exports = {
 								test.runUnit(unit);
 								ok = true;
 							} catch(ex) {
-								if (!(ex instanceof types.ScriptInterruptedError)) {
+								if (!types._instanceof(ex, types.ScriptInterruptedError)) {
 									debugger;
 									io.stderr.write(ex);
 									io.stderr.flush();

@@ -259,7 +259,7 @@ module.exports = function(root, options, _shared) {
 														mpStream.onReady.attach(null, mpStreamReadyCb = function(ev) {
 															ev.preventDefault();
 															if (ev.data.raw === io.BOF) {
-																ev.data.delayed = true;
+																const consumeCb = ev.data.defer();
 																mpStream.onReady.detach(null, mpStreamReadyCb);
 																request.getStream()
 																	.then(function(reqStream) {
@@ -284,10 +284,7 @@ module.exports = function(root, options, _shared) {
 																				if (state.aborted || (ev.data.raw === io.EOF)) {
 																					reqStreamEnd();
 																				} else {
-																					ev.data.delayed = true;   // Will be ocnsumed later
-																					resStream.write(ev.data.valueOf(), {callback: function() {
-																						reqStream.__consumeData(ev.data);
-																					}});
+																					resStream.write(ev.data, {callback: ev.data.defer()});
 																				};
 																			});
 																			reqStream.onError.attachOnce(null, reqStreamErrorCb = function(ev) {
@@ -296,7 +293,7 @@ module.exports = function(root, options, _shared) {
 																			reqStream.listen();
 																			mpStream.flush();
 																			reqStream.flush();
-																			mpStream.__consumeData(ev.data);
+																			consumeCb();
 																		});
 																	})
 																	.catch(state.mpStreamEnd);
@@ -322,11 +319,10 @@ module.exports = function(root, options, _shared) {
 															const data = ev.data;
 															ev.preventDefault();
 															if (data.raw !== io.EOF) {
-																data.consumed = true;  // Will be consumed later
-																return resStream.writeAsync(data.valueOf())
+																const consumeCb = data.defer();  // Will be consumed later
+																return resStream.writeAsync(data)
 																	.then(function() {
-																		data.consumed = false;
-																		reqStream.__consumeData(data);
+																		consumeCb();
 																		return parse(reqStream);
 																	});
 															};
@@ -383,7 +379,7 @@ module.exports = function(root, options, _shared) {
 															output.write(JSON.stringify(obj));
 															output.write(io.EOF);
 														} else {
-															if (ev.data.mode === ev.data.Modes.Key) {
+															if (ev.data.raw.mode === ev.data.raw.Modes.Key) {
 																key = ev.data.valueOf();
 															} else if (key) {
 																obj[key] = ev.data.valueOf();

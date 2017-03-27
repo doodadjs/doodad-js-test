@@ -276,7 +276,8 @@ module.exports = {
 				test.ADD('prepareCommand', function prepareCommand(fn, fnName) {
 					const stream = test.getOutput(),
 						html = types._implements(stream, io.HtmlOutputStream),
-						dom = (clientIO ? (stream instanceof clientIO.DomOutputStream) : false);
+						dom = (clientIO ? types._instanceof(stream, clientIO.DomOutputStream) : false),
+						buffered = types._implements(stream, ioMixIns.BufferedStreamBase);
 					
 					if (html) {
 						stream.openElement({tag: 'div', attrs: 'class="command"'});
@@ -514,7 +515,7 @@ module.exports = {
 								stream.flush({flushElement: true});
 								stream.closeElement();
 							} else {
-								stream.flush();
+								buffered && stream.flush();
 							};
 						},
 					
@@ -525,7 +526,7 @@ module.exports = {
 								stream.flush({flushElement: true});
 								stream.closeElement();
 							} else {
-								stream.flush();
+								buffered && stream.flush();
 							};
 						},
 					};
@@ -533,7 +534,8 @@ module.exports = {
 				
 				test.ADD('runUnit', function runUnit(unit, /*optional*/options) {
 					const stream = test.getOutput(),
-						html = types._implements(stream, io.HtmlOutputStream);
+						html = types._implements(stream, io.HtmlOutputStream),
+						buffered = types._implements(stream, ioMixIns.BufferedStreamBase);
 					if (html) {
 						stream.openElement({tag: 'div', attrs: 'class="unit" title="' + unit.DD_FULL_NAME + '"'});
 						stream.print(unit.DD_FULL_NAME, {attrs: 'class="name"'});
@@ -548,7 +550,7 @@ module.exports = {
 						stream.flush({flushElement: true});
 						stream.closeElement();
 					} else {
-						stream.flush();
+						buffered && stream.flush();
 					};
 				});
 				
@@ -559,13 +561,8 @@ module.exports = {
 					};
 				});
 				
-				const __showFailsOnData__ = function onData(ev) {
-					// Prevent managed and unmanaged keys from going into the buffer.
-					ev.preventDefault();
-				};
-
-				const __showFailsOnKey__ = function onKey(ev) {
-					const key = ev.data;
+				const __showFailsOnReady__ = function onReady(ev) {
+					const key = ev.data.valueOf();
 					if (!key.functionKeys) {
 						const scanCode = key.scanCode;
 						if (scanCode === io.KeyboardScanCodes.UpArrow) {
@@ -638,14 +635,14 @@ module.exports = {
 							},
 							click: types.bind(state, function(ev) { // JS click
 								try {
-									if (ev instanceof global.Event) {
+									if (types._instanceof(ev, global.Event)) {
 										this.currentFailed = _shared.Natives.windowParseInt(ev.currentTarget.getAttribute('failedIndex'));
 										this.move();
 									};
 								} catch(ex) {
-									if (!(ex instanceof types.ScriptInterruptedError)) {
+									if (!ex.bubble) {
 										io.stderr.write(ex);
-										io.stderr.flush();
+										//io.stderr.flush();
 									};
 								};
 							}),
@@ -678,9 +675,9 @@ module.exports = {
 									ev.preventDefault();
 									return false;
 								} catch(ex) {
-									if (!(ex instanceof types.ScriptInterruptedError)) {
+									if (!ex.bubble) {
 										io.stderr.write(ex);
-										io.stderr.flush();
+										//io.stderr.flush();
 									};
 								};
 							}),
@@ -713,9 +710,9 @@ module.exports = {
 									ev.preventDefault();
 									return false;
 								} catch(ex) {
-									if (!(ex instanceof types.ScriptInterruptedError)) {
+									if (!ex.bubble) {
 										io.stderr.write(ex);
-										io.stderr.flush();
+										//io.stderr.flush();
 									};
 								};
 							}),
@@ -724,9 +721,9 @@ module.exports = {
 									this.currentFailed = 0;
 									this.move(true);
 								} catch(ex) {
-									if (!(ex instanceof types.ScriptInterruptedError)) {
+									if (!ex.bubble) {
 										io.stderr.write(ex);
-										io.stderr.flush();
+										//io.stderr.flush();
 									};
 								};
 							},
@@ -735,9 +732,9 @@ module.exports = {
 									this.currentFailed = this.failedRuns.length - 1;;
 									this.move(true);
 								} catch(ex) {
-									if (!(ex instanceof types.ScriptInterruptedError)) {
+									if (!ex.bubble) {
 										io.stderr.write(ex);
-										io.stderr.flush();
+										//io.stderr.flush();
 									};
 								};
 							},
@@ -770,8 +767,7 @@ module.exports = {
 					if (test.FAILED_TESTS) {
 						state.move(true);
 						
-						io.stdin.onKey.attach(state, __showFailsOnKey__);
-						io.stdin.onData.attach(state, __showFailsOnData__);
+						io.stdin.onReady.attach(state, __showFailsOnReady__);
 						io.stdin.listen();
 					};
 				});
@@ -801,13 +797,8 @@ module.exports = {
 					tools.setCurrentLocation(url);
 				});
 
-				const __showNavigatorOnData__ = function onData(ev) {
-					// Prevent managed and unmanaged keys from going into the buffer.
-					ev.preventDefault();
-				};
-
-				const __showNavigatorOnKey__ = function onKey(ev) {
-					const key = ev.data;
+				const __showNavigatorOnReady__ = function onReady(ev) {
+					const key = ev.data.valueOf();
 					if (!key.functionKeys) {
 						const scanCode = key.scanCode;
 						if (scanCode === io.KeyboardScanCodes.LeftArrow) {
@@ -841,9 +832,9 @@ module.exports = {
 									ev.preventDefault();
 									return false;
 								} catch(ex) {
-									if (!(ex instanceof types.ScriptInterruptedError)) {
+									if (!ex.bubble) {
 										io.stderr.write(ex);
-										io.stderr.flush();
+										//io.stderr.flush();
 									};
 								};
 							}),
@@ -863,9 +854,9 @@ module.exports = {
 									ev.preventDefault();
 									return false;
 								} catch(ex) {
-									if (!(ex instanceof types.ScriptInterruptedError)) {
+									if (!ex.bubble) {
 										io.stderr.write(ex);
-										io.stderr.flush();
+										//io.stderr.flush();
 									};
 								};
 							}),
@@ -885,9 +876,9 @@ module.exports = {
 									ev.preventDefault();
 									return false;
 								} catch(ex) {
-									if (!(ex instanceof types.ScriptInterruptedError)) {
+									if (!ex.bubble) {
 										io.stderr.write(ex);
-										io.stderr.flush();
+										//io.stderr.flush();
 									};
 								};
 							}),
@@ -901,8 +892,7 @@ module.exports = {
 					nextButton.onclick = state.next;
 					nextButton.className = nextButton.className.replace('bindMe', '');
 
-					io.stdin.onKey.attach(state, __showNavigatorOnKey__);
-					io.stdin.onData.attach(state, __showNavigatorOnData__)
+					io.stdin.onReady.attach(state, __showNavigatorOnReady__);
 					io.stdin.listen();
 				});
 				
@@ -937,9 +927,9 @@ module.exports = {
 								unit = test.getUnit(name);
 							test.moveToUnit(unit);
 						} catch(ex) {
-							if (!(ex instanceof types.ScriptInterruptedError)) {
+							if (!ex.bubble) {
 								io.stderr.write(ex);
-								io.stderr.flush();
+								//io.stderr.flush();
 							};
 						};
 						ev.preventDefault();
@@ -960,7 +950,8 @@ module.exports = {
 					
 					const stream = test.getOutput(),
 						html = types._implements(stream, io.HtmlOutputStream),
-						dom = (clientIO ? (stream instanceof clientIO.DomOutputStream) : false);
+						dom = (clientIO ? types._instanceof(stream, clientIO.DomOutputStream) : false),
+						buffered = types._implements(stream, ioMixIns.BufferedStreamBase);
 					
 					const name = types.get(options, 'name'),
 						units = test.getUnits(test); // also initialize some attributes
@@ -1000,10 +991,10 @@ module.exports = {
 								test.runUnit(unit);
 								ok = true;
 							} catch(ex) {
-								if (!types._instanceof(ex, types.ScriptInterruptedError)) {
+								if (!ex.bubble) {
 									debugger;
 									io.stderr.write(ex);
-									io.stderr.flush();
+									//io.stderr.flush();
 								};
 							};
 						};
@@ -1017,10 +1008,10 @@ module.exports = {
 						stream.closeElement();
 					};
 					
-					stream.flush();
+					buffered && stream.flush();
 					stream.reset();
 					
-					io.stderr.flush();
+					//io.stderr.flush();
 					io.stderr.reset();
 					
 					if (dom) {
@@ -1053,9 +1044,9 @@ module.exports = {
 							} else {
 								stream.print("End: Every tests passed.    Total: " + test.TESTS_COUNT);
 							};
-							stream.flush();
-							io.stderr.flush();
 						};
+						buffered && stream.flush();
+						//io.stderr.flush();
 					};
 					
 					return success;

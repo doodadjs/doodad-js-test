@@ -236,121 +236,47 @@ module.exports = function(root, options, _shared) {
 							{
 								handler: function(request) {
 									const Promise = types.getPromise();
-									return request.getStream()
-										.then(function(mpStream) {
-											// TODO: Write an helper function for that
-											// TODO: Try "rxjs" (Observables), but I doubt it will be as fast
-											mpStream.setOptions({flushMode: 'half', bufferSize: 1024});
-											return request.response.getStream({contentType: 'text/plain; charset=utf-8'})
-												.then(function(resStream) {
-													return Promise.create(function onReadyHook(mpResolve, mpReject) {
-														const state = {aborted: false, mpStreamEnd: null};
-														let mpStreamReadyCb, mpStreamErrorCb;
-														state.mpStreamEnd = function(err) {
-															mpStream.onReady.detach(null, mpStreamReadyCb);
-															mpStream.onError.detach(null, mpStreamErrorCb);
-															if (err) {
-																state.aborted = true;
-																mpReject(err);
-															} else {
-																mpResolve(/* returns nothing*/);
-															};
-														};
-														mpStream.onReady.attach(null, mpStreamReadyCb = function(ev) {
+									return request.response.getStream({contentType: 'text/plain; charset=utf-8'})
+										.then(function(resStream) {
+											return request.getStream()
+												.then(function(mpStream) {
+													const state = {eof: true};
+													const promise = mpStream.onData.promise(function mpOnData(ev) {
+														if (ev.data.raw === io.BOF) {
 															ev.preventDefault();
-															if (ev.data.raw === io.BOF) {
-																const consumeCb = ev.data.defer();
-																mpStream.onReady.detach(null, mpStreamReadyCb);
-																request.getStream()
-																	.then(function(reqStream) {
-																		return !state.aborted && Promise.create(function onReadyHook(reqResolve, reqReject) {
-																			let reqStreamReadyCb, reqStreamErrorCb;
-																			const reqStreamEnd = function(err) {
-																				reqStream.onReady.detach(null, reqStreamReadyCb);
-																				reqStream.onError.detach(null, reqStreamErrorCb);
-																				if (err) {
-																					reqReject(err);
-																				} else {
-																					if (!state.aborted) {
-																						mpStream.onReady.attach(null, mpStreamReadyCb);
-																						mpStream.listen();
-																						mpStream.flush();
-																					};
-																					reqResolve();
-																				};
-																			};
-																			reqStream.onReady.attach(null, reqStreamReadyCb = function(ev) {
-																				ev.preventDefault();
-																				if (state.aborted || (ev.data.raw === io.EOF)) {
-																					reqStreamEnd();
-																				} else {
-																					resStream.write(ev.data, {callback: ev.data.defer()});
-																				};
-																			});
-																			reqStream.onError.attachOnce(null, reqStreamErrorCb = function(ev) {
-																				reqStreamEnd(ev.error);
-																			});
-																			reqStream.listen();
+															mpStream.setOptions({flushMode: 'manual', bufferSize: 1024});
+															request.getStream()
+																.then(function(reqStream) {
+																	state.eof = false;
+																	reqStream.onData.promise(function reqOnData(ev) {
+																		ev.preventDefault();
+																		mpStream.setOptions({flushMode: 'auto', bufferSize: 1});
+																		if (ev.data.raw === io.EOF) {
+																			state.eof = true;
 																			mpStream.flush();
-																			reqStream.flush();
-																			consumeCb();
-																		});
-																	})
-																	.catch(state.mpStreamEnd);
-															} else {
-																state.mpStreamEnd();
-															};
-														});
-														mpStream.onError.attachOnce(null, mpStreamErrorCb = function(ev) {
-															state.mpStreamEnd(ev.error);
-														});
-														mpStream.listen();
-														mpStream.flush();
-													}, this);
-												});
-
-
-/* CUTE, BUT SLOW
-											return request.response.getStream({contentType: 'text/plain; charset=utf-8'})
-												.then(function(resStream) {
-													const parse = function parse(reqStream) {
-														reqStream.listen();
-														const promise = reqStream.onReady.promise(function(ev) {
-															const data = ev.data;
-															ev.preventDefault();
-															if (data.raw !== io.EOF) {
-																const consumeCb = data.defer();  // Will be consumed later
-																return resStream.writeAsync(data)
-																	.then(function() {
-																		consumeCb();
-																		return parse(reqStream);
+																		} else {
+																			resStream.write(ev.data);
+																			mpStream.flush();
+																			return false;
+																		};
 																	});
-															};
-														});
-														mpStream.flush();
-														reqStream.flush({count: 1});
-														return promise;
-													};
-													const newPart = function newPart() {
-														mpStream.listen();
-														const promise = mpStream.onReady.promise(function(ev) {
+																	mpStream.flush();
+																});
+															mpStream.flush();
+															return false;
+														} else if (state.eof && (ev.data.raw === io.EOF)) {
 															ev.preventDefault();
-															const data = ev.data;
-															if (data.raw === io.BOF) {
-																return request.getStream()
-																	.then(parse)
-																	.then(newPart);
-															};
-														});
-														mpStream.flush({count: 1});
-														return promise;
-													};
-													return newPart()
-														.then(function() {
-															// Return nothing
-														});
+														} else {
+															mpStream.flush();
+															return false;
+														};
+													})
+													mpStream.flush();
+													return promise;
 												});
-*/
+										})
+										.then(function(dummy) {
+											// Returns nothing
 										});
 								},
 							},
@@ -364,35 +290,34 @@ module.exports = function(root, options, _shared) {
 							},
 							{
 								handler: function(request) {
-									return request.getStream()
-										.then(function(input) {
-											return request.response.getStream({contentType: 'text/plain; charset=utf-8'})
-												.then(function(output) {
+									return request.response.getStream({contentType: 'text/plain; charset=utf-8'})
+										.then(function(resStream) {
+											return request.getStream()
+												.then(function(reqStream) {
 													let obj = {},
 														key = null;
-													input.onReady.attach(this, function(ev) {
+													return reqStream.onData.promise(function reqOnData(ev) {
 														ev.preventDefault();
 														if (ev.data.raw === io.EOF) {
 															if (key) {
 																obj[key] = null;
 															};
-															output.write(JSON.stringify(obj));
-															output.write(io.EOF);
+															resStream.write(JSON.stringify(obj));
+															resStream.write(io.EOF);
 														} else {
 															if (ev.data.raw.mode === ev.data.raw.Modes.Key) {
-																key = ev.data.valueOf();
+																key = ev.data.raw.text;
 															} else if (key) {
-																obj[key] = ev.data.valueOf();
+																obj[key] = ev.data.raw.text;
 																key = null;
 															};
+															return false;
 														};
-													});
-													input.listen();
-													return input.onEOF.promise()
-														.then(function(ev) {
-															// Return nothing
-														});
+													}, this);
 												});
+										})
+										.then(function(dummy) {
+											// Returns nothing
 										});
 								},
 							},

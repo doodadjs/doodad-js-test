@@ -136,7 +136,7 @@ module.exports = {
 					{
 						$TYPE_NAME: '__MyWidgetStep2__',
 						
-						onJsClick: doodad.JS_EVENT('dblclick', function onJsClick(ev, context) {
+						onJsClick: doodad.JS_EVENT('click', function onJsClick(context) {
 							alert('click');
 							//console.log(tools.getStackTrace());
 							//throw new Error("error");
@@ -184,8 +184,6 @@ module.exports = {
 					{
 						$TYPE_NAME: '__MyWidgetStep3__',
 						
-						onJsClick: doodad.OVERRIDE(doodad.JS_EVENT('click')),
-
 						// Test _superFrom
 						getVersion: doodad.REPLACE(function() {
 							return 3;
@@ -197,12 +195,13 @@ module.exports = {
 					{
 						$TYPE_NAME: '__MyWidgetStep4__',
 
-						onJsClick: doodad.OVERRIDE(doodad.JS_EVENT(null, function onJsClick(ev, context) {
-							this._super(ev, context);
+						onJsClick: doodad.OVERRIDE(function onJsClick(context) {
+							this._super(context);
 							
 							// Test re-render
 							this.message += ' Click !';
 							this.render();
+
 							/* Test "EXTERNAL"
 							this.destroy();		
 							*/
@@ -223,7 +222,7 @@ module.exports = {
 							
 							//throw new types.Error("test");
 							
-						})),
+						}),
 						
 						// Test _superFrom
 						getVersion: doodad.OVERRIDE(function() {

@@ -255,7 +255,7 @@ module.exports = function(root, options, _shared) {
 																			state.eof = true;
 																			mpStream.flush();
 																		} else {
-																			resStream.write(ev.data);
+																			resStream.write(ev.data.valueOf());
 																			mpStream.flush();
 																			return false;
 																		};

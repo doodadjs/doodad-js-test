@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <body>
+    <script async src="../../doodad-js/lib/uuid/uuid.min.js"></script>
     <script async src="../../doodad-js/doodad-js_debug.js"></script>
     <script async src="../../doodad-js/common/Types_UUIDS.min.js"></script>
 
@@ -40,7 +41,8 @@
 
                             const doodad = root.Doodad,
                                 types = doodad.Types,
-						        modules = doodad.Modules;
+						        modules = doodad.Modules,
+                                mixIns = doodad.MixIns;
 
                             doodad.Tools.trapUnhandledErrors();
 
@@ -51,6 +53,9 @@
                             msg += types._instanceof(types, crossRealm.DD_ROOT.Doodad.Types.Namespace) + ',';
                             msg += types._instanceof(crossRealm.DD_ROOT.Doodad.Types, types.Namespace) + ',';
                             msg += types._instanceof(crossRealm.DD_ROOT.Doodad.Types, types.Type) + ',';
+                            msg += types._instanceof(new crossRealm.DD_ROOT.Doodad.Object(), doodad.Object) + ',';
+                            //msg += types._implements(crossRealm.DD_ROOT.Doodad.Object, mixIns.Creatable) + ',';
+                            msg += crossRealm.DD_ROOT.Doodad.Object._implements(mixIns.Creatable) + ',';
                             msg += types.isType(crossRealm.DD_ROOT.Doodad.Types.Type) + ',';
                             msg += types._instanceof(new crossRealm.Object(), Object) + ',';
                             msg += ((typeof Symbol === 'undefined') ? 'true' : types._instanceof(crossRealm.Object(crossRealm.Symbol()), Symbol)) + ',';

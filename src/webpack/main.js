@@ -21,12 +21,12 @@
 //	limitations under the License.
 
 window.onload = function() {
-	var options = {};
+	const options = {};
 	options['Doodad.Modules'] = {
 		modulesUri: '../..',
 	};
 	
-	var modules = {};
+	const modules = {};
 	require('doodad-js-unicode').add(modules);
 	require('doodad-js-locale').add(modules);
 	require('doodad-js-dates').add(modules);

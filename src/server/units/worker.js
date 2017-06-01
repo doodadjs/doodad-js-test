@@ -96,7 +96,7 @@ module.exports = function(root, options, _shared) {
 				.combine('./lib/', {os: 'linux'});
 			fs.statSync(saxPath.toString());
 		} catch(ex) {
-			console.warn("The library 'sax-js' is not available. Some features, like page templates, will be disabled.");
+			console.warn("The library 'sax' is not available. Some features, like page templates, will be disabled.");
 		};
 		
 		let promisePath;

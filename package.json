@@ -3,21 +3,21 @@
   "description": "doodad-js Test application",
   "version": "0.0.0",
   "files": [
-	"tonic.js"
+    "tonic.js"
   ],
   "keywords": [
     "doodad-js",
     "test"
   ],
   "scripts": {
-    "start":  "node ./src/server/units/index.js",
-	"test": "node ./src/server/units/index.js unit"
+    "start": "node ./src/server/units/index.js",
+    "test": "node ./src/server/units/index.js unit"
   },
   "dependencies": {
-    "app-module-path": "^2.1.0"
+    "app-module-path": "^2.2.0"
   },
   "optionalDependencies": {
-    "es6-promise": "^3.0.2"
+    "es6-promise": "^4.1.0"
   },
   "repository": {
     "type": "git",

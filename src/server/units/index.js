@@ -27,8 +27,63 @@
 const SECRET = Symbol();
 
 const cluster = require('cluster'),
+	fs = require('fs'),
 	app_module_path = require('app-module-path');
 
+function addSearchPaths(root) {
+	const doodad = root.Doodad,
+		tools = doodad.Tools,
+		files = tools.Files;
+
+	// <PRB> NPM doesn't want to flatten dependencies to the application's node_modules folder
+	// Add Node packages search paths for the application
+	const paths = require.main.paths;
+	for (let i = 0; i < paths.length; i++) {
+		const path = files.Path.parse(paths[i], {file: ''});
+
+		let folders = null;
+
+		// Get the list of packages in that "node_modules" folder
+		try {
+			folders = files.readdir(path, {depth: 0});
+		} catch(ex) {
+			if (ex.code !== 'ENOENT') {
+				throw ex;
+			};
+		};
+
+		if (folders) {
+			// Application (doodad-js-test) packages folder found.
+			
+			let name;
+
+			// Include the "node_modules" folder of these packages in the search path.
+			for (let j = 0; j < folders.length; j++) {
+				const folder = folders[j];
+				if (!folder.isFile) {
+					name = folder.path.combine('node_modules').toString();
+					try {
+						fs.statSync(name);
+						app_module_path.addPath(name);
+					} catch(ex) {
+						if (ex.code !== 'ENOENT') {
+							throw ex;
+						};
+					};
+				};
+			};
+			
+			// Include application (doodad-js-test) folder as a package.
+			name = path.moveUp(2).toString();
+			fs.statSync(name);
+			app_module_path.addPath(name);
+			
+			// We should have all the search paths we need.
+			break;
+		};
+	};
+};
+	
 function startup(root, _shared) {
 	const doodad = root.Doodad,
 		tools = doodad.Tools,
@@ -36,27 +91,8 @@ function startup(root, _shared) {
 					
 	tools.trapUnhandledErrors();
 
-	// <PRB> NPM doesn't want to flatten dependencies to the application's node_modules folder
-	// Add Node package search paths for the application
-	for (let i = 0; i < require.main.paths.length; i++) {
-		const path = files.Path.parse(require.main.paths[i], {file: ''});
-		try {
-			const folders = files.readdir(path, {depth: 0});
-			for (let j = 0; j < folders.length; j++) {
-				const folder = folders[j];
-				if (!folder.isFile) {
-					app_module_path.addPath(folder.path.combine('node_modules').toString());
-				};
-			};
-			app_module_path.addPath(path.moveUp(2).toString());
-			break;
-		} catch(ex) {
-			if (ex.code !== 'ENOENT') {
-				throw ex;
-			};
-		};
-	};
-
+	addSearchPaths(root);
+	
 	const cachePath = files.Path.parse(tools.Files.getTempFolder()).combine('./nodesjs/doodad-js/', {os: 'linux'});
 	
 	const options = {

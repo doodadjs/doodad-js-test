@@ -26,7 +26,8 @@
 
 const SECRET = Symbol();
 
-const cluster = require('cluster');
+const cluster = require('cluster'),
+	app_module_path = require('app-module-path');
 
 function startup(root, _shared) {
 	const doodad = root.Doodad,
@@ -34,10 +35,27 @@ function startup(root, _shared) {
 		files = tools.Files;
 					
 	tools.trapUnhandledErrors();
-	
-	// <PRB> Node.js doesn't include the application's path, even when the application is a package.
-	const file = files.Path.parse(module.filename).set({ file: null }).moveUp(4).toString();
-	require('app-module-path').addPath(file);
+
+	// <PRB> NPM doesn't want to flatten dependencies to the application's node_modules folder
+	// Add Node package search paths for the application
+	for (let i = 0; i < require.main.paths.length; i++) {
+		const path = files.Path.parse(require.main.paths[i], {file: ''});
+		try {
+			const folders = files.readdir(path, {depth: 0});
+			for (let j = 0; j < folders.length; j++) {
+				const folder = folders[j];
+				if (!folder.isFile) {
+					app_module_path.addPath(folder.path.combine('node_modules').toString());
+				};
+			};
+			app_module_path.addPath(path.moveUp(2).toString());
+			break;
+		} catch(ex) {
+			if (ex.code !== 'ENOENT') {
+				throw ex;
+			};
+		};
+	};
 
 	const cachePath = files.Path.parse(tools.Files.getTempFolder()).combine('./nodesjs/doodad-js/', {os: 'linux'});
 	

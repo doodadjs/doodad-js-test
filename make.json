@@ -214,8 +214,8 @@
 				{
 					"class": "Make.Browserify.Bundle",
 					"source": "%SOURCEDIR%/browserify/main.js",
-					"destination": "%INSTALLDIR%/%PACKAGENAME%/browserify/bundle.js",
-					"minify": false
+					"destination": "%INSTALLDIR%/%PACKAGENAME%/browserify/bundle.min.js",
+					"minify": true
 				},
 				
 				{
@@ -230,7 +230,7 @@
 				{
 					"class": "Make.Webpack.Bundle",
 					"source": "%SOURCEDIR%/webpack/main.js",
-					"destination": "%INSTALLDIR%/%PACKAGENAME%/webpack/bundle.js"
+					"destination": "%INSTALLDIR%/%PACKAGENAME%/webpack/bundle.min.js"
 				}
 			]
 		},

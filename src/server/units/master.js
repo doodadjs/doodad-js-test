@@ -127,6 +127,40 @@ module.exports = function(root, options, _shared) {
 					};
 				};
 			
+				const actives = function() {
+					if (ready) {
+						if (cpus > 1) {
+							const TIMEOUT = 1000 * 60 * 2;
+							const output = {};
+							let count = types.keys(nodeCluster.workers).length;
+							return Promise.create(function activesPromise(resolve, reject) {
+								let retval;
+								const timeId = setTimeout(function() {
+									messenger.cancel(retval);
+									count = 0;
+									reject(output);
+								}, TIMEOUT);
+								retval = messenger.callService('MyService', 'actives', null, {
+									ttl: 500, // ms
+									retryDelay: 100, // ms
+									callback: function(err, result, worker) {
+										if (count > 0) {
+											output['W:' + worker.id] = err || result;
+											count--;
+											if (count === 0) {
+												clearTimeout(timeId);
+												resolve(output);
+											};
+										};
+									},
+								});
+							});
+						} else {
+							return Promise.resolve(nodejs.Server.Http.Request.$getActives());
+						};
+					};
+				};
+			
 				const ping = function() {
 					if (ready) {
 						if (cpus > 1) {
@@ -213,6 +247,7 @@ module.exports = function(root, options, _shared) {
 					},
 					commands: {
 						stats: stats,
+						actives: actives,
 						ping: ping,
 						getAttribute: _shared.getAttribute,
 						setAttribute: _shared.setAttribute,

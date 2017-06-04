@@ -84,6 +84,10 @@ module.exports = function(root, options, _shared) {
 				stats: server.Ipc.CALLABLE(function hello(request) {
 					return nodejs.Server.Http.Request.$getStats();
 				}),
+
+				actives: server.Ipc.CALLABLE(function hello(request) {
+					return nodejs.Server.Http.Request.$getActives();
+				}),
 			}));
 		};
 

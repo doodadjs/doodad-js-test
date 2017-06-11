@@ -75,11 +75,7 @@ module.exports = function(root, options, _shared) {
 			root.REGISTER(doodad.Object.$extend(
 							server.Ipc.MixIns.Service,
 			{
-				$TYPE_NAME: 'MyService',
-			
-				hello: server.Ipc.CALLABLE(function hello(request) {
-					return "Hello world !";
-				}),
+				$TYPE_NAME: 'MyPrivateService',
 			
 				stats: server.Ipc.CALLABLE(function hello(request) {
 					return nodejs.Server.Http.Request.$getStats();
@@ -96,6 +92,16 @@ module.exports = function(root, options, _shared) {
 				run: server.Ipc.CALLABLE(function run(request, fnStr) {
 					const fn = tools.SafeEval.eval(fnStr, null, null, null, true);
 					return fn(root);
+				}),
+			}));
+
+			root.REGISTER(doodad.Object.$extend(
+							server.Http.JsonRpc.MixIns.Service,
+			{
+				$TYPE_NAME: 'MyService',
+			
+				hello: server.Ipc.CALLABLE(function hello(request) {
+					return "Hello world !";
 				}),
 			}));
 		};
@@ -223,7 +229,7 @@ module.exports = function(root, options, _shared) {
 							},
 							{
 								handler: server.Http.JsonRpc.Page,
-								service: server.Ipc.ServiceManager,
+								service: server.Http.JsonRpc.ServiceManager,
 								//batchLimit: 2,
 							},
 						],

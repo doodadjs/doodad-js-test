@@ -105,7 +105,7 @@ module.exports = function(root, options, _shared) {
 					}, function() {
 						if (ready) {
 							if (cpus > 1) {
-								return messenger.callService('MyService', 'stats', null, {
+								return messenger.callService('MyPrivateService', 'stats', null, {
 									ttl: 500, // ms
 									retryDelay: 100, // ms
 									timeout: TIMEOUT,
@@ -126,7 +126,7 @@ module.exports = function(root, options, _shared) {
 					}, function() {
 						if (ready) {
 							if (cpus > 1) {
-								return messenger.callService('MyService', 'actives', null, {
+								return messenger.callService('MyPrivateService', 'actives', null, {
 									ttl: 500, // ms
 									retryDelay: 100, // ms
 									timeout: TIMEOUT,
@@ -147,7 +147,7 @@ module.exports = function(root, options, _shared) {
 					}, function() {
 						if (ready) {
 							if (cpus > 1) {
-								return messenger.callService('MyService', 'uptime', null, {
+								return messenger.callService('MyPrivateService', 'uptime', null, {
 										ttl: 500, // ms
 										retryDelay: 100, // ms
 										timeout: TIMEOUT,
@@ -253,7 +253,7 @@ module.exports = function(root, options, _shared) {
 								throw new types.TypeError("Invalid function.");
 							};
 							if (cpus > 1) {
-								return messenger.callService('MyService', 'run', [fn.toString()], {
+								return messenger.callService('MyPrivateService', 'run', [fn.toString()], {
 									ttl: 500, // ms
 									retryDelay: 100, // ms
 									timeout: TIMEOUT,

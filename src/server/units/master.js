@@ -93,211 +93,264 @@ module.exports = function(root, options, _shared) {
 				const messenger = new cluster.ClusterMessenger(server.Ipc.ServiceManager);
 				messenger.connect();
 			
-				const stats = function() {
-					if (ready) {
-						if (cpus > 1) {
-							const TIMEOUT = 1000 * 60 * 2;
-							const output = {};
-							let count = types.keys(nodeCluster.workers).length;
-							return Promise.create(function statsPromise(resolve, reject) {
-								let retval;
-								const timeId = setTimeout(function() {
-									messenger.cancel(retval);
-									count = 0;
-									reject(output);
-								}, TIMEOUT);
-								retval = messenger.callService('MyService', 'stats', null, {
-									ttl: 500, // ms
-									retryDelay: 100, // ms
-									callback: function(err, result, worker) {
-										if (count > 0) {
-											output['W:' + worker.id] = err || result;
-											count--;
-											if (count === 0) {
-												clearTimeout(timeId);
-												resolve(output);
+				const stats = root.DD_DOC(
+					{
+						author: "Claude Petit",
+						revision: 0,
+						params: null,
+						returns: 'arrayof(object)',
+						description: "Returns server statistics.",
+					}, function() {
+						if (ready) {
+							if (cpus > 1) {
+								const TIMEOUT = 1000 * 60 * 2;
+								const output = {};
+								let count = types.keys(nodeCluster.workers).length;
+								return Promise.create(function statsPromise(resolve, reject) {
+									let retval;
+									const timeId = setTimeout(function() {
+										messenger.cancel(retval);
+										count = 0;
+										reject(output);
+									}, TIMEOUT);
+									retval = messenger.callService('MyService', 'stats', null, {
+										ttl: 500, // ms
+										retryDelay: 100, // ms
+										callback: function(err, result, worker) {
+											if (count > 0) {
+												output['W:' + worker.id] = err || result;
+												count--;
+												if (count === 0) {
+													clearTimeout(timeId);
+													resolve(output);
+												};
 											};
-										};
-									},
+										},
+									});
 								});
-							});
-						} else {
-							return Promise.resolve(nodejs.Server.Http.Request.$getStats());
-						};
-					};
-				};
-			
-				const actives = function() {
-					if (ready) {
-						if (cpus > 1) {
-							const TIMEOUT = 1000 * 60 * 2;
-							const output = {};
-							let count = types.keys(nodeCluster.workers).length;
-							return Promise.create(function activesPromise(resolve, reject) {
-								let retval;
-								const timeId = setTimeout(function() {
-									messenger.cancel(retval);
-									count = 0;
-									reject(output);
-								}, TIMEOUT);
-								retval = messenger.callService('MyService', 'actives', null, {
-									ttl: 500, // ms
-									retryDelay: 100, // ms
-									callback: function(err, result, worker) {
-										if (count > 0) {
-											output['W:' + worker.id] = err || result;
-											count--;
-											if (count === 0) {
-												clearTimeout(timeId);
-												resolve(output);
-											};
-										};
-									},
-								});
-							});
-						} else {
-							return Promise.resolve(nodejs.Server.Http.Request.$getActives());
-						};
-					};
-				};
-			
-				const uptime = function() {
-					if (ready) {
-						if (cpus > 1) {
-							const TIMEOUT = 1000 * 60 * 2;
-							const output = {
-								'M:1': tools.Dates.secondsToPeriod(process.uptime()),
+							} else {
+								return Promise.resolve(nodejs.Server.Http.Request.$getStats());
 							};
-							let count = types.keys(nodeCluster.workers).length;
-							return Promise.create(function uptimePromise(resolve, reject) {
-								let retval;
-								const timeId = setTimeout(function() {
-									messenger.cancel(retval);
-									count = 0;
-									reject(output);
-								}, TIMEOUT);
-								retval = messenger.callService('MyService', 'uptime', null, {
-									ttl: 500, // ms
-									retryDelay: 100, // ms
-									callback: function(err, result, worker) {
-										if (count > 0) {
-											output['W:' + worker.id] = err || result;
-											count--;
-											if (count === 0) {
-												clearTimeout(timeId);
-												resolve(output);
-											};
-										};
-									},
-								});
-							});
-						} else {
-							return Promise.resolve(tools.Dates.secondsToPeriod(process.uptime()));
 						};
-					};
-				};
+					});
 			
-				const ping = function() {
-					if (ready) {
-						if (cpus > 1) {
-							const TIMEOUT = 1000 * 60 * 2;
-							const output = {};
-							let count = types.keys(nodeCluster.workers).length;
-							return Promise.create(function pingPromise(resolve, reject) {
-								let retval;
-								const timeId = setTimeout(function() {
-									messenger.cancel(retval);
-									count = 0;
-									reject(output);
-								}, TIMEOUT);
-								retval = messenger.ping({
-									ttl: 500, // ms
-									retryDelay: 100, // ms
-									callback: function(err, result, worker) {
-										if (count > 0) {
-											output['W:' + worker.id] = err || result;
-											count--;
-											if (count === 0) {
-												clearTimeout(timeId);
-												resolve(output);
+				const actives = root.DD_DOC(
+					{
+						author: "Claude Petit",
+						revision: 0,
+						params: null,
+						returns: 'arrayof(string)',
+						description: "Returns URLs of the active requests. Not available on production mode.",
+					}, function() {
+						if (ready) {
+							if (cpus > 1) {
+								const TIMEOUT = 1000 * 60 * 2;
+								const output = {};
+								let count = types.keys(nodeCluster.workers).length;
+								return Promise.create(function activesPromise(resolve, reject) {
+									let retval;
+									const timeId = setTimeout(function() {
+										messenger.cancel(retval);
+										count = 0;
+										reject(output);
+									}, TIMEOUT);
+									retval = messenger.callService('MyService', 'actives', null, {
+										ttl: 500, // ms
+										retryDelay: 100, // ms
+										callback: function(err, result, worker) {
+											if (count > 0) {
+												output['W:' + worker.id] = err || result;
+												count--;
+												if (count === 0) {
+													clearTimeout(timeId);
+													resolve(output);
+												};
 											};
-										};
-									},
+										},
+									});
 								});
-							});
-						} else {
-							return Promise.reject(new types.NotAvailable("Command not available."));
+							} else {
+								return Promise.resolve(nodejs.Server.Http.Request.$getActives());
+							};
 						};
-					};
-				};
+					});
 			
-				const browser = function() {
-					if (ready) {
-						return Promise.try(function browserPromise() { // Sets Promise's name to "browserPromise" instead of "statsPromise"
-								return stats();
-							})
-							.thenCreate(function launchBrowser(result, resolve, reject) {
-								let url = "http://";
-								url += (options.listeningAddress === '0.0.0.0' ? '127.0.0.1' : options.listeningAddress);
-								url += ':' + options.listeningPort;
-								url += '/';
-								const os = tools.getOS();
-								// Reference: http://www.dwheeler.com/essays/open-files-urls.html
-								let child = null;
-								if (os.name === 'win32') {
-									child = nodeChildProcess.spawn("start", [url], {shell: true});
-								} else if (os.name === 'darwin') {
-									child = nodeChildProcess.spawn("open", [url]);
-								} else {
-									child = nodeChildProcess.spawn("xdg-open", [url]);
+				const uptime = root.DD_DOC(
+					{
+						author: "Claude Petit",
+						revision: 0,
+						params: null,
+						returns: 'arrayof(object)',
+						description: "Returns server uptime.",
+					}, function() {
+						if (ready) {
+							if (cpus > 1) {
+								const TIMEOUT = 1000 * 60 * 2;
+								const output = {
+									'M:1': tools.Dates.secondsToPeriod(process.uptime()),
 								};
-								if (child) {
-									child.on('exit', function(code, signal) {
-										if (code === 0) {
-											resolve();
-										} else {
+								let count = types.keys(nodeCluster.workers).length;
+								return Promise.create(function uptimePromise(resolve, reject) {
+									let retval;
+									const timeId = setTimeout(function() {
+										messenger.cancel(retval);
+										count = 0;
+										reject(output);
+									}, TIMEOUT);
+									retval = messenger.callService('MyService', 'uptime', null, {
+										ttl: 500, // ms
+										retryDelay: 100, // ms
+										callback: function(err, result, worker) {
+											if (count > 0) {
+												output['W:' + worker.id] = err || result;
+												count--;
+												if (count === 0) {
+													clearTimeout(timeId);
+													resolve(output);
+												};
+											};
+										},
+									});
+								});
+							} else {
+								return Promise.resolve(tools.Dates.secondsToPeriod(process.uptime()));
+							};
+						};
+					});
+			
+				const ping = root.DD_DOC(
+					{
+						author: "Claude Petit",
+						revision: 0,
+						params: null,
+						returns: 'arrayof(object)',
+						description: "Pings each workers and returns the delays.",
+					}, function() {
+						if (ready) {
+							if (cpus > 1) {
+								const TIMEOUT = 1000 * 60 * 2;
+								const output = {};
+								let count = types.keys(nodeCluster.workers).length;
+								return Promise.create(function pingPromise(resolve, reject) {
+									let retval;
+									const timeId = setTimeout(function() {
+										messenger.cancel(retval);
+										count = 0;
+										reject(output);
+									}, TIMEOUT);
+									retval = messenger.ping({
+										ttl: 500, // ms
+										retryDelay: 100, // ms
+										callback: function(err, result, worker) {
+											if (count > 0) {
+												output['W:' + worker.id] = err || result;
+												count--;
+												if (count === 0) {
+													clearTimeout(timeId);
+													resolve(output);
+												};
+											};
+										},
+									});
+								});
+							} else {
+								return Promise.reject(new types.NotAvailable("Command not available."));
+							};
+						};
+					});
+			
+				const browser = root.DD_DOC(
+					{
+						author: "Claude Petit",
+						revision: 0,
+						params: null,
+						returns: 'undefined',
+						description: "Opens your favorite browser to the application's main page.",
+					}, function() {
+						if (ready) {
+							return Promise.try(function browserPromise() { // Sets Promise's name to "browserPromise" instead of "statsPromise"
+									return stats();
+								})
+								.thenCreate(function launchBrowser(result, resolve, reject) {
+									let url = "http://";
+									url += (options.listeningAddress === '0.0.0.0' ? '127.0.0.1' : options.listeningAddress);
+									url += ':' + options.listeningPort;
+									url += '/';
+									const os = tools.getOS();
+									// Reference: http://www.dwheeler.com/essays/open-files-urls.html
+									let child = null;
+									if (os.name === 'win32') {
+										child = nodeChildProcess.spawn("start", [url], {shell: true});
+									} else if (os.name === 'darwin') {
+										child = nodeChildProcess.spawn("open", [url]);
+									} else {
+										child = nodeChildProcess.spawn("xdg-open", [url]);
+									};
+									if (child) {
+										child.on('exit', function(code, signal) {
+											if (code === 0) {
+												resolve();
+											} else {
+												reject(new types.Error("Failed to start browser. Please manually navigate to ' ~0~ '.", [url]));
+											};
+										});
+										child.on('error', function(err) {
 											reject(new types.Error("Failed to start browser. Please manually navigate to ' ~0~ '.", [url]));
-										};
-									});
-									child.on('error', function(err) {
-										reject(new types.Error("Failed to start browser. Please manually navigate to ' ~0~ '.", [url]));
-									});
-								};
-							});
-					};
-				};
-			
-				const run = function(wid, fn) {
-					if (ready) {
-						if (!types.isInteger(wid)) {
-							throw new types.TypeError("Invalid worker id.");
-						};
-						if (!types.isCustomFunction(fn)) {
-							throw new types.TypeError("Invalid function.");
-						};
-						if (cpus > 1) {
-							const TIMEOUT = 1000 * 60 * 2;
-							return Promise.create(function runPromise(resolve, reject) {
-								let retval;
-								const timeId = setTimeout(function() {
-									messenger.cancel(retval);
-									reject(new types.TimeoutError());
-								}, TIMEOUT);
-								retval = messenger.callService('MyService', 'run', [fn.toString()], {
-									ttl: 500, // ms
-									retryDelay: 100, // ms
-									worker: wid,
-									callback: function(err, result, worker) {
-										clearTimeout(timeId);
-										resolve(result);
-									},
+										});
+									};
 								});
-							});
-						} else {
-							return Promise.reject(new types.NotAvailable("Command not available."));
 						};
-					};
-				};
+					});
+			
+				const run = root.DD_DOC(
+					{
+						author: "Claude Petit",
+						revision: 0,
+						params:  {
+							wid: {
+								type: 'integer',
+								optional: false,
+								description: "Worker ID",
+							},
+							fn: {
+								type: 'function',
+								optional: false,
+								description: "Function to run on the worker. That function receives 'root' as its first argument.",
+							},
+						},
+						returns: 'any',
+						description: "Runs an arbitrary function on the specified worker.",
+					}, function(wid, fn) {
+						if (ready) {
+							if (!types.isInteger(wid)) {
+								throw new types.TypeError("Invalid worker id.");
+							};
+							if (!types.isCustomFunction(fn)) {
+								throw new types.TypeError("Invalid function.");
+							};
+							if (cpus > 1) {
+								const TIMEOUT = 1000 * 60 * 2;
+								return Promise.create(function runPromise(resolve, reject) {
+									let retval;
+									const timeId = setTimeout(function() {
+										messenger.cancel(retval);
+										reject(new types.TimeoutError());
+									}, TIMEOUT);
+									retval = messenger.callService('MyService', 'run', [fn.toString()], {
+										ttl: 500, // ms
+										retryDelay: 100, // ms
+										worker: wid,
+										callback: function(err, result, worker) {
+											clearTimeout(timeId);
+											resolve(result);
+										},
+									});
+								});
+							} else {
+								return Promise.reject(new types.NotAvailable("Command not available."));
+							};
+						};
+					});
 			
 				const term = new nodejs.Terminal.Ansi.Javascript(0, {
 					infoColor: 'Green',

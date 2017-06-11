@@ -267,6 +267,32 @@ module.exports = function(root, options, _shared) {
 					};
 				};
 			
+				const run = function(wid, fn) {
+					if (ready) {
+						if (cpus > 1) {
+							const TIMEOUT = 1000 * 60 * 2;
+							return Promise.create(function runPromise(resolve, reject) {
+								let retval;
+								const timeId = setTimeout(function() {
+									messenger.cancel(retval);
+									reject(new types.TimeoutError());
+								}, TIMEOUT);
+								retval = messenger.callService('MyService', 'run', [fn.toString()], {
+									ttl: 500, // ms
+									retryDelay: 100, // ms
+									worker: wid,
+									callback: function(err, result, worker) {
+										clearTimeout(timeId);
+										resolve(result);
+									},
+								});
+							});
+						} else {
+							return Promise.reject(new types.NotAvailable("Command not available."));
+						};
+					};
+				};
+			
 				const term = new nodejs.Terminal.Ansi.Javascript(0, {
 					infoColor: 'Green',
 					warnColor: 'Yellow',
@@ -289,6 +315,7 @@ module.exports = function(root, options, _shared) {
 						getAttribute: _shared.getAttribute,
 						setAttribute: _shared.setAttribute,
 						browser: browser,
+						w: run,
 					},
 				});
 				term.onListen.attachOnce(null, function(ev) {

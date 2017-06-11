@@ -92,6 +92,11 @@ module.exports = function(root, options, _shared) {
 				uptime: server.Ipc.CALLABLE(function uptime(request) {
 					return tools.Dates.secondsToPeriod(process.uptime());
 				}),
+
+				run: server.Ipc.CALLABLE(function run(request, fnStr) {
+					const fn = tools.SafeEval.eval(fnStr, null, null, null, true);
+					return fn(root);
+				}),
 			}));
 		};
 

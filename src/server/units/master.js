@@ -95,6 +95,14 @@ module.exports = function(root, options, _shared) {
 			
 				const TIMEOUT = 1000 * 60 * 2;
 
+				const mapWorkers = function mapWorkers(result) {
+					const retval = {};
+					tools.forEach(result, function(workerResult, workerId) {
+						retval['W:' + workerId] = workerResult;
+					});
+					return retval;
+				};
+
 				const stats = root.DD_DOC(
 					{
 						author: "Claude Petit",
@@ -106,10 +114,11 @@ module.exports = function(root, options, _shared) {
 						if (ready) {
 							if (cpus > 1) {
 								return messenger.callService('MyPrivateService', 'stats', null, {
-									ttl: 500, // ms
-									retryDelay: 100, // ms
-									timeout: TIMEOUT,
-								});
+										ttl: 500, // ms
+										retryDelay: 100, // ms
+										timeout: TIMEOUT,
+									})
+									.then(mapWorkers);
 							} else {
 								return Promise.resolve(nodejs.Server.Http.Request.$getStats());
 							};
@@ -127,10 +136,11 @@ module.exports = function(root, options, _shared) {
 						if (ready) {
 							if (cpus > 1) {
 								return messenger.callService('MyPrivateService', 'actives', null, {
-									ttl: 500, // ms
-									retryDelay: 100, // ms
-									timeout: TIMEOUT,
-								});
+										ttl: 500, // ms
+										retryDelay: 100, // ms
+										timeout: TIMEOUT,
+									})
+									.then(mapWorkers);
 							} else {
 								return Promise.resolve(nodejs.Server.Http.Request.$getActives());
 							};
@@ -152,6 +162,7 @@ module.exports = function(root, options, _shared) {
 										retryDelay: 100, // ms
 										timeout: TIMEOUT,
 									})
+									.then(mapWorkers)
 									.then(function(result) {
 										result['M:1'] = tools.Dates.secondsToPeriod(process.uptime());
 										return result;
@@ -173,10 +184,11 @@ module.exports = function(root, options, _shared) {
 						if (ready) {
 							if (cpus > 1) {
 								return messenger.ping({
-									ttl: 500, // ms
-									retryDelay: 100, // ms
-									timeout: TIMEOUT,
-								});
+										ttl: 500, // ms
+										retryDelay: 100, // ms
+										timeout: TIMEOUT,
+									})
+									.then(mapWorkers);
 							} else {
 								return Promise.reject(new types.NotAvailable("Command not available."));
 							};
@@ -254,11 +266,14 @@ module.exports = function(root, options, _shared) {
 							};
 							if (cpus > 1) {
 								return messenger.callService('MyPrivateService', 'run', [fn.toString()], {
-									ttl: 500, // ms
-									retryDelay: 100, // ms
-									timeout: TIMEOUT,
-									worker: wid,
-								});
+										ttl: 500, // ms
+										retryDelay: 100, // ms
+										timeout: TIMEOUT,
+										worker: wid,
+									})
+									.then(function(result) {
+										return result[wid];
+									});
 							} else {
 								return Promise.reject(new types.NotAvailable("Command not available."));
 							};

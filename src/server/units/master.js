@@ -93,6 +93,8 @@ module.exports = function(root, options, _shared) {
 				const messenger = new cluster.ClusterMessenger(server.Ipc.ServiceManager);
 				messenger.connect();
 			
+				const TIMEOUT = 1000 * 60 * 2;
+
 				const stats = root.DD_DOC(
 					{
 						author: "Claude Petit",
@@ -103,30 +105,10 @@ module.exports = function(root, options, _shared) {
 					}, function() {
 						if (ready) {
 							if (cpus > 1) {
-								const TIMEOUT = 1000 * 60 * 2;
-								const output = {};
-								let count = types.keys(nodeCluster.workers).length;
-								return Promise.create(function statsPromise(resolve, reject) {
-									let retval;
-									const timeId = setTimeout(function() {
-										messenger.cancel(retval);
-										count = 0;
-										reject(output);
-									}, TIMEOUT);
-									retval = messenger.callService('MyService', 'stats', null, {
-										ttl: 500, // ms
-										retryDelay: 100, // ms
-										callback: function(err, result, worker) {
-											if (count > 0) {
-												output['W:' + worker.id] = err || result;
-												count--;
-												if (count === 0) {
-													clearTimeout(timeId);
-													resolve(output);
-												};
-											};
-										},
-									});
+								return messenger.callService('MyService', 'stats', null, {
+									ttl: 500, // ms
+									retryDelay: 100, // ms
+									timeout: TIMEOUT,
 								});
 							} else {
 								return Promise.resolve(nodejs.Server.Http.Request.$getStats());
@@ -144,30 +126,10 @@ module.exports = function(root, options, _shared) {
 					}, function() {
 						if (ready) {
 							if (cpus > 1) {
-								const TIMEOUT = 1000 * 60 * 2;
-								const output = {};
-								let count = types.keys(nodeCluster.workers).length;
-								return Promise.create(function activesPromise(resolve, reject) {
-									let retval;
-									const timeId = setTimeout(function() {
-										messenger.cancel(retval);
-										count = 0;
-										reject(output);
-									}, TIMEOUT);
-									retval = messenger.callService('MyService', 'actives', null, {
-										ttl: 500, // ms
-										retryDelay: 100, // ms
-										callback: function(err, result, worker) {
-											if (count > 0) {
-												output['W:' + worker.id] = err || result;
-												count--;
-												if (count === 0) {
-													clearTimeout(timeId);
-													resolve(output);
-												};
-											};
-										},
-									});
+								return messenger.callService('MyService', 'actives', null, {
+									ttl: 500, // ms
+									retryDelay: 100, // ms
+									timeout: TIMEOUT,
 								});
 							} else {
 								return Promise.resolve(nodejs.Server.Http.Request.$getActives());
@@ -185,33 +147,15 @@ module.exports = function(root, options, _shared) {
 					}, function() {
 						if (ready) {
 							if (cpus > 1) {
-								const TIMEOUT = 1000 * 60 * 2;
-								const output = {
-									'M:1': tools.Dates.secondsToPeriod(process.uptime()),
-								};
-								let count = types.keys(nodeCluster.workers).length;
-								return Promise.create(function uptimePromise(resolve, reject) {
-									let retval;
-									const timeId = setTimeout(function() {
-										messenger.cancel(retval);
-										count = 0;
-										reject(output);
-									}, TIMEOUT);
-									retval = messenger.callService('MyService', 'uptime', null, {
+								return messenger.callService('MyService', 'uptime', null, {
 										ttl: 500, // ms
 										retryDelay: 100, // ms
-										callback: function(err, result, worker) {
-											if (count > 0) {
-												output['W:' + worker.id] = err || result;
-												count--;
-												if (count === 0) {
-													clearTimeout(timeId);
-													resolve(output);
-												};
-											};
-										},
-									});
-								});
+										timeout: TIMEOUT,
+									})
+									.then(function(result) {
+										result['M:1'] = tools.Dates.secondsToPeriod(process.uptime());
+										return result;
+									})
 							} else {
 								return Promise.resolve(tools.Dates.secondsToPeriod(process.uptime()));
 							};
@@ -228,30 +172,10 @@ module.exports = function(root, options, _shared) {
 					}, function() {
 						if (ready) {
 							if (cpus > 1) {
-								const TIMEOUT = 1000 * 60 * 2;
-								const output = {};
-								let count = types.keys(nodeCluster.workers).length;
-								return Promise.create(function pingPromise(resolve, reject) {
-									let retval;
-									const timeId = setTimeout(function() {
-										messenger.cancel(retval);
-										count = 0;
-										reject(output);
-									}, TIMEOUT);
-									retval = messenger.ping({
-										ttl: 500, // ms
-										retryDelay: 100, // ms
-										callback: function(err, result, worker) {
-											if (count > 0) {
-												output['W:' + worker.id] = err || result;
-												count--;
-												if (count === 0) {
-													clearTimeout(timeId);
-													resolve(output);
-												};
-											};
-										},
-									});
+								return messenger.ping({
+									ttl: 500, // ms
+									retryDelay: 100, // ms
+									timeout: TIMEOUT,
 								});
 							} else {
 								return Promise.reject(new types.NotAvailable("Command not available."));
@@ -329,22 +253,11 @@ module.exports = function(root, options, _shared) {
 								throw new types.TypeError("Invalid function.");
 							};
 							if (cpus > 1) {
-								const TIMEOUT = 1000 * 60 * 2;
-								return Promise.create(function runPromise(resolve, reject) {
-									let retval;
-									const timeId = setTimeout(function() {
-										messenger.cancel(retval);
-										reject(new types.TimeoutError());
-									}, TIMEOUT);
-									retval = messenger.callService('MyService', 'run', [fn.toString()], {
-										ttl: 500, // ms
-										retryDelay: 100, // ms
-										worker: wid,
-										callback: function(err, result, worker) {
-											clearTimeout(timeId);
-											resolve(result);
-										},
-									});
+								return messenger.callService('MyService', 'run', [fn.toString()], {
+									ttl: 500, // ms
+									retryDelay: 100, // ms
+									timeout: TIMEOUT,
+									worker: wid,
 								});
 							} else {
 								return Promise.reject(new types.NotAvailable("Command not available."));

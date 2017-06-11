@@ -269,6 +269,12 @@ module.exports = function(root, options, _shared) {
 			
 				const run = function(wid, fn) {
 					if (ready) {
+						if (!types.isInteger(wid)) {
+							throw new types.TypeError("Invalid worker id.");
+						};
+						if (!types.isCustomFunction(fn)) {
+							throw new types.TypeError("Invalid function.");
+						};
 						if (cpus > 1) {
 							const TIMEOUT = 1000 * 60 * 2;
 							return Promise.create(function runPromise(resolve, reject) {

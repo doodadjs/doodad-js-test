@@ -90,7 +90,10 @@ module.exports = function(root, options, _shared) {
 				}),
 
 				run: server.Ipc.CALLABLE(function run(request, fnStr) {
-					const fn = tools.SafeEval.eval(fnStr, null, null, null, true);
+					const fn = tools.SafeEval.eval(fnStr, null, null, {
+						allowFunctions: true, 
+						allowNew: true,
+					});
 					return fn(root);
 				}),
 			}));

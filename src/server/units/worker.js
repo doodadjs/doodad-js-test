@@ -88,6 +88,10 @@ module.exports = function(root, options, _shared) {
 				actives: server.Ipc.CALLABLE(function hello(request) {
 					return nodejs.Server.Http.Request.$getActives();
 				}),
+
+				uptime: server.Ipc.CALLABLE(function uptime(request) {
+					return tools.Dates.secondsToPeriod(process.uptime());
+				}),
 			}));
 		};
 

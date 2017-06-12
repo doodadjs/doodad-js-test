@@ -266,9 +266,7 @@ module.exports = function(root, options, _shared) {
 							};
 							if (cpus > 1) {
 								return messenger.callService('MyPrivateService', 'run', [fn.toString()], {
-										ttl: 500, // ms
-										retryDelay: 100, // ms
-										timeout: TIMEOUT,
+										ttl: TIMEOUT, // ms
 										worker: wid,
 									})
 									.then(function(result) {

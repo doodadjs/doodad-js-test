@@ -256,7 +256,7 @@ module.exports = function(root, options, _shared) {
 						},
 						returns: 'any',
 						description: "Runs an arbitrary function on the specified worker.",
-					}, function(wid, fn) {
+					}, function(wid, fn, /*optional*/timeout) {
 						if (ready) {
 							if (!types.isInteger(wid)) {
 								throw new types.TypeError("Invalid worker id.");
@@ -266,7 +266,7 @@ module.exports = function(root, options, _shared) {
 							};
 							if (cpus > 1) {
 								return messenger.callService('MyPrivateService', 'run', [fn.toString()], {
-										ttl: TIMEOUT, // ms
+										ttl: (types.isNothing(timeout) ? TIMEOUT : timeout), // ms
 										worker: wid,
 									})
 									.then(function(result) {

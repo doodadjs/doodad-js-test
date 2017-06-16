@@ -291,6 +291,7 @@ module.exports = function(root, options, _shared) {
 						namespaces: namespaces,
 						io: doodad.IO,
 						nodejs: doodad.NodeJs,
+						Promise: Promise,
 					},
 					commands: {
 						stats: stats,

@@ -131,7 +131,7 @@ module.exports = function(root, options, _shared) {
 						revision: 0,
 						params: null,
 						returns: 'arrayof(string)',
-						description: "Returns URLs of the active requests. Not available on production mode.",
+						description: "Returns the URLs of the active requests.",
 					}, function() {
 						if (ready) {
 							if (cpus > 1) {

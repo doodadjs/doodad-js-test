@@ -179,7 +179,7 @@ module.exports = function(root, options, _shared) {
 						revision: 0,
 						params: null,
 						returns: 'arrayof(object)',
-						description: "Pings each workers and returns the delays.",
+						description: "Pings each worker and returns the delays.",
 					}, function() {
 						if (ready) {
 							if (cpus > 1) {

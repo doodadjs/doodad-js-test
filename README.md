@@ -61,7 +61,7 @@ When the application is finished loading, it will open your favorite browser to 
   - **doodad-js-templates**: HTML page templates (alpha)
   - **doodad-js-terminal**: Terminal (alpha)
   - **doodad-js-widgets**: Widgets base module (alpha)
-  - **doodad-js-xml**: DOM XML parser (release)
+  - **doodad-js-xml**: XML Parser (beta)
   
 ## License
 

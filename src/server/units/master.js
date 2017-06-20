@@ -304,15 +304,15 @@ module.exports = function(root, options, _shared) {
 						w: run,
 					},
 				});
-				term.onListen.attachOnce(null, function(ev) {
-					term.ask(tools.format('Safe to delete folder "~0~" and its content [yes/NO] ?', [options.cachePath.toString()]), function(resp) {
+				const promise = term.onListen.promise().then(function(ev) {
+					return term.askAsync(tools.format('Safe to delete folder "~0~" and its content [yes/NO] ?', [options.cachePath.toString()])).then(function(resp) {
 						resp = resp.toLowerCase();
 						if (resp === 'yes') {
 							tools.Files.rmdir(options.cachePath, {force: true});
 							console.info(tools.format('Folder "~0~" deleted.', [options.cachePath.toString()]));
 						};
 					
-						startWorkers()
+						return startWorkers()
 							.then(() => {ready = true});
 					});
 				});
@@ -320,6 +320,7 @@ module.exports = function(root, options, _shared) {
 					term.consoleWrite(name, args);
 				});
 				term.listen();
+				return promise;
 			} else {
 				return startWorkers()
 					.then(() => {ready = true});

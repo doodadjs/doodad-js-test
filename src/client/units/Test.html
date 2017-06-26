@@ -51,16 +51,34 @@
                             const doodad = root.Doodad,
 						        modules = doodad.Modules;
 
-                            return modules.load({
-                                'doodad-js/tests' : {'doodad-js_tests.js' : null},
-                                'doodad-js-unicode': null,
-                                'doodad-js-locale': null,
-                                'doodad-js-dates': null,
-                                'doodad-js-io': null,
-                                'doodad-js-safeeval': null,
-                                'doodad-js-safeeval/tests': { 'doodad-js-safeeval_tests.js': null },
-                                'doodad-js-test': null,
-                            }, options);
+                            return modules.load([
+                                {
+                                    module: 'doodad-js',
+                                    path: 'doodad-js_tests.js'
+                                },
+                                {
+                                    module: 'doodad-js-unicode',
+                                },
+                                {
+                                    module: 'doodad-js-locale',
+                                },
+                                {
+                                    module: 'doodad-js-dates',
+                                },
+                                {
+                                    module: 'doodad-js-io',
+                                },
+                                {
+                                    module: 'doodad-js-safeeval',
+                                },
+                                {
+                                    module: 'doodad-js-safeeval',
+                                    path: 'doodad-js-safeeval_tests.js'
+                                },
+                                {
+                                    module: 'doodad-js-test',
+                                },
+                            ], options);
                         })
 				        .then(function (root) {
 				            const doodad = root.Doodad,

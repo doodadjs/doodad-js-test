@@ -65,13 +65,24 @@
                             msg += "  <=== Must be all 'true'";
                             alert(msg);
 
-                            return modules.load({
-                                'doodad-js-unicode': null,
-                                'doodad-js-locale': null,
-                                'doodad-js-safeeval': null,
-                                'doodad-js-loader': null,
-                                'doodad-js-test': {'widgets/MyWidget_loader.js': null},
-                            }, options);
+                            return modules.load([
+                                {
+                                    module: 'doodad-js-unicode',
+                                },
+                                {
+                                    module: 'doodad-js-locale',
+                                },
+                                {
+                                    module: 'doodad-js-safeeval',
+                                },
+                                {
+                                    module: 'doodad-js-loader',
+                                },
+                                {
+                                    module: 'doodad-js-test',
+                                    path: 'widgets/MyWidget_loader.js',
+                                },
+                            ], options);
                         })
 				        ['catch'](function (err) {
 				            alert(err);

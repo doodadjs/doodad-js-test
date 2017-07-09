@@ -648,8 +648,12 @@ module.exports = function(root, options, _shared) {
 		function onstatus(ev) {
 			const response = ev.obj,
 				status = response.status;
-			if (root.getConfig().debug && (status >= 500)) {
-				response.statusData && console.error(response.statusData);
+			if (root.getOptions().debug && (status >= 500)) {
+				if (response.statusData) {
+					console.error(status + ': ' + response.statusData.stack);
+				} else {
+					console.error(status + ': No error information.');
+				};
 			};
 			if (status >= 300) {
 				ev.preventDefault();

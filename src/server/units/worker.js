@@ -192,27 +192,35 @@ module.exports = function(root, options, _shared) {
 						],
 					},
 					'/form?id=(\\d{1,4})&mode=(view|edit)': {
+						verbs: ['GET','HEAD'],
 						handlers: [
 							{
 								handler: function(request) {
 									const handlerState = request.getHandlerState(),
 										args = handlerState.matcherResult.queryArgs;
 									return request.response.getStream({contentType: 'text/plain', encoding: 'utf-8'}).then(function(stream) {
-										stream.write((args.mode === 'edit' ? "Editing" : "Viewing") + " id " + args.id);
-									});
+											if (request.verb !== 'HEAD') {
+												return stream.writeAsync((args.mode === 'edit' ? "Editing" : "Viewing") + " id " + args.id);
+											};
+										})
+										.then(dummy => {});
 								},
 							},
 						],
 					},
 					'/form/mode:(view|edit)/id:(\\d{1,4})': {
+						verbs: ['GET','HEAD'],
 						handlers: [
 							{
 								handler: function(request) {
 									const handlerState = request.getHandlerState(),
 										args = handlerState.matcherResult.urlArgs;
 									return request.response.getStream({contentType: 'text/plain', encoding: 'utf-8'}).then(function(stream) {
-										stream.write((args.mode === 'edit' ? "Editing" : "Viewing") + " id " + args.id);
-									});
+											if (request.verb !== 'HEAD') {
+												return stream.writeAsync((args.mode === 'edit' ? "Editing" : "Viewing") + " id " + args.id);
+											};
+										})
+										.then(dummy => {});
 								},
 							},
 						],
@@ -350,7 +358,9 @@ module.exports = function(root, options, _shared) {
 						handlers: [
 							{
 								handler: function(request) {
-									request.response.getStream({contentType: 'text/plain; charset=utf-8'}).then(stream => stream.write("Hello !"));
+									request.response.getStream({contentType: 'text/plain; charset=utf-8'})
+										.then(stream => stream.writeAsync("Hello !"))
+										.then(dummy => {});
 								},
 							},
 						],
@@ -360,7 +370,9 @@ module.exports = function(root, options, _shared) {
 						handlers: [
 							{
 								handler: function(request) {
-									request.response.getStream({contentType: 'text/plain; charset=utf-8'}).then(stream => stream.write("Bonjour !"));
+									request.response.getStream({contentType: 'text/plain; charset=utf-8'})
+										.then(stream => stream.writeAsync("Bonjour !"))
+										.then(dummy => {});
 								},
 							},
 						],
@@ -661,6 +673,7 @@ module.exports = function(root, options, _shared) {
 				ev.data.promise = ev.data.promise
 					.then(dummy => response.getStream({contentType: 'text/plain', encoding: 'utf-8'}))
 					.then(stream => stream.writeAsync(types.toString(status)))
+					.then(dummy => {})
 					.catch(ex => {
 						if (root.getOptions().debug) {
 							console.error(ex);

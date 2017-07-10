@@ -646,21 +646,26 @@ module.exports = function(root, options, _shared) {
 		};
 
 		function onstatus(ev) {
+			// TODO: Real status page
 			const response = ev.obj,
 				status = response.status;
 			if (root.getOptions().debug && (status >= 500)) {
 				if (response.statusData) {
-					console.error(status + ': ' + response.statusData.stack);
+					console.error('HTTP ' + status + ': ' + response.statusData.stack);
 				} else {
-					console.error(status + ': No error information.');
+					console.error('HTTP ' + status + ': No error information.');
 				};
 			};
 			if (status >= 300) {
 				ev.preventDefault();
 				ev.data.promise = ev.data.promise
-					.then(() => response.getStream({contentType: 'text/plain', encoding: 'utf-8'}))
-					.then(stream => stream.write(types.toString(status)))
-					.catch(ex => {});
+					.then(dummy => response.getStream({contentType: 'text/plain', encoding: 'utf-8'}))
+					.then(stream => stream.writeAsync(types.toString(status)))
+					.catch(ex => {
+						if (root.getOptions().debug) {
+							console.error(ex);
+						};
+					});
 			};
 		};
 

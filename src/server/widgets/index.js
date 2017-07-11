@@ -84,24 +84,34 @@ function addSearchPaths(root) {
 			
 function startup(root, _shared) {
 	const doodad = root.Doodad,
-		namespaces = doodad.Namespaces;
+		//namespaces = doodad.Namespaces,
+		modules = doodad.Modules;
 					
 	addSearchPaths(root);
 	
-	const DD_MODULES = {};
-	require("../../common/widgets/MyWidget_loader.js").add(DD_MODULES);
+	//const DD_MODULES = {};
+	//require("../../common/widgets/MyWidget_loader.js").add(DD_MODULES);
 
-	return namespaces.load(DD_MODULES, {startup: {secret: _shared.SECRET}});
+	//return namespaces.load(DD_MODULES, {startup: {secret: _shared.SECRET}});
+
+	return modules.load([
+			{
+				module: 'doodad-js-test',
+				path: 'widgets/MyWidget_loader.js'
+			},
+		], {startup: {secret: _shared.SECRET}});
 };
 
 const options = {
 	startup: {secret: SECRET},
 };
 
-const DD_MODULES = {};
-require('doodad-js-unicode').add(DD_MODULES);
-require('doodad-js-locale').add(DD_MODULES);
-require('doodad-js-safeeval').add(DD_MODULES);
-require('doodad-js-loader').add(DD_MODULES);
+//const DD_MODULES = {};
+//require('doodad-js-unicode').add(DD_MODULES);
+//require('doodad-js-locale').add(DD_MODULES);
+//require('doodad-js-safeeval').add(DD_MODULES);
+//require('doodad-js-loader').add(DD_MODULES);
 
-require('doodad-js').createRoot(DD_MODULES, options, startup);
+//require('doodad-js').createRoot(DD_MODULES, options, startup);
+
+require('doodad-js').createRoot(null, options, startup);

@@ -26,37 +26,37 @@
 
 module.exports = function(root, options, _shared) {
 	const doodad = root.Doodad,
-		//namespaces = doodad.Namespaces,
-		modules = doodad.Modules,
 		types = doodad.Types,
 		tools = doodad.Tools,
-		files = tools.Files,
-		io = doodad.IO,
-		ioInterfaces = io.Interfaces,
-		ioMixIns = io.MixIns,
-		server = doodad.Server,
-		nodejs = doodad.NodeJs,
+		//namespaces = doodad.Namespaces,
+		modules = doodad.Modules,
 
 		util = require('util'),
 		cluster = require('cluster'),
 		fs = require('fs');
 
 	function startup() {
-		const nodejsCluster = nodejs.Cluster;
+		const files = tools.Files,
+			io = doodad.IO,
+			ioInterfaces = io.Interfaces,
+			ioMixIns = io.MixIns,
+			server = doodad.Server,
+			nodejs = doodad.NodeJs,
+			nodejsCluster = nodejs.Cluster;
 
 		let messenger = null;
 		if (!options.noCluster) {
 			messenger = new nodejsCluster.ClusterMessenger(server.Ipc.ServiceManager);
 			messenger.connect();
-				
+
 			const con = messenger.getInterface(ioInterfaces.IConsole);
-			
+
 			// Captures "console.XXX()"
 			nodejs.Console.capture(function(fn, args) {
 				// TODO: Do like "Terminal.consoleWrite"
 				con[fn].call(con, '<W:' + cluster.worker.id + '>  ' + args[0]);
 			});
-			
+
 			// Captures "tools.log()"
 			_shared.consoleHook = function consoleHook(level, message) {
 				// TODO: Do like "Terminal.consoleWrite"
@@ -722,8 +722,11 @@ module.exports = function(root, options, _shared) {
 
 	return modules.load([
 			{
+				module: 'doodad-js-cluster',
+			},
+			{
 				module: 'doodad-js-http_jsonrpc',
 			},
-		], {startup: {secret: _shared.SECRET}})
+		], types.depthExtend(15, options, {startup: {secret: _shared.SECRET}}))
 			.then(startup);
 };

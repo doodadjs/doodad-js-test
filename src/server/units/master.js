@@ -24,7 +24,7 @@
 
 "use strict";
 
-const MAX_CPUS = 1;
+const MAX_CPUS = 4;
 
 module.exports = function(root, options, _shared) {
 	const doodad = root.Doodad,
@@ -32,7 +32,6 @@ module.exports = function(root, options, _shared) {
 		modules = doodad.Modules,
 		types = doodad.Types,
 		tools = doodad.Tools,
-		nodejs = doodad.NodeJs,
 		
 		nodeOs = require('os'),
 		nodeCluster = require('cluster'),
@@ -44,50 +43,64 @@ module.exports = function(root, options, _shared) {
 	function startup() {
 		const server = doodad.Server;
 
-		let ready = false;
-
-		const cpus = Math.min(nodeOs.cpus().length, MAX_CPUS);
-
-		function startWorkers() {
-			return Promise.try(function tryStartWorkers() {
-				tools.Files.mkdir(options.cachePath, {makeParents: true});
-			
-				if (cpus > 1) {
-					nodeCluster.setupMaster({
-						silent: true,
-					});
-
-					nodeCluster.on('exit', (worker, code, signal) => {
-						if (!signal) {
-							nodeCluster.fork();
-						};
-					});
-
-					for (let i = 0; i < cpus; i++) {
-						nodeCluster.fork();
-					};
-
-				} else {
-					options.noCluster = true;
-					return require('./worker.js')(root, options, _shared);
-
-				};
-			});
-		};
-		
-		const test = doodad.Test,
-			args = tools.getCurrentLocation().args,
+		const args = tools.getCurrentLocation().args,
 			unitName = args.get('unit');
 	
 		if (unitName !== undefined) {
-			const success = test.run({name: (unitName || test.DD_FULL_NAME)});
-			if (success) {
-				tools.abortScript(0);
-			} else {
-				tools.abortScript(1);
-			};
+			return modules.load([
+					/*{
+						module: 'doodad-js',
+						path: 'test/doodad-js_tests.js',
+					},*/
+					{
+						module: 'doodad-js-safeeval',
+						path: 'test/doodad-js-safeeval_tests.js',
+					},
+				], types.depthExtend(15, options, {startup: {secret: _shared.SECRET}}))
+				.then(function(dummy) {
+					const test = doodad.Test;
+					const success = test.run({name: (unitName || test.DD_FULL_NAME)});
+					if (success) {
+						tools.abortScript(0);
+					} else {
+						tools.abortScript(1);
+					};
+				});
+
 		} else {
-			const cluster = nodejs.Cluster;
+			function startWorkers() {
+				return Promise.try(function tryStartWorkers() {
+					tools.Files.mkdir(options.cachePath, {makeParents: true});
+			
+					if (cpus > 1) {
+						nodeCluster.setupMaster({
+							silent: true,
+						});
+
+						nodeCluster.on('exit', (worker, code, signal) => {
+							if (!signal) {
+								nodeCluster.fork();
+							};
+						});
+
+						for (let i = 0; i < cpus; i++) {
+							nodeCluster.fork();
+						};
+
+					} else {
+						options.noCluster = true;
+						return require('./worker.js')(root, options, _shared);
+
+					};
+				});
+			};
+
+			let ready = false;
+
+			const cpus = Math.min(nodeOs.cpus().length, MAX_CPUS);
+
+			const nodejs = doodad.NodeJs,
+				cluster = nodejs.Cluster;
 
 			if (process.stdout.isTTY && process.stdin.setRawMode) {
 				process.stdin.setRawMode(true);
@@ -340,21 +353,11 @@ module.exports = function(root, options, _shared) {
 
 	return modules.load([
 			{
-				module: 'doodad-js',
-				path: 'test/doodad-js_tests.js',
-				optional: true,
-			},
-			{
 				module: 'doodad-js-cluster',
-			},
-			{
-				module: 'doodad-js-safeeval',
-				path: 'test/doodad-js-safeeval_tests.js',
-				optional: true,
 			},
 			{
 				module: 'doodad-js-terminal',
 			},
-		], {startup: {secret: _shared.SECRET}})
+		], types.depthExtend(15, options, {startup: {secret: _shared.SECRET}}))
 			.then(startup);
 };

@@ -101,19 +101,13 @@ module.exports = {
 										{
 											fileType: 'css',
 											fileName: 'MyWidget.css',
-											baseUrl: function(root) {return root.Doodad.Modules.locate('doodad-js-test', (root.Doodad.NodeJs ? 'src/common/widgets/' : 'widgets/'))},
+											baseUrl: function(root) {return root.Doodad.Modules.locate('doodad-js-test', 'widgets/')},
 											media: 'screen',
 										},
 									],
 									initializers: [
 										function(root) {
-											let path;
-											if (root.Doodad.NodeJs) {
-												path = 'src/common/widgets/MyWidget.js';
-											} else {
-												path = 'widgets/MyWidget.js';
-											};
-											return root.Doodad.Modules.load([{module: 'doodad-js-test', path: path}], {startup: {secret: _shared.SECRET}});
+											return root.Doodad.Modules.load([{module: 'doodad-js-test', path: 'widgets/MyWidget.js'}], {startup: {secret: _shared.SECRET}});
 										},
 									],
 								}

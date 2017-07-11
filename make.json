@@ -128,6 +128,53 @@
 				},
 
 				{
+					"class": "Make.Folder.Create",
+					"destination": "%PACKAGEDIR%/widgets"
+				},
+				{
+					"class": "Make.File.Javascript",
+					"source": "%SOURCEDIR%/common/widgets/MyWidget.js",
+					"destination": "%PACKAGEDIR%/widgets/MyWidget.js",
+					"runDirectives": true,
+					"keepComments": true,
+					"keepSpaces": true,
+					"variables": {
+						"serverSide": true,
+						"debug": true
+					}
+				},
+				{
+					"class": "Make.File.Javascript",
+					"source": "%SOURCEDIR%/common/widgets/MyWidget.js",
+					"destination": "%PACKAGEDIR%/widgets/MyWidget.min.js",
+					"runDirectives": true,
+					"variables": {
+						"serverSide": true
+					}
+				},
+				{
+					"class": "Make.File.Javascript",
+					"source": "%SOURCEDIR%/common/widgets/MyWidget_loader.js",
+					"destination": "%PACKAGEDIR%/widgets/MyWidget_loader.js",
+					"runDirectives": true,
+					"keepComments": true,
+					"keepSpaces": true,
+					"variables": {
+						"serverSide": true,
+						"debug": true
+					}
+				},
+				{
+					"class": "Make.File.Javascript",
+					"source": "%SOURCEDIR%/common/widgets/MyWidget_loader.js",
+					"destination": "%PACKAGEDIR%/widgets/MyWidget_loader.min.js",
+					"runDirectives": true,
+					"variables": {
+						"serverSide": true
+					}
+				},
+
+				{
 					"class": "Make.Task",
 					"name": "install"
 				},
@@ -159,14 +206,20 @@
 				},
 
 				{
-					"class": "Make.Folder.Create",
+				"class": "Make.Folder.Create",
 					"destination": "%INSTALLDIR%/%PACKAGENAME%/widgets"
 				},
+
 				{
 					"class": "Make.File.Javascript",
 					"source": "%SOURCEDIR%/common/widgets/MyWidget.js",
 					"destination": "%INSTALLDIR%/%PACKAGENAME%/widgets/MyWidget.js",
-					"runDirectives": true
+					"runDirectives": true,
+					"keepComments": true,
+					"keepSpaces": true,
+					"variables": {
+						"debug": true
+					}
 				},
 				{
 					"class": "Make.File.Javascript",
@@ -178,7 +231,12 @@
 					"class": "Make.File.Javascript",
 					"source": "%SOURCEDIR%/common/widgets/MyWidget_loader.js",
 					"destination": "%INSTALLDIR%/%PACKAGENAME%/widgets/MyWidget_loader.js",
-					"runDirectives": true
+					"runDirectives": true,
+					"keepComments": true,
+					"keepSpaces": true,
+					"variables": {
+						"debug": true
+					}
 				},
 				{
 					"class": "Make.File.Javascript",
@@ -186,6 +244,7 @@
 					"destination": "%INSTALLDIR%/%PACKAGENAME%/widgets/MyWidget_loader.min.js",
 					"runDirectives": true
 				},
+
 				{
 					"class": "Make.File.Copy",
 					"source": "%SOURCEDIR%/client/widgets/MyWidget.css",
@@ -201,7 +260,7 @@
 					"source": "%SOURCEDIR%/client/widgets/crossRealm.html",
 					"destination": "%INSTALLDIR%/%PACKAGENAME%/widgets/crossRealm.html"
 				},
-					
+
 				{
 					"class": "Make.Folder.Create",
 					"destination": "%INSTALLDIR%/%PACKAGENAME%/browserify"
@@ -217,7 +276,7 @@
 					"destination": "%INSTALLDIR%/%PACKAGENAME%/browserify/bundle.min.js",
 					"minify": true
 				},
-				
+
 				{
 					"class": "Make.Folder.Create",
 					"destination": "%INSTALLDIR%/%PACKAGENAME%/webpack"

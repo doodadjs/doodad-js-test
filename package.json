@@ -3,6 +3,7 @@
   "description": "doodad-js Test application",
   "version": "0.0.0",
   "files": [
+    "widgets",
     "tonic.js"
   ],
   "keywords": [

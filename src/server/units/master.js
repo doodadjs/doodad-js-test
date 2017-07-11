@@ -24,14 +24,14 @@
 
 "use strict";
 
-const MAX_CPUS = 4;
+const MAX_CPUS = 1;
 
 module.exports = function(root, options, _shared) {
 	const doodad = root.Doodad,
 		namespaces = doodad.Namespaces,
+		modules = doodad.Modules,
 		types = doodad.Types,
 		tools = doodad.Tools,
-		server = doodad.Server,
 		nodejs = doodad.NodeJs,
 		
 		nodeOs = require('os'),
@@ -42,6 +42,8 @@ module.exports = function(root, options, _shared) {
 
 
 	function startup() {
+		const server = doodad.Server;
+
 		let ready = false;
 
 		const cpus = Math.min(nodeOs.cpus().length, MAX_CPUS);
@@ -328,11 +330,31 @@ module.exports = function(root, options, _shared) {
 		};
 	};
 
-	const DD_MODULES = {};
-	require('doodad-js/test/tests.js').add(DD_MODULES);
-	require('doodad-js-safeeval/test/tests.js').add(DD_MODULES);
-	require('doodad-js-terminal').add(DD_MODULES);
-	require('doodad-js-test').add(DD_MODULES);
+	//const DD_MODULES = {};
+	//require('doodad-js/test/tests.js').add(DD_MODULES);
+	//require('doodad-js-safeeval/test/tests.js').add(DD_MODULES);
+	//require('doodad-js-terminal').add(DD_MODULES);
+	//require('doodad-js-test').add(DD_MODULES);
 
-	return namespaces.load(DD_MODULES, {startup: {secret: _shared.SECRET}}, startup);
+	//return namespaces.load(DD_MODULES, {startup: {secret: _shared.SECRET}}, startup);
+
+	return modules.load([
+			{
+				module: 'doodad-js',
+				path: 'test/doodad-js_tests.js',
+				optional: true,
+			},
+			{
+				module: 'doodad-js-cluster',
+			},
+			{
+				module: 'doodad-js-safeeval',
+				path: 'test/doodad-js-safeeval_tests.js',
+				optional: true,
+			},
+			{
+				module: 'doodad-js-terminal',
+			},
+		], {startup: {secret: _shared.SECRET}})
+			.then(startup);
 };

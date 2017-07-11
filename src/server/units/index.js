@@ -113,17 +113,18 @@ const options = {
 	startup: {secret: SECRET},
 };
 
-const DD_MODULES = {};
-require('doodad-js-unicode').add(DD_MODULES);
-require('doodad-js-locale').add(DD_MODULES);
-require('doodad-js-dates').add(DD_MODULES);
-require('doodad-js-io').add(DD_MODULES);
-require('doodad-js-server').add(DD_MODULES);
-require('doodad-js-ipc').add(DD_MODULES);
-require('doodad-js-cluster').add(DD_MODULES);
-require('doodad-js-safeeval').add(DD_MODULES);
+//const DD_MODULES = {};
+//require('doodad-js-unicode').add(DD_MODULES);
+//require('doodad-js-locale').add(DD_MODULES);
+//require('doodad-js-dates').add(DD_MODULES);
+//require('doodad-js-io').add(DD_MODULES);
+//require('doodad-js-server').add(DD_MODULES);
+//require('doodad-js-ipc').add(DD_MODULES);
+//require('doodad-js-cluster').add(DD_MODULES);
+//require('doodad-js-safeeval').add(DD_MODULES);
 
-require('doodad-js').createRoot(DD_MODULES, options, startup);
+//require('doodad-js').createRoot(DD_MODULES, options, startup);
+require('doodad-js').createRoot(null, options, startup);
 
 /* Cross-Origin (simple request) : Should return an index file with appropriated headers
 GET /app/doodad-js-test/ HTTP/1.0

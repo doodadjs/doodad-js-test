@@ -26,7 +26,8 @@
 
 module.exports = function(root, options, _shared) {
 	const doodad = root.Doodad,
-		namespaces = doodad.Namespaces,
+		//namespaces = doodad.Namespaces,
+		modules = doodad.Modules,
 		types = doodad.Types,
 		tools = doodad.Tools,
 		files = tools.Files,
@@ -707,15 +708,22 @@ module.exports = function(root, options, _shared) {
 		});
 	};
 	
-	const DD_MODULES = {};
-	require('doodad-js-widgets').add(DD_MODULES);
-	require('doodad-js-mime').add(DD_MODULES);
-	require('doodad-js-xml').add(DD_MODULES);
-	require('doodad-js-templates').add(DD_MODULES);
-	require('doodad-js-minifiers').add(DD_MODULES);
-	require('doodad-js-json').add(DD_MODULES);
-	require('doodad-js-http').add(DD_MODULES);
-	require('doodad-js-http_jsonrpc').add(DD_MODULES);
+	//const DD_MODULES = {};
+	//require('doodad-js-http').add(DD_MODULES);
+	//require('doodad-js-http_jsonrpc').add(DD_MODULES);
+	//require('doodad-js-json').add(DD_MODULES);
+	//require('doodad-js-mime').add(DD_MODULES);
+	//require('doodad-js-minifiers').add(DD_MODULES);
+	//require('doodad-js-templates').add(DD_MODULES);
+	//require('doodad-js-widgets').add(DD_MODULES);
+	//require('doodad-js-xml').add(DD_MODULES);
 	
-	return namespaces.load(DD_MODULES, {startup: {secret: _shared.SECRET}}, startup);
+	//return namespaces.load(DD_MODULES, {startup: {secret: _shared.SECRET}}, startup);
+
+	return modules.load([
+			{
+				module: 'doodad-js-http_jsonrpc',
+			},
+		], {startup: {secret: _shared.SECRET}})
+			.then(startup);
 };

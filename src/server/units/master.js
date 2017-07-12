@@ -70,8 +70,6 @@ module.exports = function(root, options, _shared) {
 		} else {
 			function startWorkers() {
 				return Promise.try(function tryStartWorkers() {
-					tools.Files.mkdir(options.cachePath, {makeParents: true});
-			
 					if (cpus > 1) {
 						nodeCluster.setupMaster({
 							silent: true,
@@ -292,6 +290,20 @@ module.exports = function(root, options, _shared) {
 							};
 						};
 					});
+
+				const clearCache = root.DD_DOC(
+					{
+						author: "Claude Petit",
+						revision: 0,
+						params:  null,
+						returns: 'undefined',
+						description: tools.format("Clears the cache folder. Warning: Before running this command, be sure you have nothing important in that folder: '~0~'.", [options.cachePath.toString()]),
+					}, function clearCache() {
+						return tools.Files.rmdirAsync(options.cachePath, {force: true})
+							.then(dummy => {
+								console.info(tools.format('Cache folder "~0~" deleted.', [options.cachePath.toString()]));
+							});
+					});
 			
 				const term = new nodejs.Terminal.Ansi.Javascript(0, {
 					infoColor: 'Green',
@@ -317,31 +329,20 @@ module.exports = function(root, options, _shared) {
 						setAttribute: _shared.setAttribute,
 						browser: browser,
 						w: run,
+						clearCache: clearCache,
 					},
-				});
-				const promise = term.onListen.promise().then(function(ev) {
-					return term.askAsync(tools.format('Safe to delete folder "~0~" and its content [yes/NO] ?', [options.cachePath.toString()])).then(function(resp) {
-						resp = resp.toLowerCase();
-						if (resp === 'yes') {
-							tools.Files.rmdir(options.cachePath, {force: true});
-							console.info(tools.format('Folder "~0~" deleted.', [options.cachePath.toString()]));
-						};
-					
-						return startWorkers()
-							.then(() => {ready = true});
-					});
 				});
 				nodejs.Console.capture(function(name, args) {
 					term.consoleWrite(name, args);
 				});
 				term.listen();
-				return promise;
-			} else {
-				return startWorkers()
-					.then(() => {ready = true});
 			};
+
+			return startWorkers()
+				.then(() => {ready = true});
 		};
 	};
+
 
 	//const DD_MODULES = {};
 	//require('doodad-js/test/tests.js').add(DD_MODULES);

@@ -168,8 +168,8 @@
         },
         {
           "class": "Doodad.Templates.Html.Make.Compile",
-          "source": "%SOURCEDIR%/server/units/res/templates/index.ddt",
-          "destination": "%INSTALLDIR%/units/index.ddtx",
+          "source": "%SOURCEDIR%/client/units/index.ddt",
+          "destination": "%INSTALLDIR%/%PACKAGENAME%/client/units/index.ddtx",
           "variables": {
             "serverSide": true
           }

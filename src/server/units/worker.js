@@ -188,7 +188,7 @@ module.exports = function(root, options, _shared) {
 						handlers: [
 							{
 								handler: server.Http.RedirectHandler,
-								targetUrl: '/app/doodad-js-test/units/Test.html',
+								targetUrl: '/app/doodad-js-test/units/index.ddtx',
 							},
 						],
 					},
@@ -414,7 +414,7 @@ module.exports = function(root, options, _shared) {
 										handlers: [
 											{
 												handler: server.Http.RedirectHandler,
-												targetUrl: 'Test.html',
+												targetUrl: 'index.ddtx',
 											},
 										],
 									},
@@ -523,6 +523,42 @@ module.exports = function(root, options, _shared) {
 											},
 										],
 									},
+									// TODO: Make it automatic
+									'/doodad-js-test/units/index.ddtx': (root.getOptions().debug ? {
+										handlers: [
+											{
+												handler: nodejs.Server.Http.StaticPage,
+												path: files.Path.parse(require.resolve('doodad-js-test')).set({file: null}).combine('./src/client/units/index.ddt', {os: 'linux'}),
+												//showFolders: true,
+												mimeTypes: staticMimeTypes,
+												forceCaseSensitive: forceCaseSensitive,
+											},
+										],
+									} : null),
+									// TODO: Make it automatic
+									'/doodad-js-test/units/css/index.css': (root.getOptions().debug ? {
+										handlers: [
+											{
+												handler: nodejs.Server.Http.StaticPage,
+												path: files.Path.parse(require.resolve('doodad-js-test')).set({file: null}).combine('./src/client/units/css/index.css', {os: 'linux'}),
+												showFolders: true,
+												mimeTypes: staticMimeTypes,
+												forceCaseSensitive: forceCaseSensitive,
+											},
+										],
+									} : null),
+									// TODO: Make it automatic
+									'/doodad-js-test/units/js/index.js': (root.getOptions().debug ? {
+										handlers: [
+											{
+												handler: nodejs.Server.Http.StaticPage,
+												path: files.Path.parse(require.resolve('doodad-js-test')).set({file: null}).combine('./src/client/units/js/index.js', {os: 'linux'}),
+												showFolders: true,
+												mimeTypes: staticMimeTypes,
+												forceCaseSensitive: forceCaseSensitive,
+											},
+										],
+									} : null),
 									'/doodad-js-widgets': {
 										handlers: [
 											{
@@ -726,6 +762,11 @@ module.exports = function(root, options, _shared) {
 			},
 			{
 				module: 'doodad-js-http_jsonrpc',
+			},
+			{
+				module: 'doodad-js-test',
+				// TODO: Autmatic selection between "src" or "build"
+				path: (root.getOptions().fromSource ? 'src/server/units/Test_Pages_Units_Index.js' : 'build/server/units/Test_Pages_Units_Index.min.js'),
 			},
 		], types.depthExtend(15, options, {startup: {secret: _shared.SECRET}}))
 			.then(startup);

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ddt SYSTEM "../../../node_modules/doodad-js-templates/src/common/res/schemas/ddt/html5_ddt.dtd">
+<t:ddt 
+	xmlns="http://www.doodad-js.local/schemas/html5" 
+	xmlns:t="http://www.doodad-js.local/schemas/ddt" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation=
+		"http://www.doodad-js.local/schemas/ddt ../../../node_modules/doodad-js-templates/src/common/res/schemas/ddt/ddt.xsd"
+
+	type="Test.Pages.Units.Index"
+>
+<!--
+	 doodad-js  -  Object-oriented programming framework
+	 File: index.ddt - Unit tests page template
+	 Project home: https://github.com/doodadjs/
+	 Trunk: svn checkout svn://svn.code.sf.net/p/doodad-js/code/trunk doodad-js-code
+	 Author: Claude Petit, Quebec city
+	 Contact: doodadjs [at] gmail.com
+	 Note: I'm still in alpha-beta stage, so expect to find some bugs or incomplete parts !
+	 License: Apache V2
+	
+		Copyright 2015-2017 Claude Petit
+	
+		Licensed under the Apache License, Version 2.0 (the "License");
+		you may not use this file except in compliance with the License.
+		You may obtain a copy of the License at
+	
+			http://www.apache.org/licenses/LICENSE-2.0
+	
+		Unless required by applicable law or agreed to in writing, software
+		distributed under the License is distributed on an "AS IS" BASIS,
+		WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+		See the License for the specific language governing permissions and
+		limitations under the License.
+-->
+
+	<!--<t:script vars="url"><![CDATA[
+		url = page.request.url;
+	]]></t:script>-->
+
+	<html>
+		<t:variable name="url" expr="page.request.url.getPath()" />
+    <t:variable name="debug" expr="root.getOptions().debug" />
+
+    <head>
+      <link rel="stylesheet" type="text/css" href="css/index.css" t:integrity="auto" />
+		</head>
+		
+		<body>
+      <script async="async" t:src="'../../doodad-js/' + (debug ? 'doodad-js.js' : 'doodad-js.min.js')" t:integrity="auto" />
+      <script async="async" src="../../doodad-js/lib/uuid/uuid.min.js" t:integrity="auto" />
+
+      <!--<script async="async" src="../../doodad-js-test/lib/sax/sax.js" t:integrity="auto" />-->
+
+      <!--<script src="../../lib/moment/moment.min.js" t:integrity="auto" />-->
+      <!--<script src="../../lib/moment-timezone/moment-timezone.min.js" t:integrity="auto" />-->
+
+      <script async="async" src="../../lib/es6-promise/es6-promise.min.js" t:integrity="auto" />
+
+      <script async="async" src="js/index.js" t:integrity="auto" />
+		</body>
+	</html>
+</t:ddt>

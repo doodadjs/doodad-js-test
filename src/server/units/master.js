@@ -24,6 +24,7 @@
 
 "use strict";
 
+// TODO: Make an argument
 const MAX_CPUS = 4;
 
 module.exports = function(root, options, _shared) {

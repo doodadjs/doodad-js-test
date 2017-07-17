@@ -21,21 +21,24 @@
 
 		global.createRoot(null, options)
 			.then(function(root) {
-				global.DD_ROOT = root; // For tests
+				global.DD_ROOT = root; // For testing
 				return root;
 			})
-	.then(function(root) {
-		const doodad = root.Doodad,
+			.then(function(root) {
+				const doodad = root.Doodad,
 					modules = doodad.Modules;
 
 				return modules.load([
-					/*{
+					/*{ NOTE: Gets automaticaly loaded by safeeval tests
 						module: 'doodad-js',
 						path: 'test/doodad-js_tests.js',
 					},*/
 					{
 						module: 'doodad-js-safeeval',
 						path: 'test/doodad-js-safeeval_tests.js',
+					},
+					{
+						module: 'doodad-js-dates', // For testing
 					},
 				], options);
 			})
@@ -49,6 +52,7 @@
 					unitName = args.get('unit');
 
 				test.setOutput(new clientIO.DomOutputStream({ flushMode: 'manual' }));
+
 				return test.run({name: unitName});
 			})
 			.catch(function (err) {

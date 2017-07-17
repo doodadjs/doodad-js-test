@@ -39,25 +39,24 @@
 	]]></t:script>-->
 
 	<html>
-		<t:variable name="url" expr="page.request.url.getPath()" />
-    <t:variable name="debug" expr="root.getOptions().debug" />
+		<t:variable name="debug" expr="root.getOptions().debug" />
 
-    <head>
-      <link rel="stylesheet" type="text/css" href="css/index.css" t:integrity="auto" />
+		<head>
+		  <link rel="stylesheet" type="text/css" href="css/index.css" t:integrity="auto" />
 		</head>
-		
+			
 		<body>
-      <script async="async" t:src="'../../doodad-js/' + (debug ? 'doodad-js.js' : 'doodad-js.min.js')" t:integrity="auto" />
-      <script async="async" src="../../doodad-js/lib/uuid/uuid.min.js" t:integrity="auto" />
+		  <script async="async" t:src="'../../doodad-js/' + (debug ? 'doodad-js.js' : 'doodad-js.min.js')" t:integrity="auto" />
+		  <script async="async" src="../../doodad-js/lib/uuid/uuid.min.js" t:integrity="auto" />
 
-      <!--<script async="async" src="../../doodad-js-test/lib/sax/sax.js" t:integrity="auto" />-->
+		  <!--<script async="async" src="../../doodad-js-test/lib/sax/sax.js" t:integrity="auto" />-->
 
-      <!--<script src="../../lib/moment/moment.min.js" t:integrity="auto" />-->
-      <!--<script src="../../lib/moment-timezone/moment-timezone.min.js" t:integrity="auto" />-->
+		  <script src="../../lib/moment/moment.min.js" t:integrity="auto" />
+		  <script src="../../lib/moment-timezone/moment-timezone.min.js" t:integrity="auto" />
 
-      <script async="async" src="../../lib/es6-promise/es6-promise.min.js" t:integrity="auto" />
+		  <script async="async" src="../../lib/es6-promise/es6-promise.min.js" t:integrity="auto" />
 
-      <script async="async" src="js/index.js" t:integrity="auto" />
+		  <script async="async" src="js/index.js" t:integrity="auto" />
 		</body>
 	</html>
 </t:ddt>

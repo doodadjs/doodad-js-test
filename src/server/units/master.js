@@ -24,9 +24,6 @@
 
 "use strict";
 
-// TODO: Make an argument
-const MAX_CPUS = 4;
-
 module.exports = function(root, options, _shared) {
 	const doodad = root.Doodad,
 		namespaces = doodad.Namespaces,
@@ -45,6 +42,7 @@ module.exports = function(root, options, _shared) {
 		const server = doodad.Server;
 
 		const args = tools.getCurrentLocation().args,
+			maxCpus = types.toInteger(args.get('cpus')) || 4,
 			unitName = args.get('unit');
 	
 		if (unitName !== undefined) {
@@ -96,7 +94,7 @@ module.exports = function(root, options, _shared) {
 
 			let ready = false;
 
-			const cpus = Math.min(nodeOs.cpus().length, MAX_CPUS);
+			const cpus = Math.min(nodeOs.cpus().length, maxCpus);
 
 			const nodejs = doodad.NodeJs,
 				cluster = nodejs.Cluster;
@@ -300,6 +298,7 @@ module.exports = function(root, options, _shared) {
 						returns: 'undefined',
 						description: tools.format("Clears the cache folder. Warning: Before running this command, be sure you have nothing important in that folder: '~0~'.", [options.cachePath.toString()]),
 					}, function clearCache() {
+						// TODO: Abort and invalidate all cached objects before, and have an argument to delete the folder.
 						return tools.Files.rmdirAsync(options.cachePath, {force: true})
 							.then(dummy => {
 								console.info(tools.format('Cache folder "~0~" deleted.', [options.cachePath.toString()]));

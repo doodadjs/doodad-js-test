@@ -175,6 +175,22 @@
       "server": true,
       "browserify": false,
       "exclude": true
+    },
+    {
+      "//": "For the application.",
+      "src": "server/browserify/Test_Pages_Browserify_Index.js",
+      "client": false,
+      "server": true,
+      "browserify": false,
+      "exclude": true
+    },
+    {
+      "//": "For the application.",
+      "src": "server/webpack/Test_Pages_Webpack_Index.js",
+      "client": false,
+      "server": true,
+      "browserify": false,
+      "exclude": true
     }
   ],
   "resources": [
@@ -214,6 +230,22 @@
           "class": "Doodad.Templates.Html.Make.Compile",
           "source": "%SOURCEDIR%/client/widgets/res/crossRealm.ddt",
           "destination": "%INSTALLDIR%/%PACKAGENAME%/widgets/crossRealm.ddtx",
+          "variables": {
+            "serverSide": true
+          }
+        },
+        {
+          "class": "Doodad.Templates.Html.Make.Compile",
+          "source": "%SOURCEDIR%/client/browserify/res/index.ddt",
+          "destination": "%INSTALLDIR%/%PACKAGENAME%/browserify/index.ddtx",
+          "variables": {
+            "serverSide": true
+          }
+        },
+        {
+          "class": "Doodad.Templates.Html.Make.Compile",
+          "source": "%SOURCEDIR%/client/webpack/res/index.ddt",
+          "destination": "%INSTALLDIR%/%PACKAGENAME%/webpack/index.ddtx",
           "variables": {
             "serverSide": true
           }
@@ -259,34 +291,37 @@
         },
 
         {
-          "class": "Make.Folder.Create",
-          "destination": "%INSTALLDIR%/%PACKAGENAME%/browserify"
-        },
-        {
-          "class": "Make.File.Copy",
-          "source": "%SOURCEDIR%/browserify/index.html",
-          "destination": "%INSTALLDIR%/%PACKAGENAME%/browserify/index.html"
+          "class": "Make.Folder.Copy",
+          "source": "%SOURCEDIR%/client/browserify/res/",
+          "destination": "%INSTALLDIR%/%PACKAGENAME%/browserify/"
         },
         {
           "class": "Make.Browserify.Bundle",
-          "source": "%SOURCEDIR%/browserify/main.js",
+          "source": "%SOURCEDIR%/client/browserify/main.js",
+          "destination": "%INSTALLDIR%/%PACKAGENAME%/browserify/bundle.js"
+        },
+        {
+          "class": "Make.Browserify.Bundle",
+          "source": "%SOURCEDIR%/client/browserify/main.js",
           "destination": "%INSTALLDIR%/%PACKAGENAME%/browserify/bundle.min.js",
           "minify": true
         },
 
         {
-          "class": "Make.Folder.Create",
-          "destination": "%INSTALLDIR%/%PACKAGENAME%/webpack"
-        },
-        {
-          "class": "Make.File.Copy",
-          "source": "%SOURCEDIR%/webpack/index.html",
-          "destination": "%INSTALLDIR%/%PACKAGENAME%/webpack/index.html"
+          "class": "Make.Folder.Copy",
+          "source": "%SOURCEDIR%/client/webpack/res/",
+          "destination": "%INSTALLDIR%/%PACKAGENAME%/webpack/"
         },
         {
           "class": "Make.Webpack.Bundle",
-          "source": "%SOURCEDIR%/webpack/main.js",
-          "destination": "%INSTALLDIR%/%PACKAGENAME%/webpack/bundle.min.js"
+          "source": "%SOURCEDIR%/client/webpack/main.js",
+          "destination": "%INSTALLDIR%/%PACKAGENAME%/webpack/bundle.js"
+        },
+        {
+          "class": "Make.Webpack.Bundle",
+          "source": "%SOURCEDIR%/client/webpack/main.js",
+          "destination": "%INSTALLDIR%/%PACKAGENAME%/webpack/bundle.min.js",
+          "minify": true
         }
       ]
     },

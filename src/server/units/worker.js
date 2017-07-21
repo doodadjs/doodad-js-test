@@ -406,7 +406,7 @@ module.exports = function(root, options, _shared) {
 										handlers: [
 											{
 												handler: server.Http.RedirectHandler,
-												targetUrl: 'test.html',
+												targetUrl: 'index.ddtx',
 											}
 										],
 									},
@@ -524,23 +524,11 @@ module.exports = function(root, options, _shared) {
 										],
 									},
 									// TODO: Make it automatic
-									'/doodad-js-test/units/index.ddtx': (root.getOptions().debug ? {
+									'/doodad-js-test/units/': (root.getOptions().debug ? {
 										handlers: [
 											{
 												handler: nodejs.Server.Http.StaticPage,
-												path: files.Path.parse(require.resolve('doodad-js-test')).set({file: null}).combine('./src/client/units/index.ddt', {os: 'linux'}),
-												//showFolders: true,
-												mimeTypes: staticMimeTypes,
-												forceCaseSensitive: forceCaseSensitive,
-											},
-										],
-									} : null),
-									// TODO: Make it automatic
-									'/doodad-js-test/units/css/index.css': (root.getOptions().debug ? {
-										handlers: [
-											{
-												handler: nodejs.Server.Http.StaticPage,
-												path: files.Path.parse(require.resolve('doodad-js-test')).set({file: null}).combine('./src/client/units/css/index.css', {os: 'linux'}),
+												path: files.Path.parse(require.resolve('doodad-js-test')).set({file: null}).combine('./src/client/units/res/', {os: 'linux'}),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,
@@ -548,17 +536,49 @@ module.exports = function(root, options, _shared) {
 										],
 									} : null),
 									// TODO: Make it automatic
-									'/doodad-js-test/units/js/index.js': (root.getOptions().debug ? {
+									'/doodad-js-test/widgets/': (root.getOptions().debug ? {
 										handlers: [
 											{
 												handler: nodejs.Server.Http.StaticPage,
-												path: files.Path.parse(require.resolve('doodad-js-test')).set({file: null}).combine('./src/client/units/js/index.js', {os: 'linux'}),
+												path: files.Path.parse(require.resolve('doodad-js-test')).set({file: null}).combine('./src/client/widgets/res/', {os: 'linux'}),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,
 											},
 										],
 									} : null),
+/* TODO: Live build of source files
+									// TODO: Make it automatic
+									'/doodad-js-test/widgets/MyWidget.js': (root.getOptions().debug ? {
+										handlers: [
+											{
+												handler: ???.Make,
+												path: files.Path.parse(require.resolve('doodad-js-test')).set({file: null}).combine('./src/common/widgets/MyWidget.js', {os: 'linux'}),
+												showFolders: true,
+												mimeTypes: staticMimeTypes,
+												forceCaseSensitive: forceCaseSensitive,
+												variables: {
+													debug: true,
+												},
+											},
+										],
+									} : null),
+									// TODO: Make it automatic
+									'/doodad-js-test/widgets/MyWidget_loader.js': (root.getOptions().debug ? {
+										handlers: [
+											{
+												handler: ???.Make,
+												path: files.Path.parse(require.resolve('doodad-js-test')).set({file: null}).combine('./src/common/widgets/MyWidget_loader.js', {os: 'linux'}),
+												showFolders: true,
+												mimeTypes: staticMimeTypes,
+												forceCaseSensitive: forceCaseSensitive,
+												variables: {
+													debug: true,
+												},
+											},
+										],
+									} : null),
+*/
 									'/doodad-js-widgets': {
 										handlers: [
 											{
@@ -767,6 +787,16 @@ module.exports = function(root, options, _shared) {
 				module: 'doodad-js-test',
 				// TODO: Autmatic selection between "src" or "build"
 				path: (root.getOptions().fromSource ? 'src/server/units/Test_Pages_Units_Index.js' : 'build/server/units/Test_Pages_Units_Index.min.js'),
+			},
+			{
+				module: 'doodad-js-test',
+				// TODO: Autmatic selection between "src" or "build"
+				path: (root.getOptions().fromSource ? 'src/server/widgets/Test_Pages_Widgets_Index.js' : 'build/server/widgets/Test_Pages_Widgets_Index.min.js'),
+			},
+			{
+				module: 'doodad-js-test',
+				// TODO: Autmatic selection between "src" or "build"
+				path: (root.getOptions().fromSource ? 'src/server/widgets/Test_Pages_Widgets_CrossRealm.js' : 'build/server/widgets/Test_Pages_Widgets_CrossRealm.min.js'),
 			},
 		], types.depthExtend(15, options, {startup: {secret: _shared.SECRET}}))
 			.then(startup);

@@ -100,8 +100,8 @@ module.exports = {
 									scripts: [
 										{
 											fileType: 'css',
-											fileName: 'MyWidget.css',
-											baseUrl: function(root) {return root.Doodad.Modules.locate('doodad-js-test', 'widgets/')},
+											fileName: 'index.css',
+											baseUrl: function(root) {return root.Doodad.Modules.locate('doodad-js-test', 'widgets/css/')},
 											media: 'screen',
 										},
 									],

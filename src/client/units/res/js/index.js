@@ -35,6 +35,9 @@
 					},*/
 					{
 						module: 'doodad-js-safeeval',
+					},
+					{
+						module: 'doodad-js-safeeval',
 						path: 'test/doodad-js-safeeval_tests.js',
 					},
 					{

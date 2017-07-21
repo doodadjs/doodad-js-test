@@ -107,7 +107,8 @@ module.exports = {
 									],
 									initializers: [
 										function(root) {
-											return root.Doodad.Modules.load([{module: 'doodad-js-test', path: 'widgets/MyWidget.js'}], {startup: {secret: _shared.SECRET}});
+											// TODO: Auto-Load from "src" or "build" or whatever else.
+											return root.Doodad.Modules.load([{module: 'doodad-js-test', path: (root.getOptions().fromSource ? 'src/common/widgets/MyWidget.js' : (root.serverSide ? 'build/widgets/MyWidget.js' : 'widgets/MyWidget.js'))}], {startup: {secret: _shared.SECRET}});
 										},
 									],
 								}

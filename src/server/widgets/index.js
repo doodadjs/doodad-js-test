@@ -97,7 +97,8 @@ function startup(root, _shared) {
 	return modules.load([
 			{
 				module: 'doodad-js-test',
-				path: 'widgets/MyWidget_loader.js'
+				// TODO: Auto-Load from "src" or "build".
+				path: (root.getOptions().fromSource ? 'src/common/widgets/MyWidget_loader.js' : 'build/widgets/MyWidget_loader.js'),
 			},
 		], {startup: {secret: _shared.SECRET}});
 };

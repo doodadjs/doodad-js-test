@@ -1039,7 +1039,7 @@ module.exports = {
 								io.stderr.print("End: An error occurred while testing.");
 								success = false;
 							} else if (test.FAILED_TESTS) {
-								io.stderr.print("End: Some tests failed.");
+								io.stderr.print("End: " + test.FAILED_TESTS + " test(s) failed.");
 								success = false;
 							} else {
 								stream.print("End: Every tests passed.    Total: " + test.TESTS_COUNT);

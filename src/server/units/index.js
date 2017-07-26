@@ -104,9 +104,9 @@ function startup(root, _shared) {
 	
 	if (cluster.isMaster) {
 		return require('./master.js')(root, options, _shared);
-	} else {
-		return require('./worker.js')(root, options, _shared);
 	};
+
+	return require('./worker.js')(root, options, _shared);
 };
 
 const options = {

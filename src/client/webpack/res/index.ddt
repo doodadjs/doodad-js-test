@@ -29,12 +29,16 @@
           See the License for the specific language governing permissions and
           limitations under the License.
   -->
-  <html>
-    <t:variable name="debug" expr="root.getOptions().debug" />
+  <t:variable name="debug" expr="root.getOptions().debug" />
+
+  <t:html>
+    <head>
+    </head>
+    
     <body>
       <script async="async" src="../../lib/es6-promise/es6-promise.min.js" t:integrity="auto" />
 
       <script async="async" t:src="(debug ? 'bundle.js' : 'bundle.min.js')" t:integrity="auto" />
     </body>
-  </html>
+  </t:html>
 </t:ddt>

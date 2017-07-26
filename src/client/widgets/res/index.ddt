@@ -34,12 +34,12 @@
 		limitations under the License.
 -->
 
-  <html>
-    <t:variable name="debug" expr="root.getOptions().debug" />
+  <t:variable name="debug" expr="root.getOptions().debug" />
 
-    <!--<head> Loaded by the loader
-      <link rel="stylesheet" type="text/css" href="css/index.css" t:integrity="auto" />
-    </head>-->
+  <t:html>
+    <head> 
+      <!-- Loaded by the loader <link rel="stylesheet" type="text/css" href="css/index.css" t:integrity="auto" /> -->
+    </head>
 
     <body>
       <script async="async" t:src="'../../doodad-js/' + (debug ? 'doodad-js.js' : 'doodad-js.min.js')" t:integrity="auto" />
@@ -55,5 +55,5 @@
 
       <script async="async" src="js/index.js" t:integrity="auto" />
     </body>
-  </html>
+  </t:html>
 </t:ddt>

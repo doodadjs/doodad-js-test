@@ -34,9 +34,9 @@
 		limitations under the License.
 -->
 
-  <html>
-    <t:variable name="debug" expr="root.getOptions().debug" />
+  <t:variable name="debug" expr="root.getOptions().debug" />
 
+  <t:html>
     <head>
       <link rel="stylesheet" type="text/css" href="css/index.css" t:integrity="auto" />
     </head>
@@ -54,5 +54,5 @@
 
       <script async="async" src="js/index.js" t:integrity="auto" />
     </body>
-  </html>
+  </t:html>
 </t:ddt>

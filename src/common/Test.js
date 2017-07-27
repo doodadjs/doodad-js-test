@@ -272,296 +272,343 @@ module.exports = {
 				__Internal__.performanceEnabled = !!(global.performance && global.performance.now);
 				__Internal__.processHrTimeEnabled = !__Internal__.performanceEnabled && !!(nodejs && global.process.hrtime);
 				__Internal__.consoleTimingEnabled = !__Internal__.processHrTimeEnabled && !!(global.console && global.console.time && global.console.timeEnd);
-					
+				__Internal__.runPromise = null;
+
+
 				test.ADD('prepareCommand', function prepareCommand(fn, fnName) {
+					const Promise = types.getPromise();
+
 					const stream = test.getOutput(),
 						html = types._implements(stream, io.HtmlOutputStream),
 						dom = (clientIO ? types._instanceof(stream, clientIO.DomOutputStream) : false),
 						buffered = types._implements(stream, ioMixIns.BufferedStreamBase);
 					
-					if (html) {
-						stream.openElement({tag: 'div', attrs: 'class="command"'});
-						stream.print(fnName, {attrs: 'class="name"'});
-					} else {
-						stream.print("Name: " + fnName);
-					};
-					
 					let ended = false;
-						
+					
 					return {
 						run: function (expected, /*optional*/options 	/**/ /*paramarray*/) {
-							root.DD_ASSERT && root.DD_ASSERT(!ended, "Command has been ended.");
-							if (!options) {
-								options = {};
+							if (ended) {
+								throw new types.NotAvailable("Command has been ended.");
 							};
 
-							let sourceOpts;
-
-							sourceOpts = {};
-							const mode = types.get(options, 'mode', null),
-								isEval = types.get(options, 'eval', false);
-							const expectedStr = "Expected: " + 
-									(types.get(options, 'not', false) ? 'Not ' : '') + 
-									(types.get(options, 'contains', false) ? 'Contains ' : '') +
-									(
-										(mode === 'isinstance')
-										? 
-											('Instance Of ' + (isEval && types.isString(expected) ? expected : (types.isFunction(expected) ? types.getFunctionName(expected) : types.getFunctionName(expected.constructor))))
-										: 
-										(mode === 'is')
-										? 
-											('Is ' + (isEval && types.isString(expected) ? expected : (types.isFunction(expected) ? types.getFunctionName(expected) : types.getFunctionName(expected.constructor))))
-										: 
-											((mode === 'compare') ? 'Equals ' : '') + 
-											(isEval && types.isString(expected) ? expected : types.toSource(expected, types.get(options, 'depth', 0), sourceOpts))
-									);
-							const expectedCls = 'expected';
-								
-							let evalError = null;
-							if (isEval && types.isString(expected)) {
-								try {
-									expected = types.eval(expected, {window: global, global: global, EmptySlot: test.EmptySlot});
-								} catch(ex) {
-									evalError = ex;
-								};
-							};
-
-							test.TESTS_COUNT++;
-							
-							let	result,
-								resultStr,
-								resultCls,
-								printOpts;
-							
-							if (html) {
-								if (dom) {
-									stream.openElement({tag: 'div', attrs: 'class="run bindMe"'});
-								} else {
-									stream.openElement({tag: 'div', attrs: 'class="run"'});
-								};
-							};
-							
 							let params = Array.prototype.slice.call(arguments, 2);
 
-							if (!evalError) {
-								expected = types.toObject(expected);
-								
-								const command = "Command: " + (types.get(options, 'command', null) ||
-										fnName + 
-										"(" + 
-										tools.map(params, function(val, key) {
-												if (isEval && types.isString(val)) {
-													return val;
-												} else {
-													sourceOpts = {};
-													return types.toSource(val, types.get(options, 'depth', 0), sourceOpts);
-												};
-											}).join(', ') + 
-										");");
-										
-								printOpts = {};
-								if (html) {
-									printOpts.attrs = 'class="name"';
-								};
-								stream.print(command.replace(/[~]/g, '~~'), printOpts);
-								
-								printOpts = {};
-								if (html) {
-									printOpts.attrs = ('class="' + expectedCls + '"');
-								};
-								stream.print(expectedStr.replace(/[~]/g, '~~'), printOpts);
-								
-								if (isEval) {
-									try {
-										params = tools.map(params, function(expr) {
-											if (types.isString(expr)) {
-												return types.eval(expr, {window: global, global: global, EmptySlot: test.EmptySlot});
-											} else {
-												return expr;
-											};
-										});
-									} catch(ex) {
-										evalError = ex;
+							__Internal__.runPromise = __Internal__.runPromise
+								.then(function(dummy) {
+									if (!options) {
+										options = {};
 									};
-								};
-							};
 
-							const repetitions = types.get(options, 'repetitions', 1);
+									if (html) {
+										stream.openElement({tag: 'div', attrs: 'class="command"'});
+										stream.print(fnName, {attrs: 'class="name"'});
+									} else {
+										stream.print("Name: " + fnName);
+									};
+					
+									let sourceOpts;
 
-							let time = null;
-
-							if (!evalError) {
-								resultStr = "Got: ";
-								resultCls = 'got';
-
-								if (__Internal__.performanceEnabled) {
-									time = 0;
-									for (let i = 0; i < repetitions; i++) {
-										const now = performance.now();
-										try {
-											result = fn.apply(this, params);
-										} catch(ex) {
-											result = ex;
-										};
-										time += (performance.now() - now);
-									};
-								} else if (__Internal__.processHrTimeEnabled) {
-									time = 0;
-									for (let i = 0; i < repetitions; i++) {
-										let now = process.hrtime();
-										try {
-											result = fn.apply(this, params);
-										} catch(ex) {
-											result = ex;
-										};
-										now = process.hrtime(now);
-										time += (now[0] + (now[1] / 1e9)) * 1e3;
-									};
-								} else if (__Internal__.consoleTimingEnabled) {
-									time = 0;
-									for (let i = 0; i < repetitions; i++) {
-										console.time("Time");
-										try {
-											result = fn.apply(this, params);
-										} catch(ex) {
-											result = ex;
-										};
-										time += console.timeEnd("Time");
-									};
-									if (_shared.Natives.windowIsNaN(time)) {
-										time = null;
-									};
-								} else {
-									try {
-										result = fn.apply(this, params);
-									} catch(ex) {
-										result = ex;
-									};
-								};
-								if (types.isError(result)) {
-									resultStr += result.toString();
-									resultCls += ' error';
-								} else {
 									sourceOpts = {};
-									if (types.get(options, 'inherited', false)) {
-										sourceOpts.inherited = true;
+									const mode = types.get(options, 'mode', null),
+										isEval = types.get(options, 'eval', false);
+									const expectedStr = "Expected: " + 
+											(types.get(options, 'not', false) ? 'Not ' : '') + 
+											(types.get(options, 'contains', false) ? 'Contains ' : '') +
+											(
+												(mode === 'isinstance')
+												? 
+													('Instance Of ' + (isEval && types.isString(expected) ? expected : (types.isFunction(expected) ? types.getFunctionName(expected) : types.getFunctionName(expected.constructor))))
+												: 
+												(mode === 'is')
+												? 
+													('Is ' + (isEval && types.isString(expected) ? expected : (types.isFunction(expected) ? types.getFunctionName(expected) : types.getFunctionName(expected.constructor))))
+												: 
+													((mode === 'compare') ? 'Equals ' : '') + 
+													(isEval && types.isString(expected) ? expected : types.toSource(expected, types.get(options, 'depth', 0), sourceOpts))
+											);
+									const expectedCls = 'expected';
+								
+									let evalError = null;
+									if (isEval && types.isString(expected)) {
+										try {
+											expected = types.eval(expected, {window: global, global: global, EmptySlot: test.EmptySlot});
+										} catch(ex) {
+											evalError = ex;
+										};
 									};
-									if (!types.get(options, 'showFunctions', false)) {
-										sourceOpts.includeFunctions = false;
+
+									test.TESTS_COUNT++;
+							
+									let	result,
+										resultStr,
+										resultCls,
+										printOpts;
+							
+									if (html) {
+										if (dom) {
+											stream.openElement({tag: 'div', attrs: 'class="run bindMe"'});
+										} else {
+											stream.openElement({tag: 'div', attrs: 'class="run"'});
+										};
 									};
-									resultStr += 
-											((mode === 'isinstance') ? 
-												'Instance Of ' + (types.isFunction(result) ? result.name : (types.isObjectLike(result) ? result.constructor.name : '????')) + 
-												' (' + types.toSource(result, types.get(options, 'depth', 0), sourceOpts) + ')'
-											: 
-												types.toSource(result, types.get(options, 'depth', 0), sourceOpts)
-											); 
-									result = types.toObject(result);
-								};
+							
+									if (!evalError) {
+										expected = types.toObject(expected);
 								
-								printOpts = {};
-								if (html) {
-									printOpts.attrs = ('class="' + resultCls + '"');
-								};
-								stream.print(resultStr.replace(/[~]/g, '~~'), printOpts);
+										const command = "Command: " + (types.get(options, 'command', null) ||
+												fnName + 
+												"(" + 
+												tools.map(params, function(val, key) {
+														if (isEval && types.isString(val)) {
+															return val;
+														} else {
+															sourceOpts = {};
+															return types.toSource(val, types.get(options, 'depth', 0), sourceOpts);
+														};
+													}).join(', ') + 
+												");");
+										
+										printOpts = {};
+										if (html) {
+											printOpts.attrs = 'class="name"';
+										};
+										stream.print(command.replace(/[~]/g, '~~'), printOpts);
 								
-								result = (types.get(options, 'compareFn', null) || test.compare)(expected, result, options);
-							};
-							
-							if (evalError) {
-								resultStr = "Expression error :" + evalError.toString();
-								resultCls = 'result error';
-								printOpts = {};
-								if (html) {
-									printOpts.attrs = ('class="' + resultCls + '"');
-								};
-								stream.print(resultStr.replace(/[~]/g, '~~'), printOpts);
+										printOpts = {};
+										if (html) {
+											printOpts.attrs = ('class="' + expectedCls + '"');
+										};
+										stream.print(expectedStr.replace(/[~]/g, '~~'), printOpts);
 								
-								result = false;
-							};
+										if (isEval) {
+											try {
+												params = tools.map(params, function(expr) {
+													if (types.isString(expr)) {
+														return types.eval(expr, {window: global, global: global, EmptySlot: test.EmptySlot});
+													} else {
+														return expr;
+													};
+												});
+											} catch(ex) {
+												evalError = ex;
+											};
+										};
+									};
+
+									const repetitions = types.get(options, 'repetitions', 1);
+
+									let time = null;
+
+									if (!evalError) {
+										resultStr = "Got: ";
+										resultCls = 'got';
+
+										if (__Internal__.performanceEnabled) {
+											time = 0;
+											for (let i = 0; i < repetitions; i++) {
+												const now = performance.now();
+												try {
+													result = fn.apply(this, params);
+												} catch(ex) {
+													result = ex;
+												};
+												time += (performance.now() - now);
+											};
+										} else if (__Internal__.processHrTimeEnabled) {
+											time = 0;
+											for (let i = 0; i < repetitions; i++) {
+												let now = process.hrtime();
+												try {
+													result = fn.apply(this, params);
+												} catch(ex) {
+													result = ex;
+												};
+												now = process.hrtime(now);
+												time += (now[0] + (now[1] / 1e9)) * 1e3;
+											};
+										} else if (__Internal__.consoleTimingEnabled) {
+											time = 0;
+											for (let i = 0; i < repetitions; i++) {
+												console.time("Time");
+												try {
+													result = fn.apply(this, params);
+												} catch(ex) {
+													result = ex;
+												};
+												time += console.timeEnd("Time");
+											};
+											if (_shared.Natives.windowIsNaN(time)) {
+												time = null;
+											};
+										} else {
+											try {
+												result = fn.apply(this, params);
+											} catch(ex) {
+												result = ex;
+											};
+										};
+										if (types.isError(result)) {
+											resultStr += result.toString();
+											resultCls += ' error';
+										} else {
+											sourceOpts = {};
+											if (types.get(options, 'inherited', false)) {
+												sourceOpts.inherited = true;
+											};
+											if (!types.get(options, 'showFunctions', false)) {
+												sourceOpts.includeFunctions = false;
+											};
+											resultStr += 
+													((mode === 'isinstance') ? 
+														'Instance Of ' + (types.isFunction(result) ? result.name : (types.isObjectLike(result) ? result.constructor.name : '????')) + 
+														' (' + types.toSource(result, types.get(options, 'depth', 0), sourceOpts) + ')'
+													: 
+														types.toSource(result, types.get(options, 'depth', 0), sourceOpts)
+													); 
+											result = types.toObject(result);
+										};
+								
+										printOpts = {};
+										if (html) {
+											printOpts.attrs = ('class="' + resultCls + '"');
+										};
+										stream.print(resultStr.replace(/[~]/g, '~~'), printOpts);
+								
+										result = (types.get(options, 'compareFn', null) || test.compare)(expected, result, options);
+									};
 							
-							resultStr = "Result: " + (result ? "OK !" : ">>> FAILED <<<");
-							resultCls = 'result';
-							if (result) {
-								resultCls += ' success';
-							} else {
-								resultCls += ' error';
-								test.FAILED_TESTS++;
-							};
-							printOpts = {};
-							if (html) {
-								printOpts.attrs = ('class="' + resultCls + '"');
-							};
-							stream.print(resultStr.replace(/[~]/g, '~~'), printOpts);
+									if (evalError) {
+										resultStr = "Expression error :" + evalError.toString();
+										resultCls = 'result error';
+										printOpts = {};
+										if (html) {
+											printOpts.attrs = ('class="' + resultCls + '"');
+										};
+										stream.print(resultStr.replace(/[~]/g, '~~'), printOpts);
+								
+										result = false;
+									};
 							
-							resultStr = "Time: " + ((time === null) ? 'Not available' : (types.toString(time) + ' ms' + ((repetitions > 1) ? (' / ' + repetitions + ' = ' + types.toString(time / repetitions) + ' ms') : ''))),
-							resultCls = 'time',
-							printOpts = {};
-							if (html) {
-								printOpts.attrs = ('class="' + resultCls + '"');
-							};
-							stream.print(resultStr.replace(/[~]/g, '~~'), printOpts);
+									resultStr = "Result: " + (result ? "OK !" : ">>> FAILED <<<");
+									resultCls = 'result';
+									if (result) {
+										resultCls += ' success';
+									} else {
+										resultCls += ' error';
+										test.FAILED_TESTS++;
+									};
+									printOpts = {};
+									if (html) {
+										printOpts.attrs = ('class="' + resultCls + '"');
+									};
+									stream.print(resultStr.replace(/[~]/g, '~~'), printOpts);
 							
-							const note = types.get(options, 'note', null);
-							if (note) {
-								printOpts = {};
-								if (html) {
-									printOpts.attrs = 'class="note"';
-								};
-								stream.print("Note: " + note.replace(/[~]/g, '~~'), printOpts);
-							};
+									resultStr = "Time: " + ((time === null) ? 'Not available' : (types.toString(time) + ' ms' + ((repetitions > 1) ? (' / ' + repetitions + ' = ' + types.toString(time / repetitions) + ' ms') : ''))),
+									resultCls = 'time',
+									printOpts = {};
+									if (html) {
+										printOpts.attrs = ('class="' + resultCls + '"');
+									};
+									stream.print(resultStr.replace(/[~]/g, '~~'), printOpts);
 							
-							if (html) {
-								stream.flush({flushElement: true});
-								stream.closeElement();
-							} else {
-								buffered && stream.flush();
+									const note = types.get(options, 'note', null);
+									if (note) {
+										printOpts = {};
+										if (html) {
+											printOpts.attrs = 'class="note"';
+										};
+										stream.print("Note: " + note.replace(/[~]/g, '~~'), printOpts);
+									};
+							
+									if (html) {
+										stream.flush({flushElement: true});
+										stream.closeElement();
+									} else {
+										buffered && stream.flush();
+									};
+								});
+
+							return {
+								chain: function(then) {
+									__Internal__.runPromise = __Internal__.runPromise
+										.then(then);
+								},
 							};
 						},
 					
 						end: function() {
-							root.DD_ASSERT && root.DD_ASSERT(!ended, "Command has been ended.");
-							ended = true;
-							if (html) {
-								stream.flush({flushElement: true});
-								stream.closeElement();
-							} else {
-								buffered && stream.flush();
+							if (ended) {
+								throw new types.NotAvailable("Command has been ended.");
+							};
+
+							__Internal__.runPromise = __Internal__.runPromise
+								.then(function(dummy) {
+									ended = true;
+									if (html) {
+										stream.flush({flushElement: true});
+										stream.closeElement();
+									} else {
+										buffered && stream.flush();
+									};
+								});
+
+							return {
+								chain: function(then) {
+									__Internal__.runPromise = __Internal__.runPromise
+										.then(then);
+								},
 							};
 						},
 					};
 				});
 				
 				test.ADD('runUnit', function runUnit(unit, /*optional*/options) {
-					const stream = test.getOutput(),
-						html = types._implements(stream, io.HtmlOutputStream),
-						buffered = types._implements(stream, ioMixIns.BufferedStreamBase);
-					if (html) {
-						stream.openElement({tag: 'div', attrs: 'class="unit" title="' + unit.DD_FULL_NAME + '"'});
-						stream.print(unit.DD_FULL_NAME, {attrs: 'class="name"'});
-					} else {
-						stream.print(unit.DD_FULL_NAME);
-					};
-					if ((unit !== test) && unit.run) {
-						unit.run(root, options);
-					};
-					test.runChildren(unit, options);
-					if (html) {
-						stream.flush({flushElement: true});
-						stream.closeElement();
-					} else {
-						buffered && stream.flush();
-					};
+					const Promise = types.getPromise();
+					return Promise.try(function() {
+						const stream = test.getOutput(),
+							html = types._implements(stream, io.HtmlOutputStream),
+							buffered = types._implements(stream, ioMixIns.BufferedStreamBase);
+						if (html) {
+							stream.openElement({tag: 'div', attrs: 'class="unit" title="' + unit.DD_FULL_NAME + '"'});
+							stream.print(unit.DD_FULL_NAME, {attrs: 'class="name"'});
+						} else {
+							stream.print(unit.DD_FULL_NAME);
+						};
+						__Internal__.runPromise = Promise.resolve();
+						if ((unit !== test) && unit.run) {
+							unit.run(root, options);
+						};
+						return __Internal__.runPromise
+							.then(function() {
+								if (html) {
+									stream.flush({flushElement: true});
+									stream.closeElement();
+								} else {
+									buffered && stream.flush();
+								};
+								return test.runChildren(unit, options);
+							});
+					});
 				});
 				
 				test.ADD('runChildren', function runChildren(unit) {
-					const units = test.getUnits(unit);
-					for (let i = 0; i < units.length; i++) {
-						test.runUnit(units[i]);
-					};
+					const Promise = types.getPromise();
+					return Promise.try(function() {
+						const units = test.getUnits(unit);
+						const len = units.length;
+						const loop = function _loop(index) {
+							if (index < len) {
+								return test.runUnit(units[index])
+									.then(function(dummy) {
+										return loop(index + 1);
+									});
+							};
+						};
+						return loop(0);
+					});
 				});
 				
-				const __showFailsOnReady__ = function onReady(ev) {
+				__Internal__.showFailsOnReady = function showFailsOnReady(ev) {
 					const key = ev.data.valueOf();
 					if (!key.functionKeys) {
 						const scanCode = key.scanCode;
@@ -581,7 +628,7 @@ module.exports = {
 					};
 				};
 				
-				test.ADD('showFails', function showFails() {
+				__Internal__.showFails = function showFails() {
 					const stream = test.getOutput(),
 						root = stream.element,
 						runElements = Array.prototype.slice.call(root.getElementsByClassName("run bindMe"), 0), // <PRB> Returned objects collection is dynamic
@@ -767,12 +814,12 @@ module.exports = {
 					if (test.FAILED_TESTS) {
 						state.move(true);
 						
-						io.stdin.onReady.attach(state, __showFailsOnReady__);
+						io.stdin.onReady.attach(state, __Internal__.showFailsOnReady);
 						io.stdin.listen();
 					};
-				});
+				};
 				
-				test.ADD('showUnitName', function showUnitName() {
+				__Internal__.showUnitName = function showUnitName() {
 					const name = (test.CURRENT_UNIT ? test.CURRENT_UNIT.DD_FULL_NAME : ''),
 						stream = test.getOutput(),
 						root = stream.element,
@@ -780,9 +827,9 @@ module.exports = {
 					for (let i = 0; i < elements.length; i++) {
 						elements[i].textContent = name;
 					};
-				});
+				};
 
-				test.ADD('moveToUnit', function moveToUnit(unit) {
+				__Internal__.moveToUnit = function moveToUnit(unit) {
 					let url = tools.getCurrentLocation();
 					if (unit) {
 						url = url.set({
@@ -795,9 +842,9 @@ module.exports = {
 						});
 					};
 					tools.setCurrentLocation(url);
-				});
+				};
 
-				const __showNavigatorOnReady__ = function onReady(ev) {
+				__Internal__.showNavigatorOnReady = function showNavigatorOnReady(ev) {
 					const key = ev.data.valueOf();
 					if (!key.functionKeys) {
 						const scanCode = key.scanCode;
@@ -811,7 +858,7 @@ module.exports = {
 					};
 				};
 				
-				test.ADD('showNavigator', function showNavigator() {
+				__Internal__.showNavigator = function showNavigator() {
 					const stream = test.getOutput();
 					stream.openElement({tag: 'div', attrs: 'class="navigator"'});
 					stream.write('<button class="index bindMe">Index</button><button class="prevUnit bindMe">&lt;&lt;&lt;</button><span class="unitName"></span><button class="nextUnit bindMe">&gt;&gt;&gt;</button>');
@@ -828,7 +875,7 @@ module.exports = {
 					types.extend(state, {
 							index: types.bind(state, function(ev) { // JS click
 								try {
-									test.moveToUnit(null);
+									__Internal__.moveToUnit(null);
 									ev.preventDefault();
 									return false;
 								} catch(ex) {
@@ -848,7 +895,7 @@ module.exports = {
 											pos = units.length;
 										};
 										unit = units[pos - 1];
-										test.moveToUnit(unit);
+										__Internal__.moveToUnit(unit);
 										return;
 									};
 									ev.preventDefault();
@@ -870,7 +917,7 @@ module.exports = {
 											pos = -1;
 										};
 										unit = units[pos + 1];
-										test.moveToUnit(unit);
+										__Internal__.moveToUnit(unit);
 										return;
 									};
 									ev.preventDefault();
@@ -892,11 +939,11 @@ module.exports = {
 					nextButton.onclick = state.next;
 					nextButton.className = nextButton.className.replace('bindMe', '');
 
-					io.stdin.onReady.attach(state, __showNavigatorOnReady__);
+					io.stdin.onReady.attach(state, __Internal__.showNavigatorOnReady);
 					io.stdin.listen();
-				});
+				};
 				
-				const __buildIndexItems__ = function(namespace) {
+				__Internal__.buildIndexItems = function(namespace) {
 					let html = '<ul>';
 
 					const units = test.getUnits(namespace),
@@ -905,16 +952,16 @@ module.exports = {
 						// Sorry for using the same variable
 						const unit = units[i];
 						html += '<li><a href="#" unitname="' + unit.DD_FULL_NAME + '" class="indexMenuItem bindMe">' + tools.escapeHtml(unit.DD_FULL_NAME) + '</a></li>';
-						html += __buildIndexItems__(unit);
+						html += __Internal__.buildIndexItems(unit);
 					};
 					
 					return html + '</ul>';
 				};
 				
-				test.ADD('showIndex', function showIndex(unit) {
+				__Internal__.showIndex = function showIndex(unit) {
 					const stream = test.getOutput();
 					stream.openElement({tag: 'div', attrs: 'class="indexMenu"'});
-					stream.write(__buildIndexItems__(test));
+					stream.write(__Internal__.buildIndexItems(test));
 					stream.flush({flushElement: true});
 					const root = stream.element;
 					stream.closeElement();
@@ -925,7 +972,7 @@ module.exports = {
 						try {
 							const name = ev.currentTarget.getAttribute('unitname'),
 								unit = test.getUnit(name);
-							test.moveToUnit(unit);
+							__Internal__.moveToUnit(unit);
 						} catch(ex) {
 							if (!ex.bubble) {
 								io.stderr.write(ex);
@@ -941,115 +988,128 @@ module.exports = {
 						element.className = '';
 						element.onclick = click;
 					};
-				});
+				};
 				
 				test.ADD('run', function run(/*optional*/options) {
-					let success = true;
+					const Promise = types.getPromise();
+					return Promise.try(function() {
+						let success = true;
 
-					test.FAILED_TESTS = 0;
+						test.FAILED_TESTS = 0;
 					
-					const stream = test.getOutput(),
-						html = types._implements(stream, io.HtmlOutputStream),
-						dom = (clientIO ? types._instanceof(stream, clientIO.DomOutputStream) : false),
-						buffered = types._implements(stream, ioMixIns.BufferedStreamBase);
+						const stream = test.getOutput(),
+							html = types._implements(stream, io.HtmlOutputStream),
+							dom = (clientIO ? types._instanceof(stream, clientIO.DomOutputStream) : false),
+							buffered = types._implements(stream, ioMixIns.BufferedStreamBase);
 					
-					const name = types.get(options, 'name'),
-						units = test.getUnits(test); // also initialize some attributes
+						const name = types.get(options, 'name'),
+							units = test.getUnits(test); // also initialize some attributes
 
-					let unit,
-						isIndex = false,
-						ok = false;
+						let unit,
+							isIndex = false;
 						
-					if (html) {
-						stream.openElement({tag: 'div', attrs: 'class="test"'});
-					};
-
-					if (name) {
-						unit = test.getUnit(name);
-						if (!unit) {
-							if (!root.serverSide) {
-								test.moveToUnit(null);
-							};
-							return false;
-						};
-					} else {
-						if (dom) {
-							test.showIndex();
-						};
-						isIndex = true;
-					};
-					
-					if (!isIndex) {
-						if (dom) {
-							test.showNavigator();
+						if (html) {
+							stream.openElement({tag: 'div', attrs: 'class="test"'});
 						};
 
-						if (unit) {
-							test.CURRENT_UNIT = unit;
-							
-							try {
-								test.runUnit(unit);
-								ok = true;
-							} catch(ex) {
-								if (!ex.bubble) {
-									debugger;
-									io.stderr.write(ex);
-									//io.stderr.flush();
-								};
-							};
-						};
-						
-						if (dom) {
-							test.showNavigator();
-						};
-					};
-						
-					if (html) {
-						stream.closeElement();
-					};
-					
-					buffered && stream.flush();
-					stream.reset();
-					
-					//io.stderr.flush();
-					io.stderr.reset();
-					
-					if (dom) {
-						test.showUnitName();
-					};
-					
-					if (!isIndex) {
-						if (dom) {
+						if (name) {
+							unit = test.getUnit(name);
 							if (!unit) {
-								global.alert("There is nothing to test.");
-							} else if (!ok) {
-								global.alert("An error occurred while testing.");
-								success = false;
-							} else {
-								test.showFails(test);
-								if (!test.FAILED_TESTS) {
-									global.alert("Every tests passed.    Total: " + test.TESTS_COUNT);
+								if (!root.serverSide) {
+									__Internal__.moveToUnit(null);
 								};
-								success = false;
+								return false;
 							};
 						} else {
-							if (!unit) {
-								stream.print("End: There is nothing to test.");
-							} else if (!ok) {
-								io.stderr.print("End: An error occurred while testing.");
-								success = false;
-							} else if (test.FAILED_TESTS) {
-								io.stderr.print("End: " + test.FAILED_TESTS + " test(s) failed.");
-								success = false;
-							} else {
-								stream.print("End: Every tests passed.    Total: " + test.TESTS_COUNT);
+							if (dom) {
+								__Internal__.showIndex();
 							};
+							isIndex = true;
 						};
-						buffered && stream.flush();
-						//io.stderr.flush();
-					};
+
+						let promise = Promise.resolve();
 					
-					return success;
+						if (!isIndex) {
+							if (dom) {
+								__Internal__.showNavigator();
+							};
+
+							if (unit) {
+								test.CURRENT_UNIT = unit;
+							
+								promise = test.runUnit(unit);
+							};
+						
+							promise = promise
+								.then(function(dummy) {
+									if (dom) {
+										__Internal__.showNavigator();
+									};
+								});
+						};
+						
+						return promise
+							.nodeify(function(err, dummy) {
+								__Internal__.runPromise = null; // free memory
+
+								if (html) {
+									stream.closeElement();
+								};
+					
+								buffered && stream.flush();
+								stream.reset();
+					
+								//io.stderr.flush();
+								io.stderr.reset();
+					
+								if (dom) {
+									__Internal__.showUnitName();
+								};
+					
+								if (!isIndex) {
+									if (dom) {
+										if (!unit) {
+											global.alert("There is nothing to test.");
+										} else if (err) {
+											if (!err.bubble) {
+												debugger;
+												io.stderr.write(err);
+												//io.stderr.flush();
+												global.alert("An error occurred while testing.");
+												success = false;
+											};
+										} else {
+											__Internal__.showFails();
+											if (!test.FAILED_TESTS) {
+												global.alert("Every tests passed.    Total: " + test.TESTS_COUNT);
+											};
+											success = false;
+										};
+									} else {
+										if (!unit) {
+											stream.print("End: There is nothing to test.");
+										} else if (err) {
+											if (!err.bubble) {
+												debugger;
+												io.stderr.write(err);
+												//io.stderr.flush();
+												io.stderr.print("End: An error occurred while testing.");
+												success = false;
+											};
+										} else if (test.FAILED_TESTS) {
+											io.stderr.print("End: " + test.FAILED_TESTS + " test(s) failed.");
+											success = false;
+										} else {
+											stream.print("End: Every tests passed.    Total: " + test.TESTS_COUNT);
+										};
+									};
+									buffered && stream.flush();
+									//io.stderr.flush();
+								};
+					
+								return success;
+							});
+					});
 				});
 				
 			},

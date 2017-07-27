@@ -61,12 +61,14 @@ module.exports = function(root, options, _shared) {
 				], types.depthExtend(15, options, {startup: {secret: _shared.SECRET}}))
 				.then(function(dummy) {
 					const test = doodad.Test;
-					const success = test.run({name: (unitName || test.DD_FULL_NAME)});
-					if (success) {
-						tools.abortScript(0);
-					} else {
-						tools.abortScript(1);
-					};
+					return test.run({name: (unitName || test.DD_FULL_NAME)})
+						.then(function(success) {
+							if (success) {
+								tools.abortScript(0);
+							} else {
+								tools.abortScript(1);
+							};
+						});
 				});
 
 		} else {

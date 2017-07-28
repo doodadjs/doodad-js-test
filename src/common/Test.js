@@ -284,28 +284,40 @@ module.exports = {
 						buffered = types._implements(stream, ioMixIns.BufferedStreamBase);
 					
 					let ended = false;
+					let commandElementOpened = false;
 					
+					__Internal__.runPromise = __Internal__.runPromise
+						.then(function(dummy) {
+							if (html) {
+								stream.openElement({tag: 'div', attrs: 'class="command"'});
+								stream.print(fnName, {attrs: 'class="name"'});
+							} else {
+								stream.print("Name: " + fnName);
+							};
+							commandElementOpened = true;
+						});
+
 					return {
+						chain: function(then) {
+							if (ended) {
+								throw new types.NotAvailable("Command has been ended.");
+							};
+
+							__Internal__.runPromise = __Internal__.runPromise
+								.then(then);
+
+							return this;
+						},
 						run: function (expected, /*optional*/options 	/**/ /*paramarray*/) {
 							if (ended) {
 								throw new types.NotAvailable("Command has been ended.");
 							};
 
 							let params = Array.prototype.slice.call(arguments, 2);
+							let runElementOpened = false;
 
 							__Internal__.runPromise = __Internal__.runPromise
 								.then(function(dummy) {
-									if (!options) {
-										options = {};
-									};
-
-									if (html) {
-										stream.openElement({tag: 'div', attrs: 'class="command"'});
-										stream.print(fnName, {attrs: 'class="name"'});
-									} else {
-										stream.print("Name: " + fnName);
-									};
-					
 									let sourceOpts;
 
 									sourceOpts = {};
@@ -351,6 +363,7 @@ module.exports = {
 											stream.openElement({tag: 'div', attrs: 'class="run"'});
 										};
 									};
+									runElementOpened = true;
 							
 									if (!evalError) {
 										expected = types.toObject(expected);
@@ -519,21 +532,22 @@ module.exports = {
 										};
 										stream.print("Note: " + note.replace(/[~]/g, '~~'), printOpts);
 									};
-							
-									if (html) {
-										stream.flush({flushElement: true});
-										stream.closeElement();
-									} else {
-										buffered && stream.flush();
+								})
+								.nodeify(function(err, dummy) {
+									if (runElementOpened) {
+										if (html) {
+											stream.flush({flushElement: true});
+											stream.closeElement();
+										} else if (buffered) {
+											stream.flush();
+										};
+									};
+									if (err) {
+										throw err;
 									};
 								});
 
-							return {
-								chain: function(then) {
-									__Internal__.runPromise = __Internal__.runPromise
-										.then(then);
-								},
-							};
+							return this;
 						},
 					
 						end: function() {
@@ -542,27 +556,44 @@ module.exports = {
 							};
 
 							__Internal__.runPromise = __Internal__.runPromise
-								.then(function(dummy) {
+								.nodeify(function(err, dummy) {
 									ended = true;
-									if (html) {
-										stream.flush({flushElement: true});
-										stream.closeElement();
-									} else {
-										buffered && stream.flush();
+									if (commandElementOpened) {
+										if (html) {
+											stream.flush({flushElement: true});
+											stream.closeElement();
+										} else {
+											buffered && stream.flush();
+										};
+									};
+									if (err) {
+										throw err;
 									};
 								});
 
-							return {
-								chain: function(then) {
-									__Internal__.runPromise = __Internal__.runPromise
-										.then(then);
-								},
-							};
+							return this;
 						},
 					};
 				});
 				
-				test.ADD('runUnit', function runUnit(unit, /*optional*/options) {
+				__Internal__.runChildren = function runChildren(unit) {
+					const Promise = types.getPromise();
+					return Promise.try(function() {
+						const units = test.getUnits(unit);
+						const len = units.length;
+						const loop = function _loop(index) {
+							if (index < len) {
+								return __Internal__.runUnit(units[index])
+									.then(function(dummy) {
+										return loop(index + 1);
+									});
+							};
+						};
+						return loop(0);
+					});
+				};
+				
+				__Internal__.runUnit = function runUnit(unit, /*optional*/options) {
 					const Promise = types.getPromise();
 					return Promise.try(function() {
 						const stream = test.getOutput(),
@@ -579,34 +610,21 @@ module.exports = {
 							unit.run(root, options);
 						};
 						return __Internal__.runPromise
-							.then(function() {
+							.nodeify(function(err, dummy) {
 								if (html) {
 									stream.flush({flushElement: true});
 									stream.closeElement();
-								} else {
-									buffered && stream.flush();
+								} else if (buffered) {
+									stream.flush();
 								};
-								return test.runChildren(unit, options);
+								if (err) {
+									throw err;
+								} else {
+									return __Internal__.runChildren(unit, options);
+								};
 							});
 					});
-				});
-				
-				test.ADD('runChildren', function runChildren(unit) {
-					const Promise = types.getPromise();
-					return Promise.try(function() {
-						const units = test.getUnits(unit);
-						const len = units.length;
-						const loop = function _loop(index) {
-							if (index < len) {
-								return test.runUnit(units[index])
-									.then(function(dummy) {
-										return loop(index + 1);
-									});
-							};
-						};
-						return loop(0);
-					});
-				});
+				};
 				
 				__Internal__.showFailsOnReady = function showFailsOnReady(ev) {
 					const key = ev.data.valueOf();
@@ -1037,15 +1055,18 @@ module.exports = {
 							if (unit) {
 								test.CURRENT_UNIT = unit;
 							
-								promise = test.runUnit(unit);
+								promise = promise
+									.then(function(dummy) {
+										return __Internal__.runUnit(unit);
+									});
 							};
 						
-							promise = promise
-								.then(function(dummy) {
-									if (dom) {
+							if (dom) {
+								promise = promise
+									.then(function(dummy) {
 										__Internal__.showNavigator();
-									};
-								});
+									});
+							};
 						};
 						
 						return promise

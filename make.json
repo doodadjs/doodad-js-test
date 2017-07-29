@@ -212,40 +212,40 @@
         },
         {
           "class": "Doodad.Templates.Html.Make.Compile",
-          "source": "%SOURCEDIR%/client/units/res/index.ddt",
-          "destination": "%INSTALLDIR%/%PACKAGENAME%/units/index.ddtx",
+          "source": "%SOURCEDIR%/server/units/Test_Pages_Units_Index.ddt",
+          "destination": "%BUILDDIR%/server/units/Test_Pages_Units_Index.ddtx",
           "variables": {
             "serverSide": true
           }
         },
         {
           "class": "Doodad.Templates.Html.Make.Compile",
-          "source": "%SOURCEDIR%/client/widgets/res/index.ddt",
-          "destination": "%INSTALLDIR%/%PACKAGENAME%/widgets/index.ddtx",
+          "source": "%SOURCEDIR%/server/widgets/Test_Pages_Widgets_Index.ddt",
+          "destination": "%BUILDDIR%/server/widgets/Test_Pages_Widgets_Index.ddtx",
           "variables": {
             "serverSide": true
           }
         },
         {
           "class": "Doodad.Templates.Html.Make.Compile",
-          "source": "%SOURCEDIR%/client/widgets/res/crossRealm.ddt",
-          "destination": "%INSTALLDIR%/%PACKAGENAME%/widgets/crossRealm.ddtx",
+          "source": "%SOURCEDIR%/server/widgets/Test_Pages_Widgets_CrossRealm.ddt",
+          "destination": "%BUILDDIR%/server/widgets/Test_Pages_Widgets_CrossRealm.ddtx",
           "variables": {
             "serverSide": true
           }
         },
         {
           "class": "Doodad.Templates.Html.Make.Compile",
-          "source": "%SOURCEDIR%/client/browserify/res/index.ddt",
-          "destination": "%INSTALLDIR%/%PACKAGENAME%/browserify/index.ddtx",
+          "source": "%SOURCEDIR%/server/browserify/Test_Pages_Browserify_Index.ddt",
+          "destination": "%BUILDDIR%/server/browserify/Test_Pages_Browserify_Index.ddtx",
           "variables": {
             "serverSide": true
           }
         },
         {
           "class": "Doodad.Templates.Html.Make.Compile",
-          "source": "%SOURCEDIR%/client/webpack/res/index.ddt",
-          "destination": "%INSTALLDIR%/%PACKAGENAME%/webpack/index.ddtx",
+          "source": "%SOURCEDIR%/server/webpack/Test_Pages_Webpack_Index.ddt",
+          "destination": "%BUILDDIR%/server/webpack/Test_Pages_Webpack_Index.ddtx",
           "variables": {
             "serverSide": true
           }
@@ -269,6 +269,10 @@
         {
           "class": "Make.Task",
           "name": "webpack"
+        },
+        {
+          "class": "Make.Task",
+          "name": "ddtx"
         }
       ]
     },
@@ -291,8 +295,7 @@
         },
 
         {
-          "class": "Make.Folder.Copy",
-          "source": "%SOURCEDIR%/client/browserify/res/",
+          "class": "Make.Folder.Create",
           "destination": "%INSTALLDIR%/%PACKAGENAME%/browserify/"
         },
         {
@@ -308,8 +311,7 @@
         },
 
         {
-          "class": "Make.Folder.Copy",
-          "source": "%SOURCEDIR%/client/webpack/res/",
+          "class": "Make.Folder.Create",
           "destination": "%INSTALLDIR%/%PACKAGENAME%/webpack/"
         },
         {

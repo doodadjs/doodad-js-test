@@ -523,30 +523,42 @@ module.exports = function(root, options, _shared) {
 											},
 										],
 									},
-									// TODO: Make it automatic
-									'/doodad-js-test/units/': (root.getOptions().debug ? {
+									'/doodad-js-test/units/index.ddtx': {
 										handlers: [
 											{
 												handler: nodejs.Server.Http.StaticPage,
-												path: files.Path.parse(require.resolve('doodad-js-test')).set({file: null}).combine('./src/client/units/res/', {os: 'linux'}),
+												// TODO: Auto-build
+												path: files.Path.parse(require.resolve('doodad-js-test')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/units/Test_Pages_Units_Index.ddt' : './build/server/units/Test_Pages_Units_Index.ddtx'), {os: 'linux'}),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,
 											},
 										],
-									} : null),
-									// TODO: Make it automatic
-									'/doodad-js-test/widgets/': (root.getOptions().debug ? {
+									},
+									'/doodad-js-test/widgets/index.ddtx': {
 										handlers: [
 											{
 												handler: nodejs.Server.Http.StaticPage,
-												path: files.Path.parse(require.resolve('doodad-js-test')).set({file: null}).combine('./src/client/widgets/res/', {os: 'linux'}),
+												// TODO: Auto-build
+												path: files.Path.parse(require.resolve('doodad-js-test')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/widgets/Test_Pages_Widgets_Index.ddt' : './build/server/widgets/Test_Pages_Widgets_Index.ddtx'), {os: 'linux'}),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,
 											},
 										],
-									} : null),
+									},
+									'/doodad-js-test/widgets/crossRealm.ddtx': {
+										handlers: [
+											{
+												handler: nodejs.Server.Http.StaticPage,
+												// TODO: Auto-build
+												path: files.Path.parse(require.resolve('doodad-js-test')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/widgets/Test_Pages_Widgets_CrossRealm.ddt' : './build/server/widgets/Test_Pages_Widgets_CrossRealm.ddtx'), {os: 'linux'}),
+												showFolders: true,
+												mimeTypes: staticMimeTypes,
+												forceCaseSensitive: forceCaseSensitive,
+											},
+										],
+									},
 /* TODO: Live build of source files
 									// TODO: Make it automatic
 									'/doodad-js-test/widgets/MyWidget.js': (root.getOptions().debug ? {
@@ -579,30 +591,30 @@ module.exports = function(root, options, _shared) {
 										],
 									} : null),
 */
-									// TODO: Make it automatic
-									'/doodad-js-test/browserify/index.ddtx': (root.getOptions().debug ? {
+									'/doodad-js-test/browserify/index.ddtx': {
 										handlers: [
 											{
 												handler: nodejs.Server.Http.StaticPage,
-												path: files.Path.parse(require.resolve('doodad-js-test')).set({file: null}).combine('./src/client/browserify/res/index.ddt', {os: 'linux'}),
+												// TODO: Auto-build
+												path: files.Path.parse(require.resolve('doodad-js-test')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/browserify/Test_Pages_Browserify_Index.ddt' : './build/server/browserify/Test_Pages_Browserify_Index.ddtx'), {os: 'linux'}),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,
 											},
 										],
-									} : null),
-									// TODO: Make it automatic
-									'/doodad-js-test/webpack/index.ddtx': (root.getOptions().debug ? {
+									},
+									'/doodad-js-test/webpack/index.ddtx': {
 										handlers: [
 											{
 												handler: nodejs.Server.Http.StaticPage,
-												path: files.Path.parse(require.resolve('doodad-js-test')).set({file: null}).combine('./src/client/webpack/res/index.ddt', {os: 'linux'}),
+												// TODO: Auto-build
+												path: files.Path.parse(require.resolve('doodad-js-test')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/webpack/Test_Pages_Webpack_Index.ddt' : './build/server/webpack/Test_Pages_Webpack_Index.ddtx'), {os: 'linux'}),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,
 											},
 										],
-									} : null),
+									},
 									'/doodad-js-widgets': {
 										handlers: [
 											{
@@ -806,37 +818,6 @@ module.exports = function(root, options, _shared) {
 			},
 			{
 				module: 'doodad-js-http_jsonrpc',
-			},
-
-			// TODO: Automatic loading of template class files
-			{
-				module: 'doodad-js-test',
-				// TODO: Autmatic selection between "src" or "build"
-				path: (root.getOptions().fromSource ? 'src/server/units/Test_Pages_Units_Index.js' : 'build/server/units/Test_Pages_Units_Index.min.js'),
-			},
-			// TODO: Automatic loading of template class files
-			{
-				module: 'doodad-js-test',
-				// TODO: Autmatic selection between "src" or "build"
-				path: (root.getOptions().fromSource ? 'src/server/widgets/Test_Pages_Widgets_Index.js' : 'build/server/widgets/Test_Pages_Widgets_Index.min.js'),
-			},
-			// TODO: Automatic loading of template class files
-			{
-				module: 'doodad-js-test',
-				// TODO: Autmatic selection between "src" or "build"
-				path: (root.getOptions().fromSource ? 'src/server/widgets/Test_Pages_Widgets_CrossRealm.js' : 'build/server/widgets/Test_Pages_Widgets_CrossRealm.min.js'),
-			},
-			// TODO: Automatic loading of template class files
-			{
-				module: 'doodad-js-test',
-				// TODO: Autmatic selection between "src" or "build"
-				path: (root.getOptions().fromSource ? 'src/server/browserify/Test_Pages_Browserify_Index.js' : 'build/server/browserify/Test_Pages_Browserify_Index.min.js'),
-			},
-			// TODO: Automatic loading of template class files
-			{
-				module: 'doodad-js-test',
-				// TODO: Autmatic selection between "src" or "build"
-				path: (root.getOptions().fromSource ? 'src/server/webpack/Test_Pages_Webpack_Index.js' : 'build/server/webpack/Test_Pages_Webpack_Index.min.js'),
 			},
 		], types.depthExtend(15, options, {startup: {secret: _shared.SECRET}}))
 			.then(startup);

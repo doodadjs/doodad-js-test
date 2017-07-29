@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE ddt SYSTEM "../../../../node_modules/doodad-js-templates/src/common/res/schemas/ddt/html5_ddt.dtd">
+<!DOCTYPE ddt SYSTEM "../../../node_modules/doodad-js-templates/src/common/res/schemas/ddt/html5_ddt.dtd">
 <t:ddt xmlns="http://www.doodad-js.local/schemas/html5"
        xmlns:t="http://www.doodad-js.local/schemas/ddt"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.doodad-js.local/schemas/ddt ../../../../node_modules/doodad-js-templates/src/common/res/schemas/ddt/ddt.xsd"
-       type="Test.Pages.Browserify.Index">
+       xsi:schemaLocation="http://www.doodad-js.local/schemas/ddt ../../../node_modules/doodad-js-templates/src/common/res/schemas/ddt/ddt.xsd"
+       type="Test.Pages.Webpack.Index">
   <!--
         doodad-js  -  Object-oriented programming framework
-        File: index.ddt - Browserify tests page template
+        File: index.ddt - Webpack tests page template
         Project home: https://github.com/doodadjs/
         Trunk: svn checkout svn://svn.code.sf.net/p/doodad-js/code/trunk doodad-js-code
         Author: Claude Petit, Quebec city

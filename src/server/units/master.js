@@ -38,7 +38,7 @@ module.exports = function(root, options, _shared) {
 		Promise = types.getPromise();
 
 
-	function startup() {
+	const startup = function _startup() {
 		const server = doodad.Server;
 
 		const args = tools.getCurrentLocation().args,
@@ -72,7 +72,7 @@ module.exports = function(root, options, _shared) {
 				});
 
 		} else {
-			function startWorkers() {
+			const startWorkers = function _startWorkers() {
 				return Promise.try(function tryStartWorkers() {
 					if (cpus > 1) {
 						nodeCluster.setupMaster({
@@ -101,13 +101,12 @@ module.exports = function(root, options, _shared) {
 
 			const cpus = Math.min(nodeOs.cpus().length, maxCpus);
 
-			const nodejs = doodad.NodeJs,
-				cluster = nodejs.Cluster;
+			const nodejs = doodad.NodeJs;
 
 			if (process.stdout.isTTY && process.stdin.setRawMode) {
 				process.stdin.setRawMode(true);
 			
-				const messenger = new cluster.ClusterMessenger(server.Ipc.ServiceManager);
+				const messenger = new nodejs.Cluster.ClusterMessenger(server.Ipc.ServiceManager);
 				messenger.connect();
 			
 				const TIMEOUT = 1000 * 60 * 2;
@@ -347,15 +346,6 @@ module.exports = function(root, options, _shared) {
 				.then(() => {ready = true});
 		};
 	};
-
-
-	//const DD_MODULES = {};
-	//require('doodad-js/test/tests.js').add(DD_MODULES);
-	//require('doodad-js-safeeval/test/tests.js').add(DD_MODULES);
-	//require('doodad-js-terminal').add(DD_MODULES);
-	//require('doodad-js-test').add(DD_MODULES);
-
-	//return namespaces.load(DD_MODULES, {startup: {secret: _shared.SECRET}}, startup);
 
 	return modules.load([
 			{

@@ -26,10 +26,10 @@
 
 const SECRET = Symbol();
 
-const fs = require('fs'),
+const nodeFs = require('fs'),
 	app_module_path = require('app-module-path');
 
-function addSearchPaths(root) {
+const addSearchPaths = function _addSearchPaths(root) {
 	const doodad = root.Doodad,
 		tools = doodad.Tools,
 		files = tools.Files;
@@ -61,7 +61,7 @@ function addSearchPaths(root) {
 				if (!folder.isFile) {
 					name = folder.path.combine('node_modules').toString();
 					try {
-						fs.statSync(name);
+						nodeFs.statSync(name);
 						app_module_path.addPath(name);
 					} catch(ex) {
 						if (ex.code !== 'ENOENT') {
@@ -73,7 +73,7 @@ function addSearchPaths(root) {
 			
 			// Include application (doodad-js-test) folder as a package.
 			name = path.moveUp(2).toString();
-			fs.statSync(name);
+			nodeFs.statSync(name);
 			app_module_path.addPath(name);
 			
 			// We should have all the search paths we need.
@@ -82,18 +82,12 @@ function addSearchPaths(root) {
 	};
 };
 			
-function startup(root, _shared) {
+const startup = function _startup(root, _shared) {
 	const doodad = root.Doodad,
-		//namespaces = doodad.Namespaces,
 		modules = doodad.Modules;
 					
 	addSearchPaths(root);
 	
-	//const DD_MODULES = {};
-	//require("../../common/widgets/MyWidget_loader.js").add(DD_MODULES);
-
-	//return namespaces.load(DD_MODULES, {startup: {secret: _shared.SECRET}});
-
 	return modules.load([
 			{
 				module: 'doodad-js-test',
@@ -106,13 +100,5 @@ function startup(root, _shared) {
 const options = {
 	startup: {secret: SECRET},
 };
-
-//const DD_MODULES = {};
-//require('doodad-js-unicode').add(DD_MODULES);
-//require('doodad-js-locale').add(DD_MODULES);
-//require('doodad-js-safeeval').add(DD_MODULES);
-//require('doodad-js-loader').add(DD_MODULES);
-
-//require('doodad-js').createRoot(DD_MODULES, options, startup);
 
 require('doodad-js').createRoot(null, options, startup);

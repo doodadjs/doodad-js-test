@@ -26,11 +26,11 @@
 
 const SECRET = Symbol();
 
-const cluster = require('cluster'),
-	fs = require('fs'),
+const nodeCluster = require('cluster'),
+	nodeFs = require('fs'),
 	app_module_path = require('app-module-path');
 
-function addSearchPaths(root) {
+const addSearchPaths = function _addSearchPaths(root) {
 	const doodad = root.Doodad,
 		tools = doodad.Tools,
 		files = tools.Files;
@@ -63,7 +63,7 @@ function addSearchPaths(root) {
 				if (!folder.isFile) {
 					name = folder.path.combine('node_modules').toString();
 					try {
-						fs.statSync(name);
+						nodeFs.statSync(name);
 						app_module_path.addPath(name);
 					} catch(ex) {
 						if (ex.code !== 'ENOENT') {
@@ -75,7 +75,7 @@ function addSearchPaths(root) {
 			
 			// Include application (doodad-js-test) folder as a package.
 			name = path.moveUp(2).toString();
-			fs.statSync(name);
+			nodeFs.statSync(name);
 			app_module_path.addPath(name);
 			
 			// We should have all the search paths we need.
@@ -84,7 +84,7 @@ function addSearchPaths(root) {
 	};
 };
 	
-function startup(root, _shared) {
+const startup = function _startup(root, _shared) {
 	const doodad = root.Doodad,
 		tools = doodad.Tools,
 		files = tools.Files;
@@ -102,7 +102,7 @@ function startup(root, _shared) {
 		listeningSSLPort: 8181,
 	};
 	
-	if (cluster.isMaster) {
+	if (nodeCluster.isMaster) {
 		return require('./master.js')(root, options, _shared);
 	};
 
@@ -113,17 +113,6 @@ const options = {
 	startup: {secret: SECRET},
 };
 
-//const DD_MODULES = {};
-//require('doodad-js-unicode').add(DD_MODULES);
-//require('doodad-js-locale').add(DD_MODULES);
-//require('doodad-js-dates').add(DD_MODULES);
-//require('doodad-js-io').add(DD_MODULES);
-//require('doodad-js-server').add(DD_MODULES);
-//require('doodad-js-ipc').add(DD_MODULES);
-//require('doodad-js-cluster').add(DD_MODULES);
-//require('doodad-js-safeeval').add(DD_MODULES);
-
-//require('doodad-js').createRoot(DD_MODULES, options, startup);
 require('doodad-js').createRoot(null, options, startup);
 
 /* Cross-Origin (simple request) : Should return an index file with appropriated headers

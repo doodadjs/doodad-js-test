@@ -28,12 +28,10 @@ module.exports = function(root, options, _shared) {
 	const doodad = root.Doodad,
 		types = doodad.Types,
 		tools = doodad.Tools,
-		//namespaces = doodad.Namespaces,
 		modules = doodad.Modules,
 
-		util = require('util'),
-		cluster = require('cluster'),
-		fs = require('fs');
+		nodeCluster = require('cluster'),
+		nodeFs = require('fs');
 
 	function startup() {
 		const files = tools.Files,
@@ -41,25 +39,22 @@ module.exports = function(root, options, _shared) {
 			ioInterfaces = io.Interfaces,
 			ioMixIns = io.MixIns,
 			server = doodad.Server,
-			nodejs = doodad.NodeJs,
-			nodejsCluster = nodejs.Cluster;
+			nodejs = doodad.NodeJs;
 
 		let messenger = null;
 		if (!options.noCluster) {
-			messenger = new nodejsCluster.ClusterMessenger(server.Ipc.ServiceManager);
+			messenger = new nodejs.Cluster.ClusterMessenger(server.Ipc.ServiceManager);
 			messenger.connect();
 
 			const con = messenger.getInterface(ioInterfaces.IConsole);
 
 			// Captures "console.XXX()"
 			nodejs.Console.capture(function(fn, args) {
-				// TODO: Do like "Terminal.consoleWrite"
-				con[fn].call(con, '<W:' + cluster.worker.id + '>  ' + args[0]);
+				con[fn].call(con, '<W:' + nodeCluster.worker.id + '>  ' + args[0]);
 			});
 
 			// Captures "tools.log()"
 			_shared.consoleHook = function consoleHook(level, message) {
-				// TODO: Do like "Terminal.consoleWrite"
 				var fn;
 				if (level === tools.LogLevels.Info) {
 					fn = 'info';
@@ -70,7 +65,7 @@ module.exports = function(root, options, _shared) {
 				} else {
 					fn = 'log';
 				};
-				con[fn].call(con, '<W:' + cluster.worker.id + '>  ' + message);
+				con[fn].call(con, '<W:' + nodeCluster.worker.id + '>  ' + message);
 			};
 
 			root.REGISTER(doodad.Object.$extend(
@@ -117,7 +112,7 @@ module.exports = function(root, options, _shared) {
 			saxPath = files.Path.parse(require.resolve('sax/package.json'))
 				.set({file: ''})
 				.combine('./lib/', {os: 'linux'});
-			fs.statSync(saxPath.toString());
+			nodeFs.statSync(saxPath.toString());
 		} catch(ex) {
 			console.warn("The library 'sax' is not available. Some features, like page templates, will be disabled.");
 		};
@@ -127,7 +122,7 @@ module.exports = function(root, options, _shared) {
 			promisePath = files.Path.parse(require.resolve('es6-promise/package.json'))
 				.set({file: ''})
 				.combine('./dist/', {os: 'linux'});
-			fs.statSync(promisePath.toString());
+			nodeFs.statSync(promisePath.toString());
 		} catch(ex) {
 			console.warn("The library 'es6-promise' is not available. Serving the library to the client browser will be disabled.");
 		};
@@ -137,7 +132,7 @@ module.exports = function(root, options, _shared) {
 			momentPath = files.Path.parse(require.resolve('moment/package.json'))
 				.set({file: ''})
 				.combine('./min/', {os: 'linux'});
-			fs.statSync(momentPath.toString());
+			nodeFs.statSync(momentPath.toString());
 		} catch(ex) {
 			console.warn("The library 'moment' is not available. Serving the library to the client browser will be disabled.");
 		};
@@ -147,7 +142,7 @@ module.exports = function(root, options, _shared) {
 			momentTzPath = files.Path.parse(require.resolve('moment-timezone/package.json'))
 				.set({file: ''})
 				.combine('./builds/', {os: 'linux'});
-			fs.statSync(momentTzPath.toString());
+			nodeFs.statSync(momentTzPath.toString());
 		} catch(ex) {
 			console.warn("The library 'moment-timezone' is not available. Serving the library to the client browser will be disabled.");
 		};
@@ -157,7 +152,7 @@ module.exports = function(root, options, _shared) {
 			momentTzDataPath = files.Path.parse(require.resolve('moment-timezone/package.json'))
 				.set({file: ''})
 				.combine('./data/packed/', {os: 'linux'});
-			fs.statSync(momentTzPath.toString());
+			nodeFs.statSync(momentTzPath.toString());
 		} catch(ex) {
 			console.warn("The data of the library 'moment-timezone' are not available. Serving the library's data to the client browser will be disabled.");
 		};
@@ -204,7 +199,7 @@ module.exports = function(root, options, _shared) {
 												return stream.writeAsync((args.mode === 'edit' ? "Editing" : "Viewing") + " id " + args.id);
 											};
 										})
-										.then(dummy => {});
+										.then(function(dummy) {});
 								},
 							},
 						],
@@ -221,7 +216,7 @@ module.exports = function(root, options, _shared) {
 												return stream.writeAsync((args.mode === 'edit' ? "Editing" : "Viewing") + " id " + args.id);
 											};
 										})
-										.then(dummy => {});
+										.then(function(dummy) {});
 								},
 							},
 						],
@@ -360,8 +355,8 @@ module.exports = function(root, options, _shared) {
 							{
 								handler: function(request) {
 									request.response.getStream({contentType: 'text/plain; charset=utf-8'})
-										.then(stream => stream.writeAsync("Hello !"))
-										.then(dummy => {});
+										.then(function(stream) {return stream.writeAsync("Hello !")})
+										.then(function(dummy) {});
 								},
 							},
 						],
@@ -372,8 +367,8 @@ module.exports = function(root, options, _shared) {
 							{
 								handler: function(request) {
 									request.response.getStream({contentType: 'text/plain; charset=utf-8'})
-										.then(stream => stream.writeAsync("Bonjour !"))
-										.then(dummy => {});
+										.then(function(stream) {return stream.writeAsync("Bonjour !")})
+										.then(function(dummy) {});
 								},
 							},
 						],
@@ -559,38 +554,6 @@ module.exports = function(root, options, _shared) {
 											},
 										],
 									},
-/* TODO: Live build of source files
-									// TODO: Make it automatic
-									'/doodad-js-test/widgets/MyWidget.js': (root.getOptions().debug ? {
-										handlers: [
-											{
-												handler: ???.Make,
-												path: files.Path.parse(require.resolve('doodad-js-test')).set({file: null}).combine('./src/common/widgets/MyWidget.js', {os: 'linux'}),
-												showFolders: true,
-												mimeTypes: staticMimeTypes,
-												forceCaseSensitive: forceCaseSensitive,
-												variables: {
-													debug: true,
-												},
-											},
-										],
-									} : null),
-									// TODO: Make it automatic
-									'/doodad-js-test/widgets/MyWidget_loader.js': (root.getOptions().debug ? {
-										handlers: [
-											{
-												handler: ???.Make,
-												path: files.Path.parse(require.resolve('doodad-js-test')).set({file: null}).combine('./src/common/widgets/MyWidget_loader.js', {os: 'linux'}),
-												showFolders: true,
-												mimeTypes: staticMimeTypes,
-												forceCaseSensitive: forceCaseSensitive,
-												variables: {
-													debug: true,
-												},
-											},
-										],
-									} : null),
-*/
 									'/doodad-js-test/browserify/index.ddtx': {
 										handlers: [
 											{
@@ -754,7 +717,7 @@ module.exports = function(root, options, _shared) {
 			// TODO: Real status page
 			const response = ev.obj,
 				status = response.status;
-			if (root.getOptions().debug && (status >= 500)) {
+			if (/*root.getOptions().debug &&*/ (status >= 500)) {
 				if (response.statusData) {
 					console.error('HTTP ' + status + ': ' + response.statusData.stack);
 				} else {
@@ -764,10 +727,10 @@ module.exports = function(root, options, _shared) {
 			if (status >= 300) {
 				ev.preventDefault();
 				ev.data.promise = ev.data.promise
-					.then(dummy => response.getStream({contentType: 'text/plain', encoding: 'utf-8'}))
-					.then(stream => stream.writeAsync(types.toString(status)))
-					.then(dummy => {})
-					.catch(ex => {
+					.then(function(dummy) {return response.getStream({contentType: 'text/plain', encoding: 'utf-8'})})
+					.then(function(stream) {return stream.writeAsync(types.toString(status))})
+					.then(function(dummy) {})
+					.catch(function(ex) {
 						if (root.getOptions().debug) {
 							console.error(ex);
 						};
@@ -800,18 +763,6 @@ module.exports = function(root, options, _shared) {
 		});
 	};
 	
-	//const DD_MODULES = {};
-	//require('doodad-js-http').add(DD_MODULES);
-	//require('doodad-js-http_jsonrpc').add(DD_MODULES);
-	//require('doodad-js-json').add(DD_MODULES);
-	//require('doodad-js-mime').add(DD_MODULES);
-	//require('doodad-js-minifiers').add(DD_MODULES);
-	//require('doodad-js-templates').add(DD_MODULES);
-	//require('doodad-js-widgets').add(DD_MODULES);
-	//require('doodad-js-xml').add(DD_MODULES);
-	
-	//return namespaces.load(DD_MODULES, {startup: {secret: _shared.SECRET}}, startup);
-
 	return modules.load([
 			{
 				module: 'doodad-js-cluster',

@@ -202,9 +202,6 @@
           "class": "Make.Modules.Load",
           "files": [
             {
-              "module": "doodad-js-templates"
-            },
-            {
               "module": "doodad-js-templates",
               "path": "src/make/Templates_Html_Make.js"
             }

@@ -27,7 +27,7 @@
 module.exports = {
 	add: function add(DD_MODULES) {
 		DD_MODULES = (DD_MODULES || {});
-		DD_MODULES['Test.Pages.Widgets'] = {
+		DD_MODULES['Test.Pages.Widgets/index'] = {
 			version: /*! REPLACE_BY(TO_SOURCE(VERSION(MANIFEST("name")))) */ null /*! END_REPLACE()*/,
 			dependencies: ['doodad-js-templates'],
 

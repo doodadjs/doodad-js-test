@@ -33,7 +33,7 @@ module.exports = {
 				{
 					name: 'doodad-js-loader',
 					version: /*! REPLACE_BY(TO_SOURCE(VERSION('doodad-js-loader'))) */ null /*! END_REPLACE() */,
-					type: 'Package',
+					type: /*! REPLACE_BY(TO_SOURCE(MAKE_MANIFEST('type', 'doodad-js-loader'))) */ 'Package' /*! END_REPLACE() */,
 				}, 
 			],
 			

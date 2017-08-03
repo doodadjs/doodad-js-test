@@ -98,14 +98,14 @@ module.exports = {
 										],
 										before: false,
 									},
-									scripts: [
-										{
-											fileType: 'css',
-											fileName: 'index.css',
-											baseUrl: function(root) {return root.Doodad.Modules.locate('doodad-js-test', 'widgets/css/')},
-											media: 'screen',
-										},
-									],
+									//scripts: [
+									//	{
+									//		fileType: 'css',
+									//		fileName: 'index.css',
+									//		baseUrl: function(root) {return root.Doodad.Modules.locate('doodad-js-test', 'widgets/css/')},
+									//		media: 'screen',
+									//	},
+									//],
 									initializers: [
 										function(root) {
 											// TODO: Auto-Load from "src" or "build" or whatever else.

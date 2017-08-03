@@ -38,10 +38,12 @@
 
   <t:html>
     <head> 
-      <!-- Loaded by the loader <link rel="stylesheet" type="text/css" href="css/index.css" t:integrity="auto" /> -->
+      <link rel="stylesheet" type="text/css" href="css/index.css" t:integrity="auto" />
     </head>
 
     <body>
+      <img id="loading" src="img/loading.gif" />
+      
       <script async="async" t:src="'../../doodad-js/' + (debug ? 'doodad-js.js' : 'doodad-js.min.js')" t:integrity="auto" />
       <script async="async" src="../../doodad-js/lib/uuid/uuid.min.js" t:integrity="auto" />
 

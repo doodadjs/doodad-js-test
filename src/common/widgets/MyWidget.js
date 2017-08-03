@@ -137,7 +137,7 @@ module.exports = {
 						$TYPE_NAME: '__MyWidgetStep2__',
 						
 						onJsClick: doodad.JS_EVENT('click', function onJsClick(context) {
-							alert('click');
+							tools.alert('click');
 							//console.log(tools.getStackTrace());
 							//throw new Error("error");
 							/*
@@ -317,10 +317,10 @@ module.exports = {
 						return myWidget.render();
 					} else {
 						const myWidget1 = createMyWidget('myWidget1', 'Hello !', 'test1');
-						myWidget1.onRender.attach(null, function onRender(ev) {alert('render 1')});
+						myWidget1.onRender.attach(null, function onRender(ev) {tools.alert('render 1')});
 
 						const myWidget2 = createMyWidget('myWidget2', 'Salut !', 'test2');
-						myWidget2.onRender.attach(null, function onRender(ev) {alert('render 2')});
+						myWidget2.onRender.attach(null, function onRender(ev) {tools.alert('render 2')});
 						
 						//// Test "destroy"
 						//const myWidget3 = createMyWidget('myWidget3', 'Ciao !', 'test3');
@@ -329,7 +329,7 @@ module.exports = {
 						//myWidget3.destroy();
 						
 						const myWidget3 = createMyWidget('myWidget3', 'Ciao !', 'test3');
-						myWidget3.onRender.attach(null, function onRender(ev) {alert('render 3')});
+						myWidget3.onRender.attach(null, function onRender(ev) {tools.alert('render 3')});
 
 						return Promise.all([ myWidget1.render(), myWidget2.render(), myWidget3.render() ])
 							.then(function doSomeTestsPromise() {
@@ -337,7 +337,7 @@ module.exports = {
 								msg += myWidget1.renamedFunction() + ',';
 								msg += myWidget1.getVersion() + ',';
 								msg += myWidget1.value
-								alert(msg + '<----- Must be "1,2,3,2"');
+								tools.alert(msg + '<----- Must be "1,2,3,2"');
 							});
 					};
 				};

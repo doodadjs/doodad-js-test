@@ -36,6 +36,10 @@
 
                 doodad.Tools.trapUnhandledErrors();
 
+				const loadingImg = document.getElementById('loading');
+				const oldLoadingDisplayStyle = loadingImg.style.display;
+				loadingImg.style.display = 'none';
+
                 const crossRealm = document.getElementById('crossRealm').contentWindow;
 
                 let msg = '';
@@ -54,6 +58,8 @@
                 msg += types.isError(new (crossRealm.DD_ROOT.Doodad.Types.Error)("test"));
                 msg += "  <=== Must be all 'true'";
                 alert(msg);
+
+				loadingImg.style.display = oldLoadingDisplayStyle;
 
                 return modules.load([
                     /*{
@@ -74,8 +80,12 @@
                     },
                 ], options);
             })
-			['catch'](function (err) {
-				alert(err);
+			.nodeify(function(err, dummy) {
+				document.getElementById('loading').style.display = 'none';
+
+				if (err) {
+					alert(err);
+				};
 			});
 	};
 }).call((typeof global !== 'undefined') ? global : ((typeof window !== 'undefined') ? window : this));

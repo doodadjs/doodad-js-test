@@ -1093,7 +1093,7 @@ module.exports = {
 											tools.alert("There is nothing to test.");
 										} else if (err) {
 											if (!err.bubble) {
-												debugger;
+												types.DEBUGGER();
 												io.stderr.write(err);
 												//io.stderr.flush();
 												tools.alert("An error occurred while testing.");
@@ -1111,7 +1111,7 @@ module.exports = {
 											stream.print("End: There is nothing to test.");
 										} else if (err) {
 											if (!err.bubble) {
-												debugger;
+												types.DEBUGGER();
 												io.stderr.write(err);
 												//io.stderr.flush();
 												io.stderr.print("End: An error occurred while testing.");

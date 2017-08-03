@@ -1,5 +1,5 @@
 // doodad-js - Object-oriented programming framework
-// File: main.js - Module startup file for 'browserify'.
+// File: main.js - Module startup file for 'webpack'.
 // Project home: https://github.com/doodadjs/
 // Author: Claude Petit, Quebec city
 // Contact: doodadjs [at] gmail.com
@@ -33,9 +33,10 @@ window.onload = function() {
 	
 	require('doodad-js').createRoot(modules, options)
 		.then(function(root) {
-			alert(root.Doodad.Tools.Dates.strftime("%c", new Date()));
+			const tools = root.Doodad.Tools;
+			tools.alert(tools.Dates.strftime("%c", new Date()));
 		})
-		['catch'](function(err) {
-			console.log(err);
+		.catch(function(err) {
+			alert(err);
 		});
 };

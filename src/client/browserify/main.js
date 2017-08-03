@@ -33,9 +33,10 @@ window.onload = function() {
 	
 	require('doodad-js').createRoot(modules, options)
 		.then(function(root) {
-			alert(root.Doodad.Tools.Dates.strftime("%c", new Date()));
+			const tools = root.Doodad.Tools;
+			tools.alert(tools.Dates.strftime("%c", new Date()));
 		})
-		['catch'](function(err) {
-			console.log(err);
+		.catch(function(err) {
+			alert(err);
 		});
 };

@@ -58,8 +58,12 @@
 
 				return test.run({name: unitName});
 			})
-			.catch(function (err) {
-				alert(err);
+			.nodeify(function(err, dummy) {
+				document.getElementById('loading').style.display = 'none';
+
+				if (err) {
+					alert(err);
+				};
 			});
 	};
 })();

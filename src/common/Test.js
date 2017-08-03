@@ -60,12 +60,10 @@ module.exports = {
 				types.complete(_shared.Natives, {
 					windowParseInt: global.parseInt,
 					windowIsNaN: global.isNaN,
-					windowAlert: global.alert || global.console.log.bind(console),
 				});
 					
 				const __Internal__ = {
 					stdout: null,
-					alert: null,
 				};
 				
 				entries.REGISTER(entries.Module.$inherit(
@@ -82,10 +80,6 @@ module.exports = {
 					}
 				));
 				
-				test.ADD('setAlert', function setAlert(alertFn) {
-					__Internal__.alert = alertFn;
-				});
-
 				test.ADD('setOutput', function setOutput(stream) {
 					__Internal__.stdout = stream;
 				});
@@ -1096,19 +1090,19 @@ module.exports = {
 								if (!isIndex) {
 									if (dom) {
 										if (!unit) {
-											__Internal__.alert("There is nothing to test.");
+											tools.alert("There is nothing to test.");
 										} else if (err) {
 											if (!err.bubble) {
 												debugger;
 												io.stderr.write(err);
 												//io.stderr.flush();
-												__Internal__.alert("An error occurred while testing.");
+												tools.alert("An error occurred while testing.");
 												success = false;
 											};
 										} else {
 											__Internal__.showFails();
 											if (!test.FAILED_TESTS) {
-												__Internal__.alert("Every tests passed.    Total: " + test.TESTS_COUNT);
+												tools.alert("Every tests passed.    Total: ~0~.", [test.TESTS_COUNT]);
 											};
 											success = false;
 										};
@@ -1138,12 +1132,6 @@ module.exports = {
 							});
 					});
 				});
-				
-				return function init() {
-					test.setAlert(function defaultAlert(msg) {
-						tools.callAsync(_shared.Natives.windowAlert, 0, null, [msg]);
-					});
-				};
 			},
 		};
 		return DD_MODULES;

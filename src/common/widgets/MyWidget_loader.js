@@ -45,7 +45,7 @@ module.exports = {
 
 				return function init(options) {
 					const DD_SCRIPTS = [
-						{
+						/*{
 							description: "Load 'doodad-js-io'",
 							dependencies : [
 								{
@@ -84,7 +84,7 @@ module.exports = {
 									],
 								}
 							]
-						},
+						},*/
 						{
 							description: "Load MyWidget.js",
 							dependencies : [
@@ -92,7 +92,7 @@ module.exports = {
 									optional: false,
 									conditions: {
 										include: [ // "and" conditions
-											"root.Doodad.Namespaces.get('doodad-js-widgets')",
+											//"root.Doodad.Namespaces.get('doodad-js-widgets')",
 										],
 										exclude: [ // "or" conditions
 										],

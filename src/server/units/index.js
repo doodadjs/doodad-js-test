@@ -225,3 +225,15 @@ a=%E9%63%68%6F
 /* Form Multi-part
 curl -v -F écho=écho -F hello=hello -F bonjour=bonjour -F ciao=ciao -F écho=écho -F hello=hello -F bonjour=bonjour -F ciao=ciao -F écho=écho -F hello=hello -F bonjour=bonjour -F ciao=ciao -F écho=écho -F hello=hello -F bonjour=bonjour -F ciao=ciao -F écho=écho -F hello=hello -F bonjour=bonjour -F ciao=ciao -F écho=écho -F hello=hello -F bonjour=bonjour -F ciao=ciao -F écho=écho -F hello=hello -F bonjour=bonjour -F ciao=ciao -F écho=écho -F hello=hello -F bonjour=bonjour -F ciao=ciao -F écho=écho -F hello=hello -F bonjour=bonjour -F ciao=ciao -F écho=écho -F hello=hello -F bonjour=bonjour -F ciao=ciao 127.0.0.1:8080/multipart
 */
+
+/*
+GET /app/doodad-js-test/units/index.ddtx HTTP/1.0
+Accept: text/html
+
+*/
+
+/*
+GET /app/doodad-js-test/units/index.ddtx HTTP/1.0
+Accept: application/xml
+
+*/

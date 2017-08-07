@@ -19,20 +19,27 @@
 
 		global.createRoot(null, options)
 			.then(function(root) {
-                return root.Doodad.Modules.load([
+				const doodad = root.Doodad,
+					tools = doodad.Tools,
+					modules = doodad.Modules;
+
+				tools.trapUnhandledErrors();
+
+                return modules.load([
 					{
 						module: 'doodad-js',
 						path: 'common/Types_UUIDS.js',
 					},
 				], options);
 			})
-            .then(function (root) {
-                window.DD_ROOT = root;
-
-                root.Doodad.Tools.trapUnhandledErrors();
+            .then(function(root) {
+                window.setRealmRoot(null, root);
             })
 			.catch(function(err) {
-				alert(err);
+                window.setRealmRoot(err);
+			})
+			.catch(function(err) {
+                alert(err);
 			});
 	};
 }).call((typeof global !== 'undefined') ? global : ((typeof window !== 'undefined') ? window : this));

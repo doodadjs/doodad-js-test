@@ -13,73 +13,93 @@
 
 		const options = {startup: {secret: SECRET}};
 
+		const REALM_WINDOW = document.getElementById('crossRealm').contentWindow;
+
+		let realmRootPromise = new (global.Promise || global.ES6Promise)(function(resolve, reject) {
+			REALM_WINDOW.setRealmRoot = function(err, root) {
+				if (err) {
+					reject(err);
+				} else {
+					resolve(root);
+				};
+			};
+		});
+
 		options['Doodad.Modules'] = {
 			modulesUri: '../..',
 		};
 
 		global.createRoot(null, options)
 			.then(function(root) {
-                return root.Doodad.Modules.load([
-					{
-						module: 'doodad-js',
-						path: 'common/Types_UUIDS.js',
-					},
-				], options);
-			})
-            .then(function(root) {
-                window.DD_ROOT = root;
+                window.DD_ROOT = root; // debug
 
-                const doodad = root.Doodad,
-                    types = doodad.Types,
+				const doodad = root.Doodad,
+					types = doodad.Types,
+					tools = doodad.Tools,
 					modules = doodad.Modules,
-                    mixIns = doodad.MixIns;
+					mixIns = doodad.MixIns;
 
-                doodad.Tools.trapUnhandledErrors();
+				tools.trapUnhandledErrors();
 
-				const loadingImg = document.getElementById('loading');
-				const oldLoadingDisplayStyle = loadingImg.style.display;
-				loadingImg.style.display = 'none';
+				const Promise = types.getPromise();
 
-                const crossRealm = document.getElementById('crossRealm').contentWindow;
+				return Promise.try(function() {
+					return modules.load([
+						{
+							module: 'doodad-js',
+							path: 'common/Types_UUIDS.js',
+						},
+					], options)
+					.then(function(root) {
+						const promise = realmRootPromise;
+						realmRootPromise = null; // free memory
+						return promise;
+					})
+					.then(function(realmRoot) {
+						const loadingImg = document.getElementById('loading');
+						const oldLoadingDisplayStyle = loadingImg.style.display;
+						loadingImg.style.display = 'none';
 
-                let msg = '';
-                msg += types.isType(crossRealm.DD_ROOT.Doodad.Types.Namespace) + ',';
-                msg += types._instanceof(types, crossRealm.DD_ROOT.Doodad.Types.Namespace) + ',';
-                msg += types._instanceof(crossRealm.DD_ROOT.Doodad.Types, types.Namespace) + ',';
-                msg += types._instanceof(crossRealm.DD_ROOT.Doodad.Types, types.Type) + ',';
-                msg += types._instanceof(new crossRealm.DD_ROOT.Doodad.Object(), doodad.Object) + ',';
-                //msg += types._implements(crossRealm.DD_ROOT.Doodad.Object, mixIns.Creatable) + ',';
-                msg += crossRealm.DD_ROOT.Doodad.Object._implements(mixIns.Creatable) + ',';
-                msg += types.isType(crossRealm.DD_ROOT.Doodad.Types.Type) + ',';
-                msg += types._instanceof(new crossRealm.Object(), Object) + ',';
-                msg += ((typeof Symbol === 'undefined') ? 'true' : types._instanceof(crossRealm.Object(crossRealm.Symbol()), Symbol)) + ',';
-                msg += types.isPromise(crossRealm.DD_ROOT.Doodad.Types.getPromise().resolve()) + ',';
-                msg += types.isErrorType(crossRealm.DD_ROOT.Doodad.Types.Error) + ',';
-                msg += types.isError(new (crossRealm.DD_ROOT.Doodad.Types.Error)("test"));
-                msg += "  <=== Must be all 'true'";
-                alert(msg);
+						let msg = '';
+						msg += types.isType(realmRoot.Doodad.Types.Namespace) + ',';
+						msg += types._instanceof(types, realmRoot.Doodad.Types.Namespace) + ',';
+						msg += types._instanceof(realmRoot.Doodad.Types, types.Namespace) + ',';
+						msg += types._instanceof(realmRoot.Doodad.Types, types.Type) + ',';
+						msg += types._instanceof(new realmRoot.Doodad.Object(), doodad.Object) + ',';
+						//msg += types._implements(realmRoot.Doodad.Object, mixIns.Creatable) + ',';
+						msg += realmRoot.Doodad.Object._implements(mixIns.Creatable) + ',';
+						msg += types.isType(realmRoot.Doodad.Types.Type) + ',';
+						msg += types._instanceof(new REALM_WINDOW.Object(), Object) + ',';
+						msg += ((typeof Symbol === 'undefined') ? 'true' : types._instanceof(REALM_WINDOW.Object(REALM_WINDOW.Symbol()), Symbol)) + ',';
+						msg += types.isPromise(realmRoot.Doodad.Types.getPromise().resolve()) + ',';
+						msg += types.isErrorType(realmRoot.Doodad.Types.Error) + ',';
+						msg += types.isError(new (realmRoot.Doodad.Types.Error)("test"));
+						msg += "  <=== Must be all 'true'";
+						alert(msg);
 
-				loadingImg.style.display = oldLoadingDisplayStyle;
+						loadingImg.style.display = oldLoadingDisplayStyle;
 
-                return modules.load([
-                    /*{
-                        module: 'doodad-js-unicode',
-                    },
-                    {
-                        module: 'doodad-js-locale',
-                    },
-                    {
-                        module: 'doodad-js-safeeval',
-                    },
-                    {
-                        module: 'doodad-js-loader',  NOTE: Loaded by "MyWidget_loader.js"
-                    },*/
-                    {
-                        module: 'doodad-js-test',
-                        path: 'widgets/MyWidget_loader.js',
-                    },
-                ], options);
-            })
+						return modules.load([
+							/*{
+								module: 'doodad-js-unicode',
+							},
+							{
+								module: 'doodad-js-locale',
+							},
+							{
+								module: 'doodad-js-safeeval',
+							},
+							{
+								module: 'doodad-js-loader',  NOTE: Loaded by "MyWidget_loader.js"
+							},*/
+							{
+								module: 'doodad-js-test',
+								path: 'widgets/MyWidget_loader.js',
+							},
+						], options);
+					})
+				});
+			})
 			.nodeify(function(err, dummy) {
 				document.getElementById('loading').style.display = 'none';
 

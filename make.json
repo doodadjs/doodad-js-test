@@ -154,7 +154,7 @@
     },
     {
       "//": "For the application.",
-      "src": "server/units/Test_Pages_Units_Index.js",
+      "src": "server/units/pages/Test_Pages_Units_Index.js",
       "client": false,
       "server": true,
       "browserify": false,
@@ -209,8 +209,8 @@
         },
         {
           "class": "Doodad.Templates.Html.Make.Compile",
-          "source": "%SOURCEDIR%/server/units/Test_Pages_Units_Index.ddt",
-          "destination": "%BUILDDIR%/server/units/Test_Pages_Units_Index.ddtx",
+          "source": "%SOURCEDIR%/server/units/pages/Test_Pages_Units_Index.ddt",
+          "destination": "%BUILDDIR%/server/units/pages/Test_Pages_Units_Index.ddtx",
           "variables": {
             "serverSide": true
           }
@@ -283,6 +283,24 @@
           "class": "Make.Folder.Copy",
           "source": "%SOURCEDIR%/client/units/res/",
           "destination": "%INSTALLDIR%/%PACKAGENAME%/units/"
+        },
+
+        {
+          "class": "Make.File.Javascript",
+          "source": "%SOURCEDIR%/client/units/pages/Test_Pages_Units_Index.js",
+          "destination": "%INSTALLDIR%/%PACKAGENAME%/units/res/Test_Pages_Units_Index.js",
+          "runDirectives": true,
+          "keepComments": true,
+          "keepSpaces": true,
+          "variables": {
+            "debug": true
+          }
+        },
+        {
+          "class": "Make.File.Javascript",
+          "source": "%SOURCEDIR%/client/units/pages/Test_Pages_Units_Index.js",
+          "destination": "%INSTALLDIR%/%PACKAGENAME%/units/res/Test_Pages_Units_Index.min.js",
+          "runDirectives": true
         },
 
         {

@@ -103,6 +103,19 @@ module.exports = function(root, options, _shared) {
 					return "Hello world !";
 				}),
 			}));
+
+			// TODO: Move elsewhere
+			root.REGISTER(doodad.Object.$extend(
+							doodad.Server.Ipc.MixIns.Service,
+			{
+				$TYPE_NAME: 'JsVarsIpcServiceWorker',
+			
+				setJsVars: doodad.Server.Ipc.CALLABLE(function setJsVars(request, id, vars) {
+					if (nodeCluster.isWorker && id && vars) {
+						return nodejs.Server.Http.JavascriptPage.$setJsVars(request, vars, id);
+					};
+				}),
+			}));
 		};
 
 		const currentPath = files.Path.parse(__dirname);
@@ -339,7 +352,7 @@ module.exports = function(root, options, _shared) {
 															};
 															return false;
 														};
-													}, this);
+													});
 												});
 										})
 										.then(function(dummy) {
@@ -507,6 +520,19 @@ module.exports = function(root, options, _shared) {
 											},
 										],
 									},
+									'/doodad-js-templates/Boot.min.js': {
+										handlers: [
+											{
+												handler: nodejs.Server.Http.JavascriptPage,
+												path: files.Path.parse(require.resolve('doodad-js-templates')).set({file: null}).combine('./build/server/res/js/Boot.templ.js', {os: 'linux'}),
+												showFolders: false,
+												mimeTypes: staticMimeTypes,
+												forceCaseSensitive: forceCaseSensitive,
+												//useMake: true,
+												runDirectives: true,
+											},
+										],
+									},
 									'/doodad-js-test': {
 										handlers: [
 											{
@@ -523,7 +549,7 @@ module.exports = function(root, options, _shared) {
 											{
 												handler: nodejs.Server.Http.StaticPage,
 												// TODO: Auto-build
-												path: files.Path.parse(require.resolve('doodad-js-test')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/units/Test_Pages_Units_Index.ddt' : './build/server/units/Test_Pages_Units_Index.ddtx'), {os: 'linux'}),
+												path: files.Path.parse(require.resolve('doodad-js-test')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/units/pages/Test_Pages_Units_Index.ddt' : './build/server/units/pages/Test_Pages_Units_Index.ddtx'), {os: 'linux'}),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,

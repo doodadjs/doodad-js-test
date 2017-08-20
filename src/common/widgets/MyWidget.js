@@ -125,7 +125,7 @@ module.exports = {
 					}),
 					
 					render: doodad.OVERRIDE(function render() {
-						this.stream.write('<span' + this.renderAttributes(['main', 'mergeTest']) + '>' + tools.escapeHtml(this.message || '', this.document) + '</span>');
+						this.write('<span' + this.renderAttributes(['main', 'mergeTest']) + '>' + tools.escapeHtml(this.message || '', this.document) + '</span>');
 					}),
 				}));
 
@@ -166,7 +166,7 @@ module.exports = {
 						
 						acquire: doodad.OVERRIDE(function acquire() {
 							this._super();
-							const span = client.getFirstElement(this.stream.element);
+							const span = client.getFirstElement(this.element);
 							this.onJsClick.attach(span);
 						}),
 						
@@ -279,12 +279,14 @@ module.exports = {
 					
 					const colors = ['white', 'red', 'magenta', 'green', 'black', 'yellow', 'blue', 'pink', 'gray', 'acqua', 'brown', 'gold', 'silver'];
 					
-					const createMyWidget = function createMyWidget(name, message, stream) {
+					const createMyWidget = function createMyWidget(name, message, /*optional*/element) {
 						let color;
 
-						const myWidget = new me.MyWidget();
+						if (types.isString(element)) {
+							element = global.document.getElementById(element);
+						};
 						
-						myWidget.setStream(stream);
+						const myWidget = new me.MyWidget({element: element});
 						
 						const id = myWidget.getIdentity();
 						id.id = id.name = id.class = name;
@@ -314,9 +316,8 @@ module.exports = {
 					};
 					
 					if (root.serverSide) {
-						const stream = new io.HtmlOutputStream();
-						stream.pipe(io.stdout);
-						const myWidget = createMyWidget('myWidget1', 'Console !', stream);
+						const myWidget = createMyWidget('myWidget1', 'Console !', null);
+						myWidget.pipe(io.stdout);
 						return myWidget.render();
 					} else {
 						const myWidget1 = createMyWidget('myWidget1', 'Hello !', 'test1');

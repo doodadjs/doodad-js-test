@@ -42,8 +42,8 @@
   
   <t:modules>
     <t:options>
-      <t:option name="Doodad.Modules" value="../.." />
-      <t:option name="Doodad.Tools.Dates.Moment" value="/app/lib/moment-timezone/data/" />
+      <t:option module="Doodad.Modules" key="modulesUri" value="../.." />
+      <t:option module="Doodad.Tools.Dates.Moment" key="dataUri" value="/app/lib/moment-timezone/data/" />
     </t:options>
 
     <t:load module="doodad-js-safeeval" />

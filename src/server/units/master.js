@@ -42,7 +42,7 @@ module.exports = function(root, options, _shared) {
 		const server = doodad.Server;
 
 		const args = tools.getCurrentLocation().args,
-			maxCpus = types.toInteger(args.get('cpus')) || 4,
+			maxCpus = types.toInteger(args.get('cpus') || process.env.NODE_CPUS) || 4,
 			unitName = args.get('unit');
 	
 		if (unitName !== undefined) {
@@ -76,8 +76,7 @@ module.exports = function(root, options, _shared) {
 				return Promise.try(function tryStartWorkers() {
 					if (cpus > 1) {
 						// TODO: Move elsewhere
-						const ipc = doodad.Server.Ipc,
-							nodejsHttp = doodad.NodeJs.Server.Http;
+						const ipc = doodad.Server.Ipc;
 						root.REGISTER(doodad.Object.$extend(
 										ipc.MixIns.Service,
 						{

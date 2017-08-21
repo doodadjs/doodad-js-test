@@ -73,11 +73,11 @@ module.exports = function(root, options, _shared) {
 			{
 				$TYPE_NAME: 'MyPrivateService',
 			
-				stats: server.Ipc.CALLABLE(function hello(request) {
+				stats: server.Ipc.CALLABLE(function stats(request) {
 					return nodejs.Server.Http.Request.$getStats();
 				}),
 
-				actives: server.Ipc.CALLABLE(function hello(request) {
+				actives: server.Ipc.CALLABLE(function actives(request) {
 					return nodejs.Server.Http.Request.$getActives();
 				}),
 

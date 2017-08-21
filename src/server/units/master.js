@@ -82,12 +82,15 @@ module.exports = function(root, options, _shared) {
 						{
 							$TYPE_NAME: 'JsVarsIpcServiceMaster',
 			
-							syncJsVars: ipc.CALLABLE(function syncJsVars(request, worker, id, vars) {
+							syncJsVars: ipc.CALLABLE(function syncJsVars(request, id, vars) {
+								const Promise = types.getPromise();
 								if (nodeCluster.isMaster) {
-									tools.forEach(nodeCluster.workers, function(wrk, wrkId) {
+									const keys = types.keys(nodeCluster.workers);
+									return Promise.map(keys, function(key) {
+										const worker = nodeCluster.workers[key];
 										// TODO: Get "worker" from Request and remove that argument.
-										if (wrkId !== worker) {
-											request.server.callService('JsVarsIpcServiceWorker', 'setJsVars', [id, vars], {worker: wrk /*ttl: ..., ...*/});
+										if (worker.id !== request.msg.worker.id) {
+											return request.server.callService('JsVarsIpcServiceWorker', 'setJsVars', [id, vars], {worker: worker /*ttl: ..., ...*/});
 										};
 									});
 								};

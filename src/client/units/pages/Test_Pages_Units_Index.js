@@ -29,7 +29,14 @@ module.exports = {
 		DD_MODULES = (DD_MODULES || {});
 		DD_MODULES['Test.Pages.Units/index'] = {
 			version: /*! REPLACE_BY(TO_SOURCE(VERSION(MANIFEST("name")))) */ null /*! END_REPLACE()*/,
-			//dependencies: [],
+			//dependencies: [
+			//	//{
+			//	//	module: 'doodad-js/tests',
+			//	//},
+			//	{
+			//		module: 'doodad-js-safeeval/tests',
+			//	},
+			//],
 			type: 'Application',
 
 			create: function create(root, /*optional*/_options, _shared) {
@@ -39,7 +46,7 @@ module.exports = {
 					tools = doodad.Tools,
 					test = doodad.Test,
 					clientIO = doodad.Client.IO,
-					pages = test.Pages,
+					pages = root.Test.Pages,
 					pagesUnits = pages.Units;
 
 				//const __Internal__ = {
@@ -56,7 +63,10 @@ module.exports = {
 
 					return test.run({name: unitName})
 						.nodeify(function(err, dummy) {
-							document.getElementById('loading').style.display = 'none';
+							const loadingElement = document.getElementById('loading');
+							if (loadingElement) {
+								loadingElement.style.display = 'none';
+							};
 
 							if (err) {
 								throw err;

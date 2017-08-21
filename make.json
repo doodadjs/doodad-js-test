@@ -288,18 +288,19 @@
         {
           "class": "Make.File.Javascript",
           "source": "%SOURCEDIR%/client/units/pages/Test_Pages_Units_Index.js",
-          "destination": "%INSTALLDIR%/%PACKAGENAME%/units/res/Test_Pages_Units_Index.js",
+          "destination": "%INSTALLDIR%/%PACKAGENAME%/units/js/Test_Pages_Units_Index.js",
           "runDirectives": true,
           "keepComments": true,
           "keepSpaces": true,
           "variables": {
-            "debug": true
+            "debug": true,
+            "autoAdd": true
           }
         },
         {
           "class": "Make.File.Javascript",
           "source": "%SOURCEDIR%/client/units/pages/Test_Pages_Units_Index.js",
-          "destination": "%INSTALLDIR%/%PACKAGENAME%/units/res/Test_Pages_Units_Index.min.js",
+          "destination": "%INSTALLDIR%/%PACKAGENAME%/units/js/Test_Pages_Units_Index.min.js",
           "runDirectives": true
         },
 

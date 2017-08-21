@@ -524,7 +524,7 @@ module.exports = function(root, options, _shared) {
 										handlers: [
 											{
 												handler: nodejs.Server.Http.JavascriptPage,
-												path: files.Path.parse(require.resolve('doodad-js-templates')).set({file: null}).combine('./build/server/res/js/Boot.templ.js', {os: 'linux'}),
+												path: files.Path.parse(require.resolve('doodad-js-templates')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/res/js/Boot.templ.js' : './build/server/res/js/Boot.templ.js'), {os: 'linux'}),
 												showFolders: false,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,

@@ -528,7 +528,6 @@ module.exports = function(root, options, _shared) {
 												showFolders: false,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,
-												//useMake: true,
 												runDirectives: true,
 											},
 										],

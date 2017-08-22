@@ -62,16 +62,12 @@
       <img id="loading" src="img/loading.gif" />
 
       <!-- TODO: Auto-load with "doodad-js" -->
-      <!-- <script async="async" src="../../doodad-js/lib/uuid/uuid.min.js" /> -->
-      <!-- <script async="async" src="../../lib/es6-promise/es6-promise.min.js" /> -->
-      <script async="async" src="/app/doodad-js/lib/uuid/uuid.min.js" />
-      <script async="async" src="/app/lib/es6-promise/es6-promise.min.js" />
+      <script async="async" src="../../doodad-js/lib/uuid/uuid.min.js" />
+      <script async="async" src="../../lib/es6-promise/es6-promise.min.js" />
 
       <!-- TODO: Auto-load with "doodad-js-dates" -->
-      <!-- <script src="../../lib/moment/moment.min.js" /> -->
-      <!-- <script src="../../lib/moment-timezone/moment-timezone.min.js" /> -->
-      <script src="/app/lib/moment/moment.min.js" />
-      <script src="/app/lib/moment-timezone/moment-timezone.min.js" />
+      <script src="../../lib/moment/moment.min.js" />
+      <script src="../../lib/moment-timezone/moment-timezone.min.js" />
     </body>
   </t:html>
 </t:ddt>

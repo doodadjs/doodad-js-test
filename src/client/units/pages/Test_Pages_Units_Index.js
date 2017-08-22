@@ -55,6 +55,8 @@ module.exports = {
 				//types.complete(_shared.Natives, {
 				//});
 
+				global.DD_ROOT = root; // for test purpose
+
 				return function init(options) {
 					const args = tools.getCurrentLocation().args,
 						unitName = args.get('unit');

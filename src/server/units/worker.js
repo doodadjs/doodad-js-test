@@ -103,19 +103,6 @@ module.exports = function(root, options, _shared) {
 					return "Hello world !";
 				}),
 			}));
-
-			// TODO: Move elsewhere
-			root.REGISTER(doodad.Object.$extend(
-							doodad.Server.Ipc.MixIns.Service,
-			{
-				$TYPE_NAME: 'JsVarsIpcServiceWorker',
-			
-				setJsVars: doodad.Server.Ipc.CALLABLE(function setJsVars(request, id, vars) {
-					if (nodeCluster.isWorker && id && vars) {
-						return nodejs.Server.Http.JavascriptPage.$setJsVars(request, vars, id);
-					};
-				}),
-			}));
 		};
 
 		const currentPath = files.Path.parse(__dirname);
@@ -188,6 +175,10 @@ module.exports = function(root, options, _shared) {
 			//	sslPort: 8181,
 			//	hstsSafe: true,
 			//},
+			{
+				handler: nodejs.Server.Http.ClusterDataHandler,
+				messenger: messenger,
+			},
 			{
 				caseSensitive: true,
 

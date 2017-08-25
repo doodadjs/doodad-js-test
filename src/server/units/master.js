@@ -75,28 +75,6 @@ module.exports = function(root, options, _shared) {
 			const startWorkers = function _startWorkers() {
 				return Promise.try(function tryStartWorkers() {
 					if (cpus > 1) {
-						// TODO: Move elsewhere
-						const ipc = doodad.Server.Ipc;
-						root.REGISTER(doodad.Object.$extend(
-										ipc.MixIns.Service,
-						{
-							$TYPE_NAME: 'JsVarsIpcServiceMaster',
-			
-							syncJsVars: ipc.CALLABLE(function syncJsVars(request, id, vars) {
-								const Promise = types.getPromise();
-								if (nodeCluster.isMaster) {
-									const keys = types.keys(nodeCluster.workers);
-									return Promise.map(keys, function(key) {
-										const worker = nodeCluster.workers[key];
-										// TODO: Get "worker" from Request and remove that argument.
-										if (worker.id !== request.msg.worker.id) {
-											return request.server.callService('JsVarsIpcServiceWorker', 'setJsVars', [id, vars], {worker: worker /*ttl: ..., ...*/});
-										};
-									});
-								};
-							}),
-						}));
-
 						nodeCluster.setupMaster({
 							silent: true,
 						});
@@ -372,6 +350,9 @@ module.exports = function(root, options, _shared) {
 	};
 
 	return modules.load([
+			{
+				module: 'doodad-js-http',
+			},
 			{
 				module: 'doodad-js-cluster',
 			},

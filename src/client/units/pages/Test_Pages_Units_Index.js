@@ -52,7 +52,7 @@ module.exports = {
 				//const __Internal__ = {
 				//};
 				
-				//types.complete(_shared.Natives, {
+				//tools.complete(_shared.Natives, {
 				//});
 
 				global.DD_ROOT = root; // for test purpose

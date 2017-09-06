@@ -46,7 +46,7 @@ module.exports = {
 				//const __Internal__ = {
 				//};
 				
-				//types.complete(_shared.Natives, {
+				//tools.complete(_shared.Natives, {
 				//});
 
 

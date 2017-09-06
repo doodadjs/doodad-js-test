@@ -58,7 +58,7 @@ module.exports = function(root, options, _shared) {
 						module: 'doodad-js-safeeval',
 						path: 'test/doodad-js-safeeval_tests.js',
 					},
-				], types.depthExtend(15, options, {startup: {secret: _shared.SECRET}}))
+				], tools.depthExtend(15, options, {startup: {secret: _shared.SECRET}}))
 				.then(function(dummy) {
 					const test = doodad.Test;
 					return test.run({name: (unitName || test.DD_FULL_NAME)})
@@ -359,6 +359,6 @@ module.exports = function(root, options, _shared) {
 			{
 				module: 'doodad-js-terminal',
 			},
-		], types.depthExtend(15, options, {startup: {secret: _shared.SECRET}}))
+		], tools.depthExtend(15, options, {startup: {secret: _shared.SECRET}}))
 			.then(startup);
 };

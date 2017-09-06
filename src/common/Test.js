@@ -57,7 +57,7 @@ module.exports = {
 					nodejs = doodad.NodeJs,
 					test = doodad.Test;
 					
-				types.complete(_shared.Natives, {
+				tools.complete(_shared.Natives, {
 					windowParseInt: global.parseInt,
 					windowIsNaN: global.isNaN,
 				});
@@ -336,14 +336,14 @@ module.exports = {
 													('Is ' + (isEval && types.isString(expected) ? expected : (types.isFunction(expected) ? types.getFunctionName(expected) : types.getFunctionName(expected.constructor))))
 												: 
 													((mode === 'compare') ? 'Equals ' : '') + 
-													(isEval && types.isString(expected) ? expected : types.toSource(expected, types.get(options, 'depth', 0), sourceOpts))
+													(isEval && types.isString(expected) ? expected : tools.toSource(expected, types.get(options, 'depth', 0), sourceOpts))
 											);
 									const expectedCls = 'expected';
 								
 									let evalError = null;
 									if (isEval && types.isString(expected)) {
 										try {
-											expected = types.eval(expected, {window: global, global: global, EmptySlot: test.EmptySlot});
+											expected = tools.eval(expected, {window: global, global: global, EmptySlot: test.EmptySlot});
 										} catch(ex) {
 											evalError = ex;
 										};
@@ -376,7 +376,7 @@ module.exports = {
 															return val;
 														} else {
 															sourceOpts = {};
-															return types.toSource(val, types.get(options, 'depth', 0), sourceOpts);
+															return tools.toSource(val, types.get(options, 'depth', 0), sourceOpts);
 														};
 													}).join(', ') + 
 												");");
@@ -397,7 +397,7 @@ module.exports = {
 											try {
 												params = tools.map(params, function(expr) {
 													if (types.isString(expr)) {
-														return types.eval(expr, {window: global, global: global, EmptySlot: test.EmptySlot});
+														return tools.eval(expr, {window: global, global: global, EmptySlot: test.EmptySlot});
 													} else {
 														return expr;
 													};
@@ -474,9 +474,9 @@ module.exports = {
 											resultStr += 
 													((mode === 'isinstance') ? 
 														'Instance Of ' + (types.isFunction(result) ? result.name : (types.isObjectLike(result) ? result.constructor.name : '????')) + 
-														' (' + types.toSource(result, types.get(options, 'depth', 0), sourceOpts) + ')'
+														' (' + tools.toSource(result, types.get(options, 'depth', 0), sourceOpts) + ')'
 													: 
-														types.toSource(result, types.get(options, 'depth', 0), sourceOpts)
+														tools.toSource(result, types.get(options, 'depth', 0), sourceOpts)
 													); 
 											result = types.toObject(result);
 										};
@@ -664,7 +664,7 @@ module.exports = {
 							prevButton = popup.getElementsByClassName('prevFailed bindMe')[0],
 							nextButton = popup.getElementsByClassName('nextFailed bindMe')[0];
 							
-						types.extend(state, {
+						tools.extend(state, {
 							popup: popup,
 							failedOf: popup.getElementsByClassName('failedOf bindMe')[0],
 							runElements: runElements,
@@ -890,7 +890,7 @@ module.exports = {
 
 					const state = {};
 
-					types.extend(state, {
+					tools.extend(state, {
 							index: types.bind(state, function(ev) { // JS click
 								try {
 									__Internal__.moveToUnit(null);

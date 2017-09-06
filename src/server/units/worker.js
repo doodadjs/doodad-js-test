@@ -786,6 +786,6 @@ module.exports = function(root, options, _shared) {
 			{
 				module: 'doodad-js-http_jsonrpc',
 			},
-		], types.depthExtend(15, options, {startup: {secret: _shared.SECRET}}))
+		], tools.depthExtend(15, options, {startup: {secret: _shared.SECRET}}))
 			.then(startup);
 };

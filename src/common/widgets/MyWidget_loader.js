@@ -24,104 +24,103 @@
 //	limitations under the License.
 //! END_REPLACE()
 
-module.exports = {
-	add: function add(DD_MODULES) {
-		DD_MODULES = (DD_MODULES || {});
-		DD_MODULES['MyWidget'] = {
-			version: /*! REPLACE_BY(TO_SOURCE(VERSION(MANIFEST("name")))) */ null /*! END_REPLACE()*/,
-			dependencies: [
-				{
-					name: 'doodad-js-loader',
-					version: /*! REPLACE_BY(TO_SOURCE(VERSION('doodad-js-loader'))) */ null /*! END_REPLACE() */,
-					type: /*! REPLACE_BY(TO_SOURCE(MAKE_MANIFEST('type', 'doodad-js-loader'))) */ 'Package' /*! END_REPLACE() */,
-				}, 
-			],
+exports.add = function add(DD_MODULES) {
+	DD_MODULES = (DD_MODULES || {});
+	DD_MODULES['MyWidget'] = {
+		version: /*! REPLACE_BY(TO_SOURCE(VERSION(MANIFEST("name")))) */ null /*! END_REPLACE()*/,
+		dependencies: [
+			{
+				name: 'doodad-js-loader',
+				version: /*! REPLACE_BY(TO_SOURCE(VERSION('doodad-js-loader'))) */ null /*! END_REPLACE() */,
+				type: /*! REPLACE_BY(TO_SOURCE(MAKE_MANIFEST('type', 'doodad-js-loader'))) */ 'Package' /*! END_REPLACE() */,
+			}, 
+		],
 			
-			create: function create(root, /*optional*/_options, _shared) {
-				"use strict";
+		create: function create(root, /*optional*/_options, _shared) {
+			"use strict";
 
-				const doodad = root.Doodad,
-					loader = doodad.Loader;
+			const doodad = root.Doodad,
+				loader = doodad.Loader;
 
-				return function init(options) {
-					const DD_SCRIPTS = [
-						/*{
-							description: "Load 'doodad-js-io'",
-							dependencies : [
-								{
-									optional: false,
-									conditions: {
-										include: [ // "and" conditions
-											"root.Doodad.Namespaces.get('doodad-js')",
-										],
-										exclude: [ // "or" conditions
-											"root.Doodad.Namespaces.get('doodad-js-io')",
-										],
-										before: false,
-									},
-									initializers: [
-										function(root) {return root.Doodad.Modules.load([{module: 'doodad-js-io'}], {startup: {secret: _shared.SECRET}})},
+			return function init(options) {
+				const DD_SCRIPTS = [
+					/*{
+						description: "Load 'doodad-js-io'",
+						dependencies : [
+							{
+								optional: false,
+								conditions: {
+									include: [ // "and" conditions
+										"root.Doodad.Namespaces.get('doodad-js')",
 									],
-								}
-							]
-						},
-						{
-							description: "Load 'doodad-js-widgets'",
-							dependencies : [
-								{
-									optional: false,
-									conditions: {
-										include: [ // "and" conditions
-											"root.Doodad.Namespaces.get('doodad-js-io')",
-										],
-										exclude: [ // "or" conditions
-											"root.Doodad.Namespaces.get('doodad-js-widgets')",
-										],
-										before: false,
-									},
-									initializers: [
-										function(root) {return root.Doodad.Modules.load([{module: 'doodad-js-widgets'}], {startup: {secret: _shared.SECRET}})},
+									exclude: [ // "or" conditions
+										"root.Doodad.Namespaces.get('doodad-js-io')",
 									],
-								}
-							]
-						},*/
-						{
-							description: "Load MyWidget.js",
-							dependencies : [
-								{
-									optional: false,
-									conditions: {
-										include: [ // "and" conditions
-											//"root.Doodad.Namespaces.get('doodad-js-widgets')",
-										],
-										exclude: [ // "or" conditions
-										],
-										before: false,
-									},
-									//scripts: [
-									//	{
-									//		fileType: 'css',
-									//		fileName: 'index.css',
-									//		baseUrl: function(root) {return root.Doodad.Modules.locate('doodad-js-test', 'widgets/css/')},
-									//		media: 'screen',
-									//	},
-									//],
-									initializers: [
-										function(root) {
-											// TODO: Auto-Load from "src" or "build" or whatever else.
-											return root.Doodad.Modules.load([{module: 'doodad-js-test', path: (root.getOptions().fromSource ? 'src/common/widgets/MyWidget.js' : (root.serverSide ? 'build/widgets/MyWidget.js' : 'widgets/MyWidget.js'))}], {startup: {secret: _shared.SECRET}});
-										},
+									before: false,
+								},
+								initializers: [
+									function(root) {return root.Doodad.Modules.load([{module: 'doodad-js-io'}], {startup: {secret: _shared.SECRET}})},
+								],
+							}
+						]
+					},
+					{
+						description: "Load 'doodad-js-widgets'",
+						dependencies : [
+							{
+								optional: false,
+								conditions: {
+									include: [ // "and" conditions
+										"root.Doodad.Namespaces.get('doodad-js-io')",
 									],
-								}
-							]
-						},
-					];
+									exclude: [ // "or" conditions
+										"root.Doodad.Namespaces.get('doodad-js-widgets')",
+									],
+									before: false,
+								},
+								initializers: [
+									function(root) {return root.Doodad.Modules.load([{module: 'doodad-js-widgets'}], {startup: {secret: _shared.SECRET}})},
+								],
+							}
+						]
+					},*/
+					{
+						description: "Load MyWidget.js",
+						dependencies : [
+							{
+								optional: false,
+								conditions: {
+									include: [ // "and" conditions
+										//"root.Doodad.Namespaces.get('doodad-js-widgets')",
+									],
+									exclude: [ // "or" conditions
+									],
+									before: false,
+								},
+								//scripts: [
+								//	{
+								//		fileType: 'css',
+								//		fileName: 'index.css',
+								//		baseUrl: function(root) {return root.Doodad.Modules.locate('doodad-js-test', 'widgets/css/')},
+								//		media: 'screen',
+								//	},
+								//],
+								initializers: [
+									function(root) {
+										// TODO: Auto-Load from "src" or "build" or whatever else.
+										return root.Doodad.Modules.load([{module: 'doodad-js-test', path: (root.getOptions().fromSource ? 'src/common/widgets/MyWidget.js' : (root.serverSide ? 'build/widgets/MyWidget.js' : 'widgets/MyWidget.js'))}], {startup: {secret: _shared.SECRET}});
+									},
+								],
+							}
+						]
+					},
+				];
 					
-					return loader.loadScripts(DD_SCRIPTS, {secret: _shared.SECRET});
-				};
-			},
-		};
-		return DD_MODULES;
-	},
+				return loader.loadScripts(DD_SCRIPTS, {secret: _shared.SECRET});
+			};
+		},
+	};
+	return DD_MODULES;
 };
+
 //! END_MODULE()

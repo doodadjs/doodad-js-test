@@ -24,60 +24,59 @@
 //	limitations under the License.
 //! END_REPLACE()
 
-module.exports = {
-	add: function add(DD_MODULES) {
-		DD_MODULES = (DD_MODULES || {});
-		DD_MODULES['Test.Pages.Units/index'] = {
-			version: /*! REPLACE_BY(TO_SOURCE(VERSION(MANIFEST("name")))) */ null /*! END_REPLACE()*/,
-			//dependencies: [
-			//	//{
-			//	//	module: 'doodad-js/tests',
-			//	//},
-			//	{
-			//		module: 'doodad-js-safeeval/tests',
-			//	},
-			//],
-			type: 'Application',
+exports.add = function add(DD_MODULES) {
+	DD_MODULES = (DD_MODULES || {});
+	DD_MODULES['Test.Pages.Units/index'] = {
+		version: /*! REPLACE_BY(TO_SOURCE(VERSION(MANIFEST("name")))) */ null /*! END_REPLACE()*/,
+		//dependencies: [
+		//	//{
+		//	//	module: 'doodad-js/tests',
+		//	//},
+		//	{
+		//		module: 'doodad-js-safeeval/tests',
+		//	},
+		//],
+		type: 'Application',
 
-			create: function create(root, /*optional*/_options, _shared) {
-				"use strict";
+		create: function create(root, /*optional*/_options, _shared) {
+			"use strict";
 
-				const doodad = root.Doodad,
-					tools = doodad.Tools,
-					test = doodad.Test,
-					clientIO = doodad.Client.IO,
-					pages = root.Test.Pages,
-					pagesUnits = pages.Units;
+			const doodad = root.Doodad,
+				tools = doodad.Tools,
+				test = doodad.Test,
+				clientIO = doodad.Client.IO,
+				pages = root.Test.Pages,
+				pagesUnits = pages.Units;
 
-				//const __Internal__ = {
-				//};
+			//const __Internal__ = {
+			//};
 				
-				//tools.complete(_shared.Natives, {
-				//});
+			//tools.complete(_shared.Natives, {
+			//});
 
-				global.DD_ROOT = root; // for test purpose
+			global.DD_ROOT = root; // for test purpose
 
-				return function init(options) {
-					const args = tools.getCurrentLocation().args,
-						unitName = args.get('unit');
+			return function init(options) {
+				const args = tools.getCurrentLocation().args,
+					unitName = args.get('unit');
 
-					test.setOutput(new clientIO.DomOutputStream({ flushMode: 'manual' }));
+				test.setOutput(new clientIO.DomOutputStream({ flushMode: 'manual' }));
 
-					return test.run({name: unitName})
-						.nodeify(function(err, dummy) {
-							const loadingElement = document.getElementById('loading');
-							if (loadingElement) {
-								loadingElement.style.display = 'none';
-							};
+				return test.run({name: unitName})
+					.nodeify(function(err, dummy) {
+						const loadingElement = document.getElementById('loading');
+						if (loadingElement) {
+							loadingElement.style.display = 'none';
+						};
 
-							if (err) {
-								throw err;
-							};
-						});
-				};
-			},
-		};
-		return DD_MODULES;
-	},
+						if (err) {
+							throw err;
+						};
+					});
+			};
+		},
+	};
+	return DD_MODULES;
 };
+
 //! END_MODULE()

@@ -24,42 +24,41 @@
 //	limitations under the License.
 //! END_REPLACE()
 
-module.exports = {
-	add: function add(DD_MODULES) {
-		DD_MODULES = (DD_MODULES || {});
-		DD_MODULES['Test.Pages.Browserify/index'] = {
-			version: /*! REPLACE_BY(TO_SOURCE(VERSION(MANIFEST("name")))) */ null /*! END_REPLACE()*/,
-			dependencies: ['doodad-js-templates'],
+exports.add = function add(DD_MODULES) {
+	DD_MODULES = (DD_MODULES || {});
+	DD_MODULES['Test.Pages.Browserify/index'] = {
+		version: /*! REPLACE_BY(TO_SOURCE(VERSION(MANIFEST("name")))) */ null /*! END_REPLACE()*/,
+		dependencies: ['doodad-js-templates'],
 
-			create: function create(root, /*optional*/_options, _shared) {
-				"use strict";
+		create: function create(root, /*optional*/_options, _shared) {
+			"use strict";
 
-				const doodad = root.Doodad,
-					//types = doodad.Types,
-					//tools = doodad.Tools,
-					templates = doodad.Templates,
-					templatesHtml = templates.Html,
-					test = root.Test,
-					pages = test.Pages,
-					pagesBrowserify = pages.Browserify;
+			const doodad = root.Doodad,
+				//types = doodad.Types,
+				//tools = doodad.Tools,
+				templates = doodad.Templates,
+				templatesHtml = templates.Html,
+				test = root.Test,
+				pages = test.Pages,
+				pagesBrowserify = pages.Browserify;
 
-				//const __Internal__ = {
-				//};
+			//const __Internal__ = {
+			//};
 				
-				//tools.complete(_shared.Natives, {
-				//});
+			//tools.complete(_shared.Natives, {
+			//});
 
 
-				pagesBrowserify.REGISTER(doodad.BASE(templatesHtml.PageTemplate.$extend(
-				{
-					$TYPE_NAME: 'Index',
+			pagesBrowserify.REGISTER(doodad.BASE(templatesHtml.PageTemplate.$extend(
+			{
+				$TYPE_NAME: 'Index',
 
-					//create: doodad.OVERRIDE(function create(request, cacheHandler) {
-					//}),
-				})));
-			},
-		};
-		return DD_MODULES;
-	},
+				//create: doodad.OVERRIDE(function create(request, cacheHandler) {
+				//}),
+			})));
+		},
+	};
+	return DD_MODULES;
 };
+
 //! END_MODULE()

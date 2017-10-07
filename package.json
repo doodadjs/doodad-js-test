@@ -14,9 +14,6 @@
     "start": "node ./src/server/units/index.js",
     "test": "node ./src/server/units/index.js unit"
   },
-  "dependencies": {
-    "app-module-path": "^2.2.0"
-  },
   "optionalDependencies": {
     "es6-promise": "^4.1.0"
   },

@@ -26,8 +26,7 @@
 
 const SECRET = Symbol();
 
-const nodeFs = require('fs'),
-	app_module_path = require('app-module-path');
+const nodeFs = require('fs');
 
 const addSearchPaths = function _addSearchPaths(root) {
 	const doodad = root.Doodad,
@@ -62,7 +61,7 @@ const addSearchPaths = function _addSearchPaths(root) {
 					name = folder.path.combine('node_modules').toString();
 					try {
 						nodeFs.statSync(name);
-						app_module_path.addPath(name);
+						modules.addSearchPath(name);
 					} catch(ex) {
 						if (ex.code !== 'ENOENT') {
 							throw ex;
@@ -74,7 +73,7 @@ const addSearchPaths = function _addSearchPaths(root) {
 			// Include application (doodad-js-test) folder as a package.
 			name = path.moveUp(2).toString();
 			nodeFs.statSync(name);
-			app_module_path.addPath(name);
+			modules.addSearchPath(name);
 			
 			// We should have all the search paths we need.
 			break;

@@ -31,7 +31,8 @@ const nodeFs = require('fs');
 const addSearchPaths = function _addSearchPaths(root) {
 	const doodad = root.Doodad,
 		tools = doodad.Tools,
-		files = tools.Files;
+		files = tools.Files,
+		modules = doodad.Modules;
 
 	// Add Node packages search paths for the application
 	const paths = require.main.paths;

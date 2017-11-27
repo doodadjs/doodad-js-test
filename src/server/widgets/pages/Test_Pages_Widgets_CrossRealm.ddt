@@ -9,10 +9,13 @@
 
 	type="Test.Pages.Widgets.CrossRealm"
   defaultIntegrity="auto"
+
+  t:bootTemplateUrl="modulesUri + '/doodad-js-templates/Boot.min.js'"
+  t:doodadPackageUrl="modulesUri + '/doodad-js/doodad-js.js'"
 >
   <!--
 	 doodad-js  -  Object-oriented programming framework
-	 File: crossRealm.ddt - Cross realm tests page template
+	 File: Test_Pages_Widgets_CrossRealm.ddt - Widgets cross realm test page template
 	 Project home: https://github.com/doodadjs/
 	 Trunk: svn checkout svn://svn.code.sf.net/p/doodad-js/code/trunk doodad-js-code
 	 Author: Claude Petit, Quebec city
@@ -35,19 +38,27 @@
 		limitations under the License.
 -->
 
-  <t:variable name="debug" expr="root.getOptions().debug" />
+  <!--<t:variable name="debug" expr="root.getOptions().debug" />-->
+
+  <t:modules>
+    <t:options>
+      <t:option module="Doodad.Modules" key="modulesUri" t:value="modulesUri" />
+      <t:option module="Doodad.Tools.Dates.Moment" key="dataUri" t:value="momentDataUri" />
+    </t:options>
+
+    <t:load module="doodad-js" path="common/Types_UUIDS.js" />
+
+    <t:load path="js/Test_Pages_Widgets_CrossRealm.js" />
+  </t:modules>
 
   <t:html>
     <head>
     </head>
 
     <body>
-      <script async="async" t:src="'../../doodad-js/' + (debug ? 'doodad-js.js' : 'doodad-js.min.js')" />
-      <script async="async" src="../../doodad-js/lib/uuid/uuid.min.js" />
-
-      <script async="async" src="../../lib/es6-promise/es6-promise.min.js" />
-
-      <script async="async" src="js/crossRealm.js" />
+      <!-- TODO: Auto-load with "doodad-js" -->
+      <script async="async" t:src="modulesUri + '/doodad-js/lib/uuid/uuid.min.js'" />
+      <script async="async" t:src="modulesUri + '/lib/es6-promise/es6-promise.min.js'" />
     </body>
   </t:html>
 </t:ddt>

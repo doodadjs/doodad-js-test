@@ -10,8 +10,8 @@
 	type="Test.Pages.Units.Index"
   defaultIntegrity="auto"
   
-  bootTemplateUrl="/app/doodad-js-templates/Boot.min.js"
-  doodadPackageUrl="/app/doodad-js/doodad-js.js"
+  t:bootTemplateUrl="modulesUri + '/doodad-js-templates/Boot.min.js'"
+  t:doodadPackageUrl="modulesUri + '/doodad-js/doodad-js.js'"
 >
 <!--
 	 doodad-js  -  Object-oriented programming framework
@@ -39,11 +39,11 @@
 -->
 
 <!--  <t:variable name="debug" expr="root.getOptions().debug" /> -->
-  
+
   <t:modules>
     <t:options>
-      <t:option module="Doodad.Modules" key="modulesUri" value="../.." />
-      <t:option module="Doodad.Tools.Dates.Moment" key="dataUri" value="/app/lib/moment-timezone/data/" />
+      <t:option module="Doodad.Modules" key="modulesUri" t:value="modulesUri" />
+      <t:option module="Doodad.Tools.Dates.Moment" key="dataUri" t:value="momentDataUri" />
     </t:options>
 
     <t:load module="doodad-js-safeeval" />
@@ -52,7 +52,7 @@
 
     <t:load path="js/Test_Pages_Units_Index.js" />
   </t:modules>
-  
+
   <t:html>
     <head>
       <link rel="stylesheet" type="text/css" href="css/index.css" />
@@ -62,12 +62,12 @@
       <img id="loading" src="img/loading.gif" />
 
       <!-- TODO: Auto-load with "doodad-js" -->
-      <script async="async" src="../../doodad-js/lib/uuid/uuid.min.js" />
-      <script async="async" src="../../lib/es6-promise/es6-promise.min.js" />
+      <script async="async" t:src="modulesUri + '/doodad-js/lib/uuid/uuid.min.js'" />
+      <script async="async" t:src="modulesUri + '/lib/es6-promise/es6-promise.min.js'" />
 
       <!-- TODO: Auto-load with "doodad-js-dates" -->
-      <script src="../../lib/moment/moment.min.js" />
-      <script src="../../lib/moment-timezone/moment-timezone.min.js" />
+      <script t:src="modulesUri + '/lib/moment/moment.min.js'" />
+      <script t:src="modulesUri + '/lib/moment-timezone/moment-timezone.min.js'" />
     </body>
   </t:html>
 </t:ddt>

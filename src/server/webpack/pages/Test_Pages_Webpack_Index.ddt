@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE ddt SYSTEM "../../../node_modules/doodad-js-templates/src/common/res/schemas/ddt/html5_ddt.dtd">
+<!DOCTYPE ddt SYSTEM "../../../../node_modules/doodad-js-templates/src/common/res/schemas/ddt/html5_ddt.dtd">
 <t:ddt xmlns="http://www.doodad-js.local/schemas/html5"
        xmlns:t="http://www.doodad-js.local/schemas/ddt"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.doodad-js.local/schemas/ddt ../../../node_modules/doodad-js-templates/src/common/res/schemas/ddt/ddt.xsd"
+       xsi:schemaLocation="http://www.doodad-js.local/schemas/ddt ../../../../node_modules/doodad-js-templates/src/common/res/schemas/ddt/ddt.xsd"
        type="Test.Pages.Webpack.Index"
        defaultIntegrity="auto"
  >
@@ -31,6 +31,7 @@
           See the License for the specific language governing permissions and
           limitations under the License.
   -->
+
   <t:variable name="debug" expr="root.getOptions().debug" />
 
   <t:html>
@@ -38,7 +39,7 @@
     </head>
 
     <body>
-      <script async="async" src="../../lib/es6-promise/es6-promise.min.js" />
+      <script async="async" t:src="modulesUri + '/lib/es6-promise/es6-promise.min.js'" />
 
       <script async="async" t:src="(debug ? 'bundle.js' : 'bundle.min.js')" />
     </body>

@@ -61,7 +61,6 @@
 
       <!-- TODO: Auto-load with "doodad-js" -->
       <script async="async" t:src="modulesUri + '/doodad-js/lib/uuid/uuid.min.js'" />
-      <script async="async" t:src="modulesUri + '/lib/es6-promise/es6-promise.min.js'" />
 
       <iframe id="crossRealm" src="crossRealm.ddtx"></iframe>
 

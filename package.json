@@ -14,9 +14,6 @@
     "start": "node ./src/server/units/index.js",
     "test": "node ./src/server/units/index.js unit"
   },
-  "optionalDependencies": {
-    "es6-promise": "^4.1.0"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/doodadjs/doodad-js-test.git"

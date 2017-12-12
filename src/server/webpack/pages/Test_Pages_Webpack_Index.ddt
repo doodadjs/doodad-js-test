@@ -39,8 +39,6 @@
     </head>
 
     <body>
-      <script async="async" t:src="modulesUri + '/lib/es6-promise/es6-promise.min.js'" />
-
       <script async="async" t:src="(debug ? 'bundle.js' : 'bundle.min.js')" />
     </body>
   </t:html>

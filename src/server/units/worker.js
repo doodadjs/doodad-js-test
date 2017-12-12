@@ -117,16 +117,6 @@ module.exports = function(root, options, _shared) {
 			console.warn("The library 'sax' is not available. Some features, like page templates, will be disabled.");
 		};
 		
-		let promisePath;
-		try {
-			promisePath = files.Path.parse(require.resolve('es6-promise/package.json'))
-				.set({file: ''})
-				.combine('./dist/', {os: 'linux'});
-			nodeFs.statSync(promisePath.toString());
-		} catch(ex) {
-			console.warn("The library 'es6-promise' is not available. Serving the library to the client browser will be disabled.");
-		};
-
 		let momentPath;
 		try {
 			momentPath = files.Path.parse(require.resolve('moment/package.json'))
@@ -680,18 +670,6 @@ module.exports = function(root, options, _shared) {
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,
-											},
-										],
-									},
-									'/lib/es6-promise': promisePath && {
-										handlers: [
-											{
-												handler: nodejs.Server.Http.StaticPage,
-												path: promisePath,
-												showFolders: true,
-												mimeTypes: staticMimeTypes,
-												forceCaseSensitive: forceCaseSensitive,
-												variables: staticVariables,
 											},
 										],
 									},

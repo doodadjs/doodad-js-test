@@ -147,7 +147,7 @@ module.exports = function(root, options, _shared) {
 			console.warn("The data of the library 'moment-timezone' are not available. Serving the library's data to the client browser will be disabled.");
 		};
 
-		const staticMimeTypes = ['application/javascript; charset=utf-8', 'application/x-javascript; charset=utf-8', 'text/html; charset=utf-8', 'text/css; charset=utf-8', 'application/json; charset=utf-8', 'text/json; charset=utf-8', '*/*'];
+		const staticMimeTypes = ['application/javascript; charset=utf-8', 'application/x-javascript; charset=utf-8', 'text/html; charset=utf-8', 'text/css; charset=utf-8', 'application/json; charset=utf-8', 'text/json; charset=utf-8', 'application/xml; charset=utf-8', 'text/xml; charset=utf-8', '*/*'];
 
 		const forceCaseSensitive = !tools.getOS().caseSensitive;
 

@@ -237,3 +237,21 @@ GET /app/doodad-js-test/units/index.ddtx HTTP/1.0
 Accept: application/xml
 
 */
+
+/*
+GET /app/doodad-js-test/units/index.ddtx HTTP/1.0
+Accept: application/javascript
+
+*/
+
+/*
+GET /app/doodad-js-test/units/index.ddtx HTTP/1.0
+Accept: text/html, application/xml
+
+*/
+
+/*
+GET /app/doodad-js-test/units/index.ddtx HTTP/1.0
+Accept: application/xml, text/html
+
+*/

@@ -275,10 +275,10 @@ module.exports = function(root, options, _shared) {
 					}, function(wid, fn, /*optional*/timeout) {
 						if (ready) {
 							if (!types.isInteger(wid)) {
-								throw new types.TypeError("Invalid worker id.");
+								throw new types.ValueError("Invalid worker id.");
 							};
 							if (!types.isCustomFunction(fn)) {
-								throw new types.TypeError("Invalid function.");
+								throw new types.ValueError("Invalid function.");
 							};
 							if (cpus > 1) {
 								return messenger.callService('MyPrivateService', 'run', [fn.toString()], {

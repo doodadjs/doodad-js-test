@@ -56,7 +56,7 @@ module.exports = function(root, options, _shared) {
 					},
 					{
 						module: '@doodad-js/safeeval',
-						path: 'test/test_package.js',
+						path: 'test/safeeval_test.js',
 					},
 				], tools.depthExtend(15, options, {startup: {secret: _shared.SECRET}}))
 				.then(function(dummy) {

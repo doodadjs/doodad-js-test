@@ -45,7 +45,7 @@ const addSearchPaths = function _addSearchPaths(root) {
 
 		// Get the list of packages in that "node_modules" folder
 		try {
-			folders = files.readdir(path, {depth: 0});
+			folders = files.readdir(path, {depth: 1}); // "depth=1" for scoped modules
 		} catch(ex) {
 			if (ex.code !== 'ENOENT') {
 				throw ex;
@@ -61,7 +61,8 @@ const addSearchPaths = function _addSearchPaths(root) {
 			for (let j = 0; j < folders.length; j++) {
 				const folder = folders[j];
 				if (!folder.isFile) {
-					name = folder.path.combine('node_modules').toString();
+					// TODO: Check if scoped module (parent folder starts with @) or not.
+					name = folder.path.combine('node_modules').toApiString();
 					try {
 						nodeFs.statSync(name);
 						modules.addSearchPath(name);
@@ -113,7 +114,7 @@ const options = {
 	startup: {secret: SECRET},
 };
 
-require('doodad-js').createRoot(null, options, startup);
+require('@doodad-js/core').createRoot(null, options, startup);
 
 /* Cross-Origin (simple request) : Should return an index file with appropriated headers
 GET /app/doodad-js-test/ HTTP/1.0

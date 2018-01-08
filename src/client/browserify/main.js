@@ -22,16 +22,16 @@
 
 window.onload = function() {
 	const modules = {};
-	require('doodad-js-unicode').add(modules);
-	require('doodad-js-locale').add(modules);
-	require('doodad-js-dates').add(modules);
+	require('@doodad-js/unicode').add(modules);
+	require('@doodad-js/locale').add(modules);
+	require('@doodad-js/dates').add(modules);
 	
 	const options = {};
 	options['Doodad.Modules'] = {
-		modulesUri: '../..',
+		modulesUri: '../../..',
 	};
 	
-	require('doodad-js').createRoot(modules, options)
+	require('@doodad-js/core').createRoot(modules, options)
 		.then(function(root) {
 			const tools = root.Doodad.Tools;
 			tools.alert(tools.Dates.strftime("%c", new Date()));

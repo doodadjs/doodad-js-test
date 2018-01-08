@@ -28,11 +28,6 @@ exports.add = function add(DD_MODULES) {
 	DD_MODULES = (DD_MODULES || {});
 	DD_MODULES['Test.Pages.Widgets/index'] = {
 		version: /*! REPLACE_BY(TO_SOURCE(VERSION(MANIFEST("name")))) */ null /*! END_REPLACE()*/,
-		//dependencies: [
-		//	//{
-		//	//	module: 'doodad-js/tests',
-		//	//},
-		//],
 		type: 'Application',
 
 		create: function create(root, /*optional*/_options, _shared) {
@@ -93,19 +88,19 @@ exports.add = function add(DD_MODULES) {
 
 						return modules.load([
 							/*{
-								module: 'doodad-js-unicode',
+								module: '@doodad-js/unicode',
 							},
 							{
-								module: 'doodad-js-locale',
+								module: '@doodad-js/locale',
 							},
 							{
-								module: 'doodad-js-safeeval',
+								module: '@doodad-js/safeeval',
 							},
 							{
-								module: 'doodad-js-loader',  NOTE: Loaded by "MyWidget_loader.js"
+								module: '@doodad-js/loader',  NOTE: Loaded by "MyWidget_loader.js"
 							},*/
 							{
-								module: 'doodad-js-test',
+								module: '@doodad-js/test',
 								path: 'widgets/MyWidget_loader.js',
 							},
 						], {startup: {secret: _shared.SECRET}});

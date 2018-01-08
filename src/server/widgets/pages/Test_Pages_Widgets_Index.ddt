@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE ddt SYSTEM "../../../node_modules/doodad-js-templates/src/common/res/schemas/ddt/html5_ddt.dtd">
+<!DOCTYPE ddt SYSTEM "../../../../../../@doodad-js/templates/src/common/res/schemas/ddt/html5_ddt.dtd">
 <t:ddt
 	xmlns="http://www.doodad-js.local/schemas/html5"
 	xmlns:t="http://www.doodad-js.local/schemas/ddt"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation=
-		"http://www.doodad-js.local/schemas/ddt ../../../node_modules/doodad-js-templates/src/common/res/schemas/ddt/ddt.xsd"
+		"http://www.doodad-js.local/schemas/ddt ../../../../../../@doodad-js/templates/src/common/res/schemas/ddt/ddt.xsd"
 
 	type="Test.Pages.Widgets.Index"
   defaultIntegrity="auto"
 
-  t:bootTemplateUrl="modulesUri + '/doodad-js-templates/Boot.min.js'"
-  t:doodadPackageUrl="modulesUri + '/doodad-js/doodad-js.js'"
+  t:bootTemplateUrl="modulesUri + '/@doodad-js/templates/Boot.min.js'"
+  t:doodadPackageUrl="modulesUri + '/@doodad-js/core/core.js'"
 >
   <!--
 	 doodad-js  -  Object-oriented programming framework
@@ -46,7 +46,7 @@
       <t:option module="Doodad.Tools.Dates.Moment" key="dataUri" t:value="momentDataUri" />
     </t:options>
 
-    <t:load module="doodad-js" path="common/Types_UUIDS.js" />
+    <t:load module="@doodad-js/core" path="common/Types_UUIDS.js" />
 
     <t:load path="js/Test_Pages_Widgets_Index.js" />
   </t:modules>
@@ -60,7 +60,7 @@
       <img id="loading" src="img/loading.gif" />
 
       <!-- TODO: Auto-load with "doodad-js" -->
-      <script async="async" t:src="modulesUri + '/doodad-js/lib/uuid/uuid.min.js'" />
+      <script async="async" t:src="modulesUri + '/@doodad-js/core/lib/uuid/uuid.min.js'" />
 
       <iframe id="crossRealm" src="crossRealm.ddtx"></iframe>
 

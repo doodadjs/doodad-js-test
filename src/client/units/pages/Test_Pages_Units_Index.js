@@ -28,14 +28,6 @@ exports.add = function add(DD_MODULES) {
 	DD_MODULES = (DD_MODULES || {});
 	DD_MODULES['Test.Pages.Units/index'] = {
 		version: /*! REPLACE_BY(TO_SOURCE(VERSION(MANIFEST("name")))) */ null /*! END_REPLACE()*/,
-		//dependencies: [
-		//	//{
-		//	//	module: 'doodad-js/tests',
-		//	//},
-		//	{
-		//		module: 'doodad-js-safeeval/tests',
-		//	},
-		//],
 		type: 'Application',
 
 		create: function create(root, /*optional*/_options, _shared) {

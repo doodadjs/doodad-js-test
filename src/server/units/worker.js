@@ -109,7 +109,7 @@ module.exports = function(root, options, _shared) {
 		
 		let saxPath;
 		try {
-			saxPath = files.Path.parse(require.resolve('sax/package.json'))
+			saxPath = files.Path.parse(modules.resolve('sax/package.json'))
 				.set({file: ''})
 				.combine('./lib/', {os: 'linux'});
 			nodeFs.statSync(saxPath.toString());
@@ -119,7 +119,7 @@ module.exports = function(root, options, _shared) {
 		
 		let momentPath;
 		try {
-			momentPath = files.Path.parse(require.resolve('moment/package.json'))
+			momentPath = files.Path.parse(modules.resolve('moment/package.json'))
 				.set({file: ''})
 				.combine('./min/', {os: 'linux'});
 			nodeFs.statSync(momentPath.toString());
@@ -129,7 +129,7 @@ module.exports = function(root, options, _shared) {
 
 		let momentTzPath;
 		try {
-			momentTzPath = files.Path.parse(require.resolve('moment-timezone/package.json'))
+			momentTzPath = files.Path.parse(modules.resolve('moment-timezone/package.json'))
 				.set({file: ''})
 				.combine('./builds/', {os: 'linux'});
 			nodeFs.statSync(momentTzPath.toString());
@@ -139,7 +139,7 @@ module.exports = function(root, options, _shared) {
 
 		let momentTzDataPath;
 		try {
-			momentTzDataPath = files.Path.parse(require.resolve('moment-timezone/package.json'))
+			momentTzDataPath = files.Path.parse(modules.resolve('moment-timezone/package.json'))
 				.set({file: ''})
 				.combine('./data/packed/', {os: 'linux'});
 			nodeFs.statSync(momentTzPath.toString());
@@ -152,7 +152,7 @@ module.exports = function(root, options, _shared) {
 		const forceCaseSensitive = !tools.getOS().caseSensitive;
 
 		const staticVariables = {
-			modulesUri: "../..",
+			modulesUri: "../../..",
 			momentDataUri: "/app/lib/moment-timezone/data/",
 		};
 
@@ -182,7 +182,7 @@ module.exports = function(root, options, _shared) {
 						handlers: [
 							{
 								handler: server.Http.RedirectHandler,
-								targetUrl: '/app/doodad-js-test/units/index.ddtx',
+								targetUrl: '/app/@doodad-js/test/units/index.ddtx',
 							},
 						],
 					},
@@ -396,7 +396,7 @@ module.exports = function(root, options, _shared) {
 							},
 							{
 								handler: new server.Http.Routes({
-									'/doodad-js-test/widgets': {
+									'/@doodad-js/test/widgets': {
 										handlers: [
 											{
 												handler: server.Http.RedirectHandler,
@@ -404,7 +404,7 @@ module.exports = function(root, options, _shared) {
 											}
 										],
 									},
-									'/doodad-js-test/units': {
+									'/@doodad-js/test/units': {
 										handlers: [
 											{
 												handler: server.Http.RedirectHandler,
@@ -412,7 +412,7 @@ module.exports = function(root, options, _shared) {
 											},
 										],
 									},
-									'/doodad-js-test/browserify': {
+									'/@doodad-js/test/browserify': {
 										handlers: [
 											{
 												handler: server.Http.RedirectHandler,
@@ -420,7 +420,7 @@ module.exports = function(root, options, _shared) {
 											},
 										],
 									},
-									'/doodad-js-test/webpack': {
+									'/@doodad-js/test/webpack': {
 										handlers: [
 											{
 												handler: server.Http.RedirectHandler,
@@ -428,11 +428,11 @@ module.exports = function(root, options, _shared) {
 											},
 										],
 									},
-									'/doodad-js': {
+									'/@doodad-js/core': {
 										handlers: [
 											{
 												handler: nodejs.Server.Http.StaticPage,
-												path: files.Path.parse(require.resolve('doodad-js')).set({file: null}).combine('./dist/doodad-js/', {os: 'linux'}),
+												path: files.Path.parse(modules.resolve('@doodad-js/core')).set({file: null}).combine('./dist/@doodad-js/core/', {os: 'linux'}),
 												showFolders: true,
 												//mimeTypes: ['application/javascript; charset=utf-8', 'application/x-javascript; charset=utf-8'],  // TEST FILTER ON FOLDER DISPLAY
 												mimeTypes: staticMimeTypes,
@@ -441,11 +441,11 @@ module.exports = function(root, options, _shared) {
 											},
 										],
 									},
-									'/doodad-js-dates': {
+									'/@doodad-js/dates': {
 										handlers: [
 											{
 												handler: nodejs.Server.Http.StaticPage,
-												path: files.Path.parse(require.resolve('doodad-js-dates')).set({file: null}).combine('./dist/doodad-js-dates/', {os: 'linux'}),
+												path: files.Path.parse(modules.resolve('@doodad-js/dates')).set({file: null}).combine('./dist/@doodad-js/dates/', {os: 'linux'}),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,
@@ -453,11 +453,11 @@ module.exports = function(root, options, _shared) {
 											},
 										],
 									},
-									'/doodad-js-io': {
+									'/@doodad-js/io': {
 										handlers: [
 											{
 												handler: nodejs.Server.Http.StaticPage,
-												path: files.Path.parse(require.resolve('doodad-js-io')).set({file: null}).combine('./dist/doodad-js-io/', {os: 'linux'}),
+												path: files.Path.parse(modules.resolve('@doodad-js/io')).set({file: null}).combine('./dist/@doodad-js/io/', {os: 'linux'}),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,
@@ -465,11 +465,11 @@ module.exports = function(root, options, _shared) {
 											},
 										],
 									},
-									'/doodad-js-locale': {
+									'/@doodad-js/locale': {
 										handlers: [
 											{
 												handler: nodejs.Server.Http.StaticPage,
-												path: files.Path.parse(require.resolve('doodad-js-locale')).set({file: null}).combine('./dist/doodad-js-locale/', {os: 'linux'}),
+												path: files.Path.parse(modules.resolve('@doodad-js/locale')).set({file: null}).combine('./dist/@doodad-js/locale/', {os: 'linux'}),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,
@@ -477,11 +477,11 @@ module.exports = function(root, options, _shared) {
 											},
 										],
 									},
-									'/doodad-js-mime': {
+									'/@doodad-js/mime': {
 										handlers: [
 											{
 												handler: nodejs.Server.Http.StaticPage,
-												path: files.Path.parse(require.resolve('doodad-js-mime')).set({file: null}).combine('./dist/doodad-js-mime/', {os: 'linux'}),
+												path: files.Path.parse(modules.resolve('@doodad-js/mime')).set({file: null}).combine('./dist/@doodad-js/mime/', {os: 'linux'}),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,
@@ -489,11 +489,11 @@ module.exports = function(root, options, _shared) {
 											},
 										],
 									},
-									'/doodad-js-minifiers': {
+									'/@doodad-js/minifiers': {
 										handlers: [
 											{
 												handler: nodejs.Server.Http.StaticPage,
-												path: files.Path.parse(require.resolve('doodad-js-minifiers')).set({file: null}).combine('./dist/doodad-js-minifiers/', {os: 'linux'}),
+												path: files.Path.parse(modules.resolve('@doodad-js/minifiers')).set({file: null}).combine('./dist/@doodad-js/minifiers/', {os: 'linux'}),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,
@@ -501,11 +501,11 @@ module.exports = function(root, options, _shared) {
 											},
 										],
 									},
-									'/doodad-js-templates': {
+									'/@doodad-js/templates': {
 										handlers: [
 											{
 												handler: nodejs.Server.Http.StaticPage,
-												path: files.Path.parse(require.resolve('doodad-js-templates')).set({file: null}).combine('./dist/doodad-js-templates/', {os: 'linux'}),
+												path: files.Path.parse(modules.resolve('@doodad-js/templates')).set({file: null}).combine('./dist/@doodad-js/templates/', {os: 'linux'}),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,
@@ -513,11 +513,11 @@ module.exports = function(root, options, _shared) {
 											},
 										],
 									},
-									'/doodad-js-templates/Boot.min.js': {
+									'/@doodad-js/templates/Boot.min.js': {
 										handlers: [
 											{
 												handler: nodejs.Server.Http.JavascriptPage,
-												path: files.Path.parse(require.resolve('doodad-js-templates')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/res/js/Boot.templ.js' : './build/server/res/js/Boot.templ.js'), {os: 'linux'}),
+												path: files.Path.parse(modules.resolve('@doodad-js/templates')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/res/js/Boot.templ.js' : './build/server/res/js/Boot.templ.js'), {os: 'linux'}),
 												showFolders: false,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,
@@ -525,11 +525,11 @@ module.exports = function(root, options, _shared) {
 											},
 										],
 									},
-									'/doodad-js-test': {
+									'/@doodad-js/test': {
 										handlers: [
 											{
 												handler: nodejs.Server.Http.StaticPage,
-												path: files.Path.parse(require.resolve('doodad-js-test')).set({file: null}).combine('./dist/doodad-js-test/', {os: 'linux'}),
+												path: files.Path.parse(modules.resolve('@doodad-js/test')).set({file: null}).combine('./dist/@doodad-js/test/', {os: 'linux'}),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,
@@ -537,12 +537,12 @@ module.exports = function(root, options, _shared) {
 											},
 										],
 									},
-									'/doodad-js-test/units/index.ddtx': {
+									'/@doodad-js/test/units/index.ddtx': {
 										handlers: [
 											{
 												handler: nodejs.Server.Http.StaticPage,
 												// TODO: Auto-build
-												path: files.Path.parse(require.resolve('doodad-js-test')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/units/pages/Test_Pages_Units_Index.ddt' : './build/server/units/pages/Test_Pages_Units_Index.ddtx'), {os: 'linux'}),
+												path: files.Path.parse(modules.resolve('@doodad-js/test')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/units/pages/Test_Pages_Units_Index.ddt' : './build/server/units/pages/Test_Pages_Units_Index.ddtx'), {os: 'linux'}),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,
@@ -550,12 +550,12 @@ module.exports = function(root, options, _shared) {
 											},
 										],
 									},
-									'/doodad-js-test/widgets/index.ddtx': {
+									'/@doodad-js/test/widgets/index.ddtx': {
 										handlers: [
 											{
 												handler: nodejs.Server.Http.StaticPage,
 												// TODO: Auto-build
-												path: files.Path.parse(require.resolve('doodad-js-test')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/widgets/pages/Test_Pages_Widgets_Index.ddt' : './build/server/widgets/pages/Test_Pages_Widgets_Index.ddtx'), {os: 'linux'}),
+												path: files.Path.parse(modules.resolve('@doodad-js/test')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/widgets/pages/Test_Pages_Widgets_Index.ddt' : './build/server/widgets/pages/Test_Pages_Widgets_Index.ddtx'), {os: 'linux'}),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,
@@ -563,12 +563,12 @@ module.exports = function(root, options, _shared) {
 											},
 										],
 									},
-									'/doodad-js-test/widgets/crossRealm.ddtx': {
+									'/@doodad-js/test/widgets/crossRealm.ddtx': {
 										handlers: [
 											{
 												handler: nodejs.Server.Http.StaticPage,
 												// TODO: Auto-build
-												path: files.Path.parse(require.resolve('doodad-js-test')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/widgets/pages/Test_Pages_Widgets_CrossRealm.ddt' : './build/server/widgets/pages/Test_Pages_Widgets_CrossRealm.ddtx'), {os: 'linux'}),
+												path: files.Path.parse(modules.resolve('@doodad-js/test')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/widgets/pages/Test_Pages_Widgets_CrossRealm.ddt' : './build/server/widgets/pages/Test_Pages_Widgets_CrossRealm.ddtx'), {os: 'linux'}),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,
@@ -576,12 +576,12 @@ module.exports = function(root, options, _shared) {
 											},
 										],
 									},
-									'/doodad-js-test/browserify/index.ddtx': {
+									'/@doodad-js/test/browserify/index.ddtx': {
 										handlers: [
 											{
 												handler: nodejs.Server.Http.StaticPage,
 												// TODO: Auto-build
-												path: files.Path.parse(require.resolve('doodad-js-test')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/browserify/pages/Test_Pages_Browserify_Index.ddt' : './build/server/browserify/pages/Test_Pages_Browserify_Index.ddtx'), {os: 'linux'}),
+												path: files.Path.parse(modules.resolve('@doodad-js/test')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/browserify/pages/Test_Pages_Browserify_Index.ddt' : './build/server/browserify/pages/Test_Pages_Browserify_Index.ddtx'), {os: 'linux'}),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,
@@ -589,12 +589,12 @@ module.exports = function(root, options, _shared) {
 											},
 										],
 									},
-									'/doodad-js-test/webpack/index.ddtx': {
+									'/@doodad-js/test/webpack/index.ddtx': {
 										handlers: [
 											{
 												handler: nodejs.Server.Http.StaticPage,
 												// TODO: Auto-build
-												path: files.Path.parse(require.resolve('doodad-js-test')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/webpack/pages/Test_Pages_Webpack_Index.ddt' : './build/server/webpack/pages/Test_Pages_Webpack_Index.ddtx'), {os: 'linux'}),
+												path: files.Path.parse(modules.resolve('@doodad-js/test')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/webpack/pages/Test_Pages_Webpack_Index.ddt' : './build/server/webpack/pages/Test_Pages_Webpack_Index.ddtx'), {os: 'linux'}),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,
@@ -602,11 +602,11 @@ module.exports = function(root, options, _shared) {
 											},
 										],
 									},
-									'/doodad-js-widgets': {
+									'/@doodad-js/widgets': {
 										handlers: [
 											{
 												handler: nodejs.Server.Http.StaticPage,
-												path: files.Path.parse(require.resolve('doodad-js-widgets')).set({file: null}).combine('./dist/doodad-js-widgets/', {os: 'linux'}),
+												path: files.Path.parse(modules.resolve('@doodad-js/widgets')).set({file: null}).combine('./dist/@doodad-js/widgets/', {os: 'linux'}),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,
@@ -614,11 +614,11 @@ module.exports = function(root, options, _shared) {
 											},
 										],
 									},
-									'/doodad-js-xml': {
+									'/@doodad-js/xml': {
 										handlers: [
 											{
 												handler: nodejs.Server.Http.StaticPage,
-												path: files.Path.parse(require.resolve('doodad-js-xml')).set({file: null}).combine('./dist/doodad-js-xml/', {os: 'linux'}),
+												path: files.Path.parse(modules.resolve('@doodad-js/xml')).set({file: null}).combine('./dist/@doodad-js/xml/', {os: 'linux'}),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,
@@ -626,11 +626,11 @@ module.exports = function(root, options, _shared) {
 											},
 										],
 									},
-									'/doodad-js-loader': {
+									'/@doodad-js/loader': {
 										handlers: [
 											{
 												handler: nodejs.Server.Http.StaticPage,
-												path: files.Path.parse(require.resolve('doodad-js-loader')).set({file: null}).combine('./dist/doodad-js-loader/', {os: 'linux'}),
+												path: files.Path.parse(modules.resolve('@doodad-js/loader')).set({file: null}).combine('./dist/@doodad-js/loader/', {os: 'linux'}),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,
@@ -638,11 +638,11 @@ module.exports = function(root, options, _shared) {
 											},
 										],
 									},
-									'/doodad-js-safeeval': {
+									'/@doodad-js/safeeval': {
 										handlers: [
 											{
 												handler: nodejs.Server.Http.StaticPage,
-												path: files.Path.parse(require.resolve('doodad-js-safeeval')).set({file: null}).combine('./dist/doodad-js-safeeval/', {os: 'linux'}),
+												path: files.Path.parse(modules.resolve('@doodad-js/safeeval')).set({file: null}).combine('./dist/@doodad-js/safeeval/', {os: 'linux'}),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,
@@ -650,11 +650,11 @@ module.exports = function(root, options, _shared) {
 											},
 										],
 									},
-									'/doodad-js-unicode': {
+									'/@doodad-js/unicode': {
 										handlers: [
 											{
 												handler: nodejs.Server.Http.StaticPage,
-												path: files.Path.parse(require.resolve('doodad-js-unicode')).set({file: null}).combine('./dist/doodad-js-unicode/', {os: 'linux'}),
+												path: files.Path.parse(modules.resolve('@doodad-js/unicode')).set({file: null}).combine('./dist/@doodad-js/unicode/', {os: 'linux'}),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,
@@ -786,10 +786,10 @@ module.exports = function(root, options, _shared) {
 	
 	return modules.load([
 			{
-				module: 'doodad-js-cluster',
+				module: '@doodad-js/cluster',
 			},
 			{
-				module: 'doodad-js-http_jsonrpc',
+				module: '@doodad-js/http_jsonrpc',
 			},
 		], tools.depthExtend(15, options, {startup: {secret: _shared.SECRET}}))
 			.then(startup);

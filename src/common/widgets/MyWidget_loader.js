@@ -30,9 +30,9 @@ exports.add = function add(DD_MODULES) {
 		version: /*! REPLACE_BY(TO_SOURCE(VERSION(MANIFEST("name")))) */ null /*! END_REPLACE()*/,
 		dependencies: [
 			{
-				name: 'doodad-js-loader',
-				version: /*! REPLACE_BY(TO_SOURCE(VERSION('doodad-js-loader'))) */ null /*! END_REPLACE() */,
-				type: /*! REPLACE_BY(TO_SOURCE(MAKE_MANIFEST('type', 'doodad-js-loader'))) */ 'Package' /*! END_REPLACE() */,
+				name: '@doodad-js/loader',
+				version: /*! REPLACE_BY(TO_SOURCE(VERSION('@doodad-js/loader'))) */ null /*! END_REPLACE() */,
+				type: /*! REPLACE_BY(TO_SOURCE(MAKE_MANIFEST('type', '@doodad-js/loader'))) */ 'Package' /*! END_REPLACE() */,
 			}, 
 		],
 			
@@ -45,41 +45,41 @@ exports.add = function add(DD_MODULES) {
 			return function init(options) {
 				const DD_SCRIPTS = [
 					/*{
-						description: "Load 'doodad-js-io'",
+						description: "Load '@doodad-js/io'",
 						dependencies : [
 							{
 								optional: false,
 								conditions: {
 									include: [ // "and" conditions
-										"root.Doodad.Namespaces.get('doodad-js')",
+										"root.Doodad.Namespaces.get('@doodad-js/core')",
 									],
 									exclude: [ // "or" conditions
-										"root.Doodad.Namespaces.get('doodad-js-io')",
+										"root.Doodad.Namespaces.get('@doodad-js/io')",
 									],
 									before: false,
 								},
 								initializers: [
-									function(root) {return root.Doodad.Modules.load([{module: 'doodad-js-io'}], {startup: {secret: _shared.SECRET}})},
+									function(root) {return root.Doodad.Modules.load([{module: '@doodad-js/io'}], {startup: {secret: _shared.SECRET}})},
 								],
 							}
 						]
 					},
 					{
-						description: "Load 'doodad-js-widgets'",
+						description: "Load '@doodad-js/widgets'",
 						dependencies : [
 							{
 								optional: false,
 								conditions: {
 									include: [ // "and" conditions
-										"root.Doodad.Namespaces.get('doodad-js-io')",
+										"root.Doodad.Namespaces.get('@doodad-js/io')",
 									],
 									exclude: [ // "or" conditions
-										"root.Doodad.Namespaces.get('doodad-js-widgets')",
+										"root.Doodad.Namespaces.get('@doodad-js/widgets')",
 									],
 									before: false,
 								},
 								initializers: [
-									function(root) {return root.Doodad.Modules.load([{module: 'doodad-js-widgets'}], {startup: {secret: _shared.SECRET}})},
+									function(root) {return root.Doodad.Modules.load([{module: '@doodad-js/widgets'}], {startup: {secret: _shared.SECRET}})},
 								],
 							}
 						]
@@ -91,7 +91,7 @@ exports.add = function add(DD_MODULES) {
 								optional: false,
 								conditions: {
 									include: [ // "and" conditions
-										//"root.Doodad.Namespaces.get('doodad-js-widgets')",
+										//"root.Doodad.Namespaces.get('@doodad-js/widgets')",
 									],
 									exclude: [ // "or" conditions
 									],
@@ -108,7 +108,7 @@ exports.add = function add(DD_MODULES) {
 								initializers: [
 									function(root) {
 										// TODO: Auto-Load from "src" or "build" or whatever else.
-										return root.Doodad.Modules.load([{module: 'doodad-js-test', path: (root.getOptions().fromSource ? 'src/common/widgets/MyWidget.js' : (root.serverSide ? 'build/widgets/MyWidget.js' : 'widgets/MyWidget.js'))}], {startup: {secret: _shared.SECRET}});
+										return root.Doodad.Modules.load([{module: '@doodad-js/test', path: (root.getOptions().fromSource ? 'src/common/widgets/MyWidget.js' : (root.serverSide ? 'build/widgets/MyWidget.js' : 'widgets/MyWidget.js'))}], {startup: {secret: _shared.SECRET}});
 									},
 								],
 							}

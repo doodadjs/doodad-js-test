@@ -48,15 +48,15 @@ module.exports = function(root, options, _shared) {
 		if (unitName !== undefined) {
 			return modules.load([
 					/*{
-						module: 'doodad-js',
-						path: 'test/doodad-js_tests.js',
+						module: '@doodad-js/core',
+						path: 'test/test_package.js',
 					},*/
 					{
-						module: 'doodad-js-safeeval',
+						module: '@doodad-js/safeeval',
 					},
 					{
-						module: 'doodad-js-safeeval',
-						path: 'test/doodad-js-safeeval_tests.js',
+						module: '@doodad-js/safeeval',
+						path: 'test/test_package.js',
 					},
 				], tools.depthExtend(15, options, {startup: {secret: _shared.SECRET}}))
 				.then(function(dummy) {
@@ -351,13 +351,13 @@ module.exports = function(root, options, _shared) {
 
 	return modules.load([
 			{
-				module: 'doodad-js-http',
+				module: '@doodad-js/http',
 			},
 			{
-				module: 'doodad-js-cluster',
+				module: '@doodad-js/cluster',
 			},
 			{
-				module: 'doodad-js-terminal',
+				module: '@doodad-js/terminal',
 			},
 		], tools.depthExtend(15, options, {startup: {secret: _shared.SECRET}}))
 			.then(startup);

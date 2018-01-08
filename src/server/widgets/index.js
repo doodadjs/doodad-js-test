@@ -101,4 +101,4 @@ const options = {
 	startup: {secret: SECRET},
 };
 
-require('doodad-js').createRoot(null, options, startup);
+require('@doodad-js/core').createRoot(null, options, startup);

@@ -31,19 +31,19 @@ exports.add = function add(DD_MODULES) {
 		version: /*! REPLACE_BY(TO_SOURCE(VERSION(MANIFEST("name")))) */ null /*! END_REPLACE()*/,
 		dependencies: [
 			{
-				name: 'doodad-js',
-				version: /*! REPLACE_BY(TO_SOURCE(VERSION('doodad-js'))) */ null /*! END_REPLACE() */,
-				type: /*! REPLACE_BY(TO_SOURCE(MAKE_MANIFEST('type', 'doodad-js'))) */ 'Package' /*! END_REPLACE() */,
+				name: '@doodad-js/core',
+				version: /*! REPLACE_BY(TO_SOURCE(VERSION('@doodad-js/core'))) */ null /*! END_REPLACE() */,
+				type: /*! REPLACE_BY(TO_SOURCE(MAKE_MANIFEST('type', '@doodad-js/core'))) */ 'Package' /*! END_REPLACE() */,
 			}, 
 			{
-				name: 'doodad-js-io',
-				version: /*! REPLACE_BY(TO_SOURCE(VERSION('doodad-js-io'))) */ null /*! END_REPLACE() */,
-				type: /*! REPLACE_BY(TO_SOURCE(MAKE_MANIFEST('type', 'doodad-js-io'))) */ 'Package' /*! END_REPLACE() */,
+				name: '@doodad-js/io',
+				version: /*! REPLACE_BY(TO_SOURCE(VERSION('@doodad-js/io'))) */ null /*! END_REPLACE() */,
+				type: /*! REPLACE_BY(TO_SOURCE(MAKE_MANIFEST('type', '@doodad-js/io'))) */ 'Package' /*! END_REPLACE() */,
 			}, 
 			{
-				name: 'doodad-js-widgets',
-				version: /*! REPLACE_BY(TO_SOURCE(VERSION('doodad-js-widgets'))) */ null /*! END_REPLACE() */,
-				type: /*! REPLACE_BY(TO_SOURCE(MAKE_MANIFEST('type', 'doodad-js-widgets'))) */ 'Package' /*! END_REPLACE() */,
+				name: '@doodad-js/widgets',
+				version: /*! REPLACE_BY(TO_SOURCE(VERSION('@doodad-js/widgets'))) */ null /*! END_REPLACE() */,
+				type: /*! REPLACE_BY(TO_SOURCE(MAKE_MANIFEST('type', '@doodad-js/widgets'))) */ 'Package' /*! END_REPLACE() */,
 			}, 
 		],
 			

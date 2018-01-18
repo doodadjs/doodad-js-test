@@ -51,7 +51,7 @@ const addSearchPaths = function _addSearchPaths(root) {
 		};
 
 		if (folders) {
-			// Application (doodad-js-test) packages folder found.
+			// Application (@doodad-js/test) packages folder found.
 			
 			let name;
 
@@ -71,7 +71,7 @@ const addSearchPaths = function _addSearchPaths(root) {
 				};
 			};
 			
-			// Include application (doodad-js-test) folder as a package.
+			// Include application (@doodad-js/test) folder as a package.
 			name = path.moveUp(2).toString();
 			nodeFs.statSync(name);
 			modules.addSearchPath(name);
@@ -90,7 +90,7 @@ const startup = function _startup(root, _shared) {
 	
 	return modules.load([
 			{
-				module: 'doodad-js-test',
+				module: '@doodad-js/test',
 				// TODO: Auto-Load from "src" or "build".
 				path: (root.getOptions().fromSource ? 'src/common/widgets/MyWidget_loader.js' : 'build/widgets/MyWidget_loader.js'),
 			},

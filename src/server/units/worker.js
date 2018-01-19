@@ -24,20 +24,21 @@
 
 "use strict";
 
+const nodeCluster = require('cluster'),
+	nodeFs = require('fs');
+
 module.exports = function(root, options, _shared) {
 	const doodad = root.Doodad,
 		types = doodad.Types,
 		tools = doodad.Tools,
-		modules = doodad.Modules,
+		modules = doodad.Modules;
 
-		nodeCluster = require('cluster'),
-		nodeFs = require('fs');
 
 	function startup() {
 		const files = tools.Files,
 			io = doodad.IO,
 			ioInterfaces = io.Interfaces,
-			ioMixIns = io.MixIns,
+			//ioMixIns = io.MixIns,
 			server = doodad.Server,
 			nodejs = doodad.NodeJs;
 
@@ -55,7 +56,7 @@ module.exports = function(root, options, _shared) {
 
 			// Captures "tools.log()"
 			_shared.consoleHook = function consoleHook(level, message) {
-				var fn;
+				let fn;
 				if (level === tools.LogLevels.Info) {
 					fn = 'info';
 				} else if (level === tools.LogLevels.Warning) {
@@ -187,7 +188,7 @@ module.exports = function(root, options, _shared) {
 						],
 					},
 					'/form?id=(\\d{1,4})&mode=(view|edit)': {
-						verbs: ['GET','HEAD'],
+						verbs: ['GET', 'HEAD'],
 						handlers: [
 							{
 								handler: function(request) {
@@ -197,14 +198,17 @@ module.exports = function(root, options, _shared) {
 											if (request.verb !== 'HEAD') {
 												return stream.writeAsync((args.mode === 'edit' ? "Editing" : "Viewing") + " id " + args.id);
 											};
+											return undefined;
 										})
-										.then(function(dummy) {});
+										.then(function(dummy) {
+											// Do nothing
+										});
 								},
 							},
 						],
 					},
 					'/form/mode:(view|edit)/id:(\\d{1,4})': {
-						verbs: ['GET','HEAD'],
+						verbs: ['GET', 'HEAD'],
 						handlers: [
 							{
 								handler: function(request) {
@@ -214,8 +218,11 @@ module.exports = function(root, options, _shared) {
 											if (request.verb !== 'HEAD') {
 												return stream.writeAsync((args.mode === 'edit' ? "Editing" : "Viewing") + " id " + args.id);
 											};
+											return undefined;
 										})
-										.then(function(dummy) {});
+										.then(function(dummy) {
+											// Do nothing
+										});
 								},
 							},
 						],
@@ -260,7 +267,7 @@ module.exports = function(root, options, _shared) {
 							},
 							{
 								handler: function(request) {
-									const Promise = types.getPromise();
+									//const Promise = types.getPromise();
 									return request.response.getStream({contentType: 'text/plain; charset=utf-8'})
 										.then(function(resStream) {
 											return request.getStream()
@@ -284,6 +291,7 @@ module.exports = function(root, options, _shared) {
 																			mpStream.flush();
 																			return false;
 																		};
+																		return undefined;
 																	});
 																	mpStream.flush();
 																});
@@ -295,7 +303,8 @@ module.exports = function(root, options, _shared) {
 															mpStream.flush();
 															return false;
 														};
-													})
+														return undefined;
+													});
 													mpStream.flush();
 													return promise;
 												});
@@ -338,6 +347,7 @@ module.exports = function(root, options, _shared) {
 															};
 															return false;
 														};
+														return undefined;
 													});
 												});
 										})
@@ -354,8 +364,12 @@ module.exports = function(root, options, _shared) {
 							{
 								handler: function(request) {
 									request.response.getStream({contentType: 'text/plain; charset=utf-8'})
-										.then(function(stream) {return stream.writeAsync("Hello !")})
-										.then(function(dummy) {});
+										.then(function(stream) {
+											return stream.writeAsync("Hello !");
+										})
+										.then(function(dummy) {
+											// Do nothing
+										});
 								},
 							},
 						],
@@ -366,8 +380,12 @@ module.exports = function(root, options, _shared) {
 							{
 								handler: function(request) {
 									request.response.getStream({contentType: 'text/plain; charset=utf-8'})
-										.then(function(stream) {return stream.writeAsync("Bonjour !")})
-										.then(function(dummy) {});
+										.then(function(stream) {
+											return stream.writeAsync("Bonjour !");
+										})
+										.then(function(dummy) {
+											// Do nothing
+										});
 								},
 							},
 						],
@@ -748,8 +766,12 @@ module.exports = function(root, options, _shared) {
 			if (status >= 300) {
 				ev.preventDefault();
 				ev.data.promise = ev.data.promise
-					.then(function(dummy) {return response.getStream({contentType: 'text/plain', encoding: 'utf-8'})})
-					.then(function(stream) {return stream.writeAsync(types.toString(status))})
+					.then(function(dummy) {
+						return response.getStream({contentType: 'text/plain', encoding: 'utf-8'});
+					})
+					.then(function(stream) {
+						return stream.writeAsync(types.toString(status));
+					})
 					.then(function(dummy) {})
 					.catch(function(ex) {
 						if (root.getOptions().debug) {

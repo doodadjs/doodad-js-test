@@ -113,6 +113,13 @@
     },
     {
       "//": "For the application",
+      "name": "@doodad-js/unicode",
+      "client": false,
+      "server": false,
+      "browserify": false
+    },
+    {
+      "//": "For the application",
       "name": "@doodad-js/widgets",
       "client": false,
       "server": false,

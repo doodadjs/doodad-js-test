@@ -39,10 +39,10 @@ exports.add = function add(DD_MODULES) {
 			"use strict";
 
 			const doodad = root.Doodad,
-				types = doodad.Types,
-				tools = doodad.Tools,
-				test = doodad.Test,
-				pages = root.Test.Pages;
+				types = doodad.Types;
+				//tools = doodad.Tools,
+				//test = doodad.Test,
+				//pages = root.Test.Pages;
 
 			//const __Internal__ = {
 			//};

@@ -55,15 +55,15 @@ exports.add = function add(DD_MODULES) {
 			//===================================
 			const me = root.MyWidget,
 				doodad = root.Doodad,
-				mixIns = doodad.MixIns,
-				namespaces = doodad.Namespaces,
+				//mixIns = doodad.MixIns,
+				//namespaces = doodad.Namespaces,
 				widgets = doodad.Widgets,
 				client = doodad.Client,
 				tools = doodad.Tools,
 				types = doodad.Types,
-				exceptions = doodad.Exceptions,
-				io = doodad.IO,
-				nodejs = doodad.NodeJs;
+				//exceptions = doodad.Exceptions,
+				io = doodad.IO;
+				//nodejs = doodad.NodeJs;
 
 			//===================================
 			// MyWidget
@@ -73,7 +73,7 @@ exports.add = function add(DD_MODULES) {
 				$TYPE_NAME: '__MyWidgetStep1__',
 					
 				__attributes: {
-					main : {
+					main: {
 						class: 'main',
 					},
 					mergeTest: null,
@@ -320,10 +320,14 @@ exports.add = function add(DD_MODULES) {
 					return myWidget.render();
 				} else {
 					const myWidget1 = createMyWidget('myWidget1', 'Hello !', 'test1');
-					myWidget1.onRender.attach(null, function onRender(ev) {tools.alert('render 1')});
+					myWidget1.onRender.attach(null, function onRender(ev) {
+						tools.alert('render 1');
+					});
 
 					const myWidget2 = createMyWidget('myWidget2', 'Salut !', 'test2');
-					myWidget2.onRender.attach(null, function onRender(ev) {tools.alert('render 2')});
+					myWidget2.onRender.attach(null, function onRender(ev) {
+						tools.alert('render 2');
+					});
 						
 					//// Test "destroy"
 					//const myWidget3 = createMyWidget('myWidget3', 'Ciao !', 'test3');
@@ -332,14 +336,16 @@ exports.add = function add(DD_MODULES) {
 					//myWidget3.destroy();
 						
 					const myWidget3 = createMyWidget('myWidget3', 'Ciao !', 'test3');
-					myWidget3.onRender.attach(null, function onRender(ev) {tools.alert('render 3')});
+					myWidget3.onRender.attach(null, function onRender(ev) {
+						tools.alert('render 3');
+					});
 
-					return Promise.all([ myWidget1.render(), myWidget2.render(), myWidget3.render() ])
+					return Promise.all([myWidget1.render(), myWidget2.render(), myWidget3.render()])
 						.then(function doSomeTestsPromise() {
 							let msg = '';
 							msg += myWidget1.renamedFunction() + ',';
 							msg += myWidget1.getVersion() + ',';
-							msg += myWidget1.value
+							msg += myWidget1.value;
 							tools.alert(msg + '<----- Must be "1,2,3,2"');
 						});
 				};

@@ -86,7 +86,7 @@ exports.add = function add(DD_MODULES) {
 					},*/
 					{
 						description: "Load MyWidget.js",
-						dependencies : [
+						dependencies: [
 							{
 								optional: false,
 								conditions: {

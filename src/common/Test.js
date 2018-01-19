@@ -58,6 +58,8 @@ exports.add = function add(DD_MODULES) {
 					
 			tools.complete(_shared.Natives, {
 				windowParseInt: global.parseInt,
+
+				/* eslint no-restricted-properties: "off" */
 				windowIsNaN: global.isNaN,
 			});
 					
@@ -91,7 +93,7 @@ exports.add = function add(DD_MODULES) {
 				let units = namespace.CHILDREN;
 				if (!units) {
 					units = namespace.CHILDREN = [];
-					for (let name in namespace) {
+					for (const name in namespace) {
 						if (types.has(namespace, name)) {
 							const nso = namespace[name];
 							if (types._instanceof(nso, root.Namespace) && (nso.DD_PARENT === namespace)) {
@@ -123,8 +125,12 @@ exports.add = function add(DD_MODULES) {
 			});
 				
 			test.EmptySlot = function EmptySlot() {};
-			test.EmptySlot.prototype.toString = function() {return "<empty>";};
-			test.EmptySlot.prototype.toSource = function() {return "undefined";};
+			test.EmptySlot.prototype.toString = function() {
+				return "<empty>";
+			};
+			test.EmptySlot.prototype.toSource = function() {
+				return "undefined";
+			};
 			test.ADD('EmptySlot', new test.EmptySlot());
 				
 			test.ADD('compare', function compare(expected, result, /*optional*/options) {
@@ -160,8 +166,8 @@ exports.add = function add(DD_MODULES) {
 					success = success && (resultValue ? (resultValue.message === expectedValue.message) : false);
 				} else if ((depth >= 0) && (mode === 'object')) {
 					depth--;
-					let expectedCount = 0;
-					let resultCount = 0;
+					//let expectedCount = 0;
+					//let resultCount = 0;
 					success = success && !!resultValue;
 					if (success) {
 						let keys;
@@ -169,7 +175,7 @@ exports.add = function add(DD_MODULES) {
 							keys = global.Object.keys(expectedValue);
 						} else {
 							keys = [];
-							for (let key in expectedValue) {
+							for (const key in expectedValue) {
 								if (global.Object.prototype.hasOwnProperty.call(expectedValue, key)) {
 									keys.push(key);
 								};
@@ -195,7 +201,7 @@ exports.add = function add(DD_MODULES) {
 								success = false;
 								break;
 							};
-							expectedCount++;
+							//expectedCount++;
 						};
 					};
 				} else if ((depth >= 0) && (mode === 'array') && types.get(options, 'contains', false)) {
@@ -261,6 +267,7 @@ exports.add = function add(DD_MODULES) {
 								(resultValue === expectedValue)
 								|| 
 								// Patch for NaN. See "types.isNaN".
+								/* eslint no-self-compare: "off" */
 								((resultValue !== resultValue) && (expectedValue !== expectedValue))
 							)
 						);
@@ -275,7 +282,7 @@ exports.add = function add(DD_MODULES) {
 
 
 			test.ADD('prepareCommand', function prepareCommand(fn, fnName) {
-				const Promise = types.getPromise();
+				//const Promise = types.getPromise();
 
 				const stream = test.getOutput(),
 					html = types._implements(stream, io.HtmlOutputStream),
@@ -307,12 +314,11 @@ exports.add = function add(DD_MODULES) {
 
 						return this;
 					},
-					run: function (expected, /*optional*/options 	/**/ /*paramarray*/) {
+					run: function (expected, /*optional*/options, /*paramarray*/...params) {
 						if (ended) {
 							throw new types.NotAvailable("Command has been ended.");
 						};
 
-						let params = Array.prototype.slice.call(arguments, 2);
 						let runElementOpened = false;
 
 						__Internal__.runPromise = __Internal__.runPromise
@@ -515,8 +521,8 @@ exports.add = function add(DD_MODULES) {
 								};
 								stream.print(resultStr.replace(/[~]/g, '~~'), printOpts);
 							
-								resultStr = "Time: " + ((time === null) ? 'Not available' : (types.toString(time) + ' ms' + ((repetitions > 1) ? (' / ' + repetitions + ' = ' + types.toString(time / repetitions) + ' ms') : ''))),
-								resultCls = 'time',
+								resultStr = "Time: " + ((time === null) ? 'Not available' : (types.toString(time) + ' ms' + ((repetitions > 1) ? (' / ' + repetitions + ' = ' + types.toString(time / repetitions) + ' ms') : '')));
+								resultCls = 'time';
 								printOpts = {};
 								if (html) {
 									printOpts.attrs = ('class="' + resultCls + '"');
@@ -587,6 +593,7 @@ exports.add = function add(DD_MODULES) {
 									return loop(index + 1);
 								});
 						};
+						return undefined;
 					};
 					return loop(0);
 				});
@@ -744,6 +751,7 @@ exports.add = function add(DD_MODULES) {
 									//io.stderr.flush();
 								};
 							};
+							return undefined;
 						}),
 						next: types.bind(state, function(ev) { // JS click
 							try {
@@ -754,14 +762,14 @@ exports.add = function add(DD_MODULES) {
 									} else {
 										index = this.runElements.length - 1;
 									};
-									let run = this.runElements[index];
+									this.runElements[index];
 									while (this.currentRun) {
 										this.currentFailed = _shared.Natives.windowParseInt(this.currentRun.getAttribute('failedIndex'));
 										if (!_shared.Natives.windowIsNaN(this.currentFailed)) {
 											break;
 										};
 										index--;
-										run = this.runElements[index];
+										this.runElements[index];
 									};
 								};
 								if (!_shared.Natives.windowIsNaN(this.currentFailed)) {
@@ -779,6 +787,7 @@ exports.add = function add(DD_MODULES) {
 									//io.stderr.flush();
 								};
 							};
+							return undefined;
 						}),
 						first: function(ev) {
 							try {
@@ -793,7 +802,7 @@ exports.add = function add(DD_MODULES) {
 						},
 						last: function(ev) {
 							try {
-								this.currentFailed = this.failedRuns.length - 1;;
+								this.currentFailed = this.failedRuns.length - 1;
 								this.move(true);
 							} catch(ex) {
 								if (!ex.bubble) {
@@ -901,6 +910,7 @@ exports.add = function add(DD_MODULES) {
 									//io.stderr.flush();
 								};
 							};
+							return undefined;
 						}),
 						prev: types.bind(state, function(ev) { // JS click
 							try {
@@ -913,7 +923,7 @@ exports.add = function add(DD_MODULES) {
 									};
 									unit = units[pos - 1];
 									__Internal__.moveToUnit(unit);
-									return;
+									return undefined;
 								};
 								ev.preventDefault();
 								return false;
@@ -923,6 +933,7 @@ exports.add = function add(DD_MODULES) {
 									//io.stderr.flush();
 								};
 							};
+							return undefined;
 						}),
 						next: types.bind(state, function(ev) { // JS click
 							try {
@@ -935,7 +946,7 @@ exports.add = function add(DD_MODULES) {
 									};
 									unit = units[pos + 1];
 									__Internal__.moveToUnit(unit);
-									return;
+									return undefined;
 								};
 								ev.preventDefault();
 								return false;
@@ -945,6 +956,7 @@ exports.add = function add(DD_MODULES) {
 									//io.stderr.flush();
 								};
 							};
+							return undefined;
 						}),
 					});
 						
@@ -1019,10 +1031,9 @@ exports.add = function add(DD_MODULES) {
 						dom = (clientIO ? types._instanceof(stream, clientIO.DomOutputStream) : false),
 						buffered = types._implements(stream, ioMixIns.BufferedStreamBase);
 					
-					const name = types.get(options, 'name'),
-						units = test.getUnits(test); // also initialize some attributes
+					const name = types.get(options, 'name');
 
-					let unit,
+					let unit = test.getUnits(test), // also initialize some attributes
 						isIndex = false;
 						
 					if (html) {

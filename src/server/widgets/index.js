@@ -24,7 +24,7 @@
 
 "use strict";
 
-const SECRET = Symbol();
+const SECRET = Symbol("SECRET");
 
 const nodeFs = require('fs');
 

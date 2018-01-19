@@ -36,9 +36,9 @@ exports.add = function add(DD_MODULES) {
 			const doodad = root.Doodad,
 				tools = doodad.Tools,
 				test = doodad.Test,
-				clientIO = doodad.Client.IO,
-				pages = root.Test.Pages,
-				pagesUnits = pages.Units;
+				clientIO = doodad.Client.IO;
+				//pages = root.Test.Pages,
+				//pagesUnits = pages.Units;
 
 			//const __Internal__ = {
 			//};

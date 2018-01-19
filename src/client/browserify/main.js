@@ -21,6 +21,8 @@
 //	limitations under the License.
 
 window.onload = function() {
+	/* eslint global-require: "off" */
+
 	const modules = {};
 	require('@doodad-js/unicode').add(modules);
 	require('@doodad-js/locale').add(modules);

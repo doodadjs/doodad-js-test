@@ -21,6 +21,8 @@
 //	limitations under the License.
 
 window.onload = function() {
+	/* eslint global-require: "off" */
+
 	const options = {};
 	options['Doodad.Modules'] = {
 		modulesUri: '../../..',

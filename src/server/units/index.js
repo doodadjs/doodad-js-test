@@ -24,7 +24,7 @@
 
 "use strict";
 
-const SECRET = Symbol();
+const SECRET = Symbol("SECRET");
 
 const nodeCluster = require('cluster'),
 	nodeFs = require('fs');
@@ -86,6 +86,8 @@ const addSearchPaths = function _addSearchPaths(root) {
 };
 	
 const startup = function _startup(root, _shared) {
+	/* eslint global-require: "off" */
+
 	const doodad = root.Doodad,
 		tools = doodad.Tools,
 		files = tools.Files;

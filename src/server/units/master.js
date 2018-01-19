@@ -24,16 +24,16 @@
 
 "use strict";
 
+const nodeOs = require('os'),
+	nodeCluster = require('cluster'),
+	nodeChildProcess = require('child_process');
+
 module.exports = function(root, options, _shared) {
 	const doodad = root.Doodad,
 		namespaces = doodad.Namespaces,
 		modules = doodad.Modules,
 		types = doodad.Types,
 		tools = doodad.Tools,
-		
-		nodeOs = require('os'),
-		nodeCluster = require('cluster'),
-		nodeChildProcess = require('child_process'),
 		
 		Promise = types.getPromise();
 
@@ -72,6 +72,8 @@ module.exports = function(root, options, _shared) {
 				});
 
 		} else {
+			const cpus = Math.min(nodeOs.cpus().length, maxCpus);
+
 			const startWorkers = function _startWorkers() {
 				return Promise.try(function tryStartWorkers() {
 					if (cpus > 1) {
@@ -91,15 +93,16 @@ module.exports = function(root, options, _shared) {
 
 					} else {
 						options.noCluster = true;
+						/* eslint global-require: "off" */
 						return require('./worker.js')(root, options, _shared);
 
 					};
+
+					return undefined;
 				});
 			};
 
 			let ready = false;
-
-			const cpus = Math.min(nodeOs.cpus().length, maxCpus);
 
 			const nodejs = doodad.NodeJs;
 
@@ -139,6 +142,7 @@ module.exports = function(root, options, _shared) {
 								return Promise.resolve(nodejs.Server.Http.Request.$getStats());
 							};
 						};
+						return undefined;
 					});
 			
 				const actives = root.DD_DOC(
@@ -161,6 +165,7 @@ module.exports = function(root, options, _shared) {
 								return Promise.resolve(nodejs.Server.Http.Request.$getActives());
 							};
 						};
+						return undefined;
 					});
 			
 				const uptime = root.DD_DOC(
@@ -182,11 +187,12 @@ module.exports = function(root, options, _shared) {
 									.then(function(result) {
 										result['M:1'] = tools.Dates.secondsToPeriod(process.uptime());
 										return result;
-									})
+									});
 							} else {
 								return Promise.resolve(tools.Dates.secondsToPeriod(process.uptime()));
 							};
 						};
+						return undefined;
 					});
 			
 				const ping = root.DD_DOC(
@@ -209,6 +215,7 @@ module.exports = function(root, options, _shared) {
 								return Promise.reject(new types.NotAvailable("Command not available."));
 							};
 						};
+						return undefined;
 					});
 			
 				const browser = root.DD_DOC(
@@ -252,13 +259,14 @@ module.exports = function(root, options, _shared) {
 									};
 								});
 						};
+						return undefined;
 					});
 			
 				const run = root.DD_DOC(
 					{
 						author: "Claude Petit",
 						revision: 0,
-						params:  {
+						params: {
 							wid: {
 								type: 'integer',
 								optional: false,
@@ -292,19 +300,20 @@ module.exports = function(root, options, _shared) {
 								return Promise.reject(new types.NotAvailable("Command not available."));
 							};
 						};
+						return undefined;
 					});
 
 				const clearCache = root.DD_DOC(
 					{
 						author: "Claude Petit",
 						revision: 0,
-						params:  null,
+						params: null,
 						returns: 'undefined',
 						description: tools.format("Clears the cache folder. Warning: Before running this command, be sure you have nothing important in that folder: '~0~'.", [options.cachePath.toString()]),
 					}, function clearCache() {
 						// TODO: Abort and invalidate all cached objects before, and have an argument to delete the folder.
 						return tools.Files.rmdirAsync(options.cachePath, {force: true})
-							.then(dummy => {
+							.then((dummy) => {
 								console.info(tools.format('Cache folder "~0~" deleted.', [options.cachePath.toString()]));
 							});
 					});
@@ -345,7 +354,9 @@ module.exports = function(root, options, _shared) {
 			};
 
 			return startWorkers()
-				.then(() => {ready = true});
+				.then(() => {
+					ready = true;
+				});
 		};
 	};
 

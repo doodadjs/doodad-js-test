@@ -22,6 +22,7 @@
 
 window.onload = function() {
 	/* eslint global-require: "off" */
+	/* eslint no-alert: "off" */
 
 	const modules = {};
 	require('@doodad-js/unicode').add(modules);

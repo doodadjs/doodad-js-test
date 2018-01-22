@@ -41,6 +41,8 @@ exports.add = function add(DD_MODULES) {
 		create: function create(root, /*optional*/_options, _shared) {
 			"use strict";
 				
+			/* eslint no-console: "off" */
+
 			root.enableAsserts();
 				
 			// Unit test module entry

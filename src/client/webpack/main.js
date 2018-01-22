@@ -22,6 +22,7 @@
 
 window.onload = function() {
 	/* eslint global-require: "off" */
+	/* eslint no-alert: "off" */
 
 	const options = {};
 	options['Doodad.Modules'] = {

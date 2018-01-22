@@ -33,6 +33,8 @@ exports.add = function add(DD_MODULES) {
 		create: function create(root, /*optional*/_options, _shared) {
 			"use strict";
 
+			/* eslint no-alert: "off" */
+
 			const doodad = root.Doodad,
 				tools = doodad.Tools,
 				test = doodad.Test,

@@ -24,6 +24,8 @@
 
 "use strict";
 
+/* eslint no-console: "off" */
+
 const nodeOs = require('os'),
 	nodeCluster = require('cluster'),
 	nodeChildProcess = require('child_process');

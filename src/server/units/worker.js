@@ -24,6 +24,8 @@
 
 "use strict";
 
+/* eslint no-console: "off" */
+
 const nodeCluster = require('cluster'),
 	nodeFs = require('fs');
 
@@ -328,8 +330,8 @@ module.exports = function(root, options, _shared) {
 										.then(function(resStream) {
 											return request.getStream()
 												.then(function(reqStream) {
-													let obj = {},
-														key = null;
+													const obj = {};
+													let key = null;
 													return reqStream.onData.promise(function reqOnData(ev) {
 														ev.preventDefault();
 														if (ev.data.raw === io.EOF) {

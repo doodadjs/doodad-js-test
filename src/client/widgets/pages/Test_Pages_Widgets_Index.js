@@ -33,9 +33,11 @@ exports.add = function add(DD_MODULES) {
 		create: function create(root, /*optional*/_options, _shared) {
 			"use strict";
 
+			/* eslint no-alert: "off" */
+
 			const doodad = root.Doodad,
 				types = doodad.Types,
-				//tools = doodad.Tools,
+				tools = doodad.Tools,
 				modules = doodad.Modules,
 				mixIns = doodad.MixIns;
 				//test = doodad.Test,
@@ -80,7 +82,7 @@ exports.add = function add(DD_MODULES) {
 						msg += types.isErrorType(realmRoot.Doodad.Types.Error) + ',';
 						msg += types.isError(new (realmRoot.Doodad.Types.Error)("test"));
 						msg += "  <=== Must be all 'true'";
-						alert(msg);
+						tools.alert(msg);
 
 						if (loadingImg) {
 							loadingImg.style.display = oldLoadingDisplayStyle;

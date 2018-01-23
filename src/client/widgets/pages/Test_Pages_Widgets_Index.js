@@ -24,6 +24,13 @@
 //	limitations under the License.
 //! END_REPLACE()
 
+/* eslint no-alert: "off" */
+
+//! IF_SET("mjs")
+//! ELSE()
+	"use strict";
+//! END_IF()
+
 exports.add = function add(DD_MODULES) {
 	DD_MODULES = (DD_MODULES || {});
 	DD_MODULES['Test.Pages.Widgets/index'] = {
@@ -31,10 +38,6 @@ exports.add = function add(DD_MODULES) {
 		type: 'Application',
 
 		create: function create(root, /*optional*/_options, _shared) {
-			"use strict";
-
-			/* eslint no-alert: "off" */
-
 			const doodad = root.Doodad,
 				types = doodad.Types,
 				tools = doodad.Tools,

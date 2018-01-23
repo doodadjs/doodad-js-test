@@ -20,9 +20,12 @@
 //	See the License for the specific language governing permissions and
 //	limitations under the License.
 
+/* eslint strict: "off" */
+/* eslint global-require: "off" */
+/* eslint no-alert: "off" */
+
 window.onload = function() {
-	/* eslint global-require: "off" */
-	/* eslint no-alert: "off" */
+	"use strict";
 
 	const options = {};
 	options['Doodad.Modules'] = {

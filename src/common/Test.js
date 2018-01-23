@@ -24,6 +24,13 @@
 //	limitations under the License.
 //! END_REPLACE()
 
+/* eslint no-console: "off" */
+
+//! IF_SET("mjs")
+//! ELSE()
+	"use strict";
+//! END_IF()
+
 exports.add = function add(DD_MODULES) {
 	DD_MODULES = (DD_MODULES || {});
 	DD_MODULES['Doodad.Test'] = {
@@ -39,10 +46,6 @@ exports.add = function add(DD_MODULES) {
 		},
 
 		create: function create(root, /*optional*/_options, _shared) {
-			"use strict";
-				
-			/* eslint no-console: "off" */
-
 			root.enableAsserts();
 				
 			// Unit test module entry

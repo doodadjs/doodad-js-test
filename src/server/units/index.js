@@ -36,51 +36,51 @@ const addSearchPaths = function _addSearchPaths(root) {
 		files = tools.Files;
 
 	// <PRB> NPM doesn't want to flatten dependencies to the application's node_modules folder
+
+	const scanFolder = function _scanFolder(path, depth) {
+		// Get the list of packages in that "node_modules" folder
+		const folders = files.readdir(path, {depth: 0, type: 'folder'});
+
+		// Include the "node_modules" folder of these packages in the search path.
+		for (let j = 0; j < folders.length; j++) {
+			const folder = folders[j];
+			try {
+				if ((depth < 1) && folder.name.startsWith('@')) {
+					scanFolder(folder.path, depth + 1);
+				} else {
+					const name = folder.path.combine('node_modules').toApiString();
+					nodeFs.statSync(name);
+					modules.addSearchPath(name);
+				};
+			} catch(ex) {
+				if (ex.code !== 'ENOENT') {
+					throw ex;
+				};
+			};
+		};
+	};
+
+
 	// Add Node packages search paths for the application
 	const paths = require.main.paths;
 	for (let i = 0; i < paths.length; i++) {
 		const path = files.Path.parse(paths[i], {file: ''});
 
-		let folders = null;
-
-		// Get the list of packages in that "node_modules" folder
 		try {
-			folders = files.readdir(path, {depth: 1}); // "depth=1" for scoped modules
+			scanFolder(path, 0);
+
+			// Include application (doodad-js-test) folder as a package.
+			const name = path.moveUp(2).toString();
+			nodeFs.statSync(name);
+			modules.addSearchPath(name);
+
+			// We should have all the search paths we need.
+			break;
+
 		} catch(ex) {
 			if (ex.code !== 'ENOENT') {
 				throw ex;
 			};
-		};
-
-		if (folders) {
-			// Application (doodad-js-test) packages folder found.
-			
-			let name;
-
-			// Include the "node_modules" folder of these packages in the search path.
-			for (let j = 0; j < folders.length; j++) {
-				const folder = folders[j];
-				if (!folder.isFile) {
-					// TODO: Check if scoped module (parent folder starts with @) or not.
-					name = folder.path.combine('node_modules').toApiString();
-					try {
-						nodeFs.statSync(name);
-						modules.addSearchPath(name);
-					} catch(ex) {
-						if (ex.code !== 'ENOENT') {
-							throw ex;
-						};
-					};
-				};
-			};
-			
-			// Include application (doodad-js-test) folder as a package.
-			name = path.moveUp(2).toString();
-			nodeFs.statSync(name);
-			modules.addSearchPath(name);
-			
-			// We should have all the search paths we need.
-			break;
 		};
 	};
 };

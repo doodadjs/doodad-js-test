@@ -185,7 +185,7 @@ module.exports = function(root, options, _shared) {
 						handlers: [
 							{
 								handler: server.Http.RedirectHandler,
-								targetUrl: '/app/@doodad-js/test/units/index.ddtx',
+								targetUrl: '/app/units/index.ddtx',
 							},
 						],
 					},
@@ -416,7 +416,7 @@ module.exports = function(root, options, _shared) {
 							},
 							{
 								handler: new server.Http.Routes({
-									'/@doodad-js/test/widgets': {
+									'/widgets': {
 										handlers: [
 											{
 												handler: server.Http.RedirectHandler,
@@ -424,7 +424,7 @@ module.exports = function(root, options, _shared) {
 											}
 										],
 									},
-									'/@doodad-js/test/units': {
+									'/units': {
 										handlers: [
 											{
 												handler: server.Http.RedirectHandler,
@@ -432,7 +432,7 @@ module.exports = function(root, options, _shared) {
 											},
 										],
 									},
-									'/@doodad-js/test/browserify': {
+									'/rowserify': {
 										handlers: [
 											{
 												handler: server.Http.RedirectHandler,
@@ -440,11 +440,112 @@ module.exports = function(root, options, _shared) {
 											},
 										],
 									},
-									'/@doodad-js/test/webpack': {
+									'/webpack': {
 										handlers: [
 											{
 												handler: server.Http.RedirectHandler,
 												targetUrl: 'index.ddtx',
+											},
+										],
+									},
+									'/units/index.ddtx': {
+										handlers: [
+											{
+												handler: nodejs.Server.Http.StaticPage,
+												// TODO: Auto-build
+												path: files.Path.parse(modules.resolve('@doodad-js/test')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/units/pages/Test_Pages_Units_Index.ddt' : './build/server/units/pages/Test_Pages_Units_Index.ddtx'), {os: 'linux'}),
+												showFolders: true,
+												mimeTypes: staticMimeTypes,
+												forceCaseSensitive: forceCaseSensitive,
+												variables: staticVariables,
+											},
+										],
+									},
+									'/widgets/index.ddtx': {
+										handlers: [
+											{
+												handler: nodejs.Server.Http.StaticPage,
+												// TODO: Auto-build
+												path: files.Path.parse(modules.resolve('@doodad-js/test')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/widgets/pages/Test_Pages_Widgets_Index.ddt' : './build/server/widgets/pages/Test_Pages_Widgets_Index.ddtx'), {os: 'linux'}),
+												showFolders: true,
+												mimeTypes: staticMimeTypes,
+												forceCaseSensitive: forceCaseSensitive,
+												variables: staticVariables,
+											},
+										],
+									},
+									'/widgets/crossRealm.ddtx': {
+										handlers: [
+											{
+												handler: nodejs.Server.Http.StaticPage,
+												// TODO: Auto-build
+												path: files.Path.parse(modules.resolve('@doodad-js/test')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/widgets/pages/Test_Pages_Widgets_CrossRealm.ddt' : './build/server/widgets/pages/Test_Pages_Widgets_CrossRealm.ddtx'), {os: 'linux'}),
+												showFolders: true,
+												mimeTypes: staticMimeTypes,
+												forceCaseSensitive: forceCaseSensitive,
+												variables: staticVariables,
+											},
+										],
+									},
+									'/browserify/index.ddtx': {
+										handlers: [
+											{
+												handler: nodejs.Server.Http.StaticPage,
+												// TODO: Auto-build
+												path: files.Path.parse(modules.resolve('@doodad-js/test')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/browserify/pages/Test_Pages_Browserify_Index.ddt' : './build/server/browserify/pages/Test_Pages_Browserify_Index.ddtx'), {os: 'linux'}),
+												showFolders: true,
+												mimeTypes: staticMimeTypes,
+												forceCaseSensitive: forceCaseSensitive,
+												variables: staticVariables,
+											},
+										],
+									},
+									'/webpack/index.ddtx': {
+										handlers: [
+											{
+												handler: nodejs.Server.Http.StaticPage,
+												// TODO: Auto-build
+												path: files.Path.parse(modules.resolve('@doodad-js/test')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/webpack/pages/Test_Pages_Webpack_Index.ddt' : './build/server/webpack/pages/Test_Pages_Webpack_Index.ddtx'), {os: 'linux'}),
+												showFolders: true,
+												mimeTypes: staticMimeTypes,
+												forceCaseSensitive: forceCaseSensitive,
+												variables: staticVariables,
+											},
+										],
+									},
+									'/widgets/': {
+										handlers: [
+											{
+												handler: server.Http.RedirectHandler,
+												targetUrl: '/app/@doodad-js/test/widgets/',
+												internal: true,
+											}
+										],
+									},
+									'/units/': {
+										handlers: [
+											{
+												handler: server.Http.RedirectHandler,
+												targetUrl: '/app/@doodad-js/test/units/',
+												internal: true,
+											},
+										],
+									},
+									'/browserify/': {
+										handlers: [
+											{
+												handler: server.Http.RedirectHandler,
+												targetUrl: '/app/@doodad-js/test/browserify/',
+												internal: true,
+											},
+										],
+									},
+									'/webpack/': {
+										handlers: [
+											{
+												handler: server.Http.RedirectHandler,
+												targetUrl: '/app/@doodad-js/test/webpack/',
+												internal: true,
 											},
 										],
 									},
@@ -550,71 +651,6 @@ module.exports = function(root, options, _shared) {
 											{
 												handler: nodejs.Server.Http.StaticPage,
 												path: files.Path.parse(modules.resolve('@doodad-js/test')).set({file: null}).combine('./dist/@doodad-js/test/', {os: 'linux'}),
-												showFolders: true,
-												mimeTypes: staticMimeTypes,
-												forceCaseSensitive: forceCaseSensitive,
-												variables: staticVariables,
-											},
-										],
-									},
-									'/@doodad-js/test/units/index.ddtx': {
-										handlers: [
-											{
-												handler: nodejs.Server.Http.StaticPage,
-												// TODO: Auto-build
-												path: files.Path.parse(modules.resolve('@doodad-js/test')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/units/pages/Test_Pages_Units_Index.ddt' : './build/server/units/pages/Test_Pages_Units_Index.ddtx'), {os: 'linux'}),
-												showFolders: true,
-												mimeTypes: staticMimeTypes,
-												forceCaseSensitive: forceCaseSensitive,
-												variables: staticVariables,
-											},
-										],
-									},
-									'/@doodad-js/test/widgets/index.ddtx': {
-										handlers: [
-											{
-												handler: nodejs.Server.Http.StaticPage,
-												// TODO: Auto-build
-												path: files.Path.parse(modules.resolve('@doodad-js/test')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/widgets/pages/Test_Pages_Widgets_Index.ddt' : './build/server/widgets/pages/Test_Pages_Widgets_Index.ddtx'), {os: 'linux'}),
-												showFolders: true,
-												mimeTypes: staticMimeTypes,
-												forceCaseSensitive: forceCaseSensitive,
-												variables: staticVariables,
-											},
-										],
-									},
-									'/@doodad-js/test/widgets/crossRealm.ddtx': {
-										handlers: [
-											{
-												handler: nodejs.Server.Http.StaticPage,
-												// TODO: Auto-build
-												path: files.Path.parse(modules.resolve('@doodad-js/test')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/widgets/pages/Test_Pages_Widgets_CrossRealm.ddt' : './build/server/widgets/pages/Test_Pages_Widgets_CrossRealm.ddtx'), {os: 'linux'}),
-												showFolders: true,
-												mimeTypes: staticMimeTypes,
-												forceCaseSensitive: forceCaseSensitive,
-												variables: staticVariables,
-											},
-										],
-									},
-									'/@doodad-js/test/browserify/index.ddtx': {
-										handlers: [
-											{
-												handler: nodejs.Server.Http.StaticPage,
-												// TODO: Auto-build
-												path: files.Path.parse(modules.resolve('@doodad-js/test')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/browserify/pages/Test_Pages_Browserify_Index.ddt' : './build/server/browserify/pages/Test_Pages_Browserify_Index.ddtx'), {os: 'linux'}),
-												showFolders: true,
-												mimeTypes: staticMimeTypes,
-												forceCaseSensitive: forceCaseSensitive,
-												variables: staticVariables,
-											},
-										],
-									},
-									'/@doodad-js/test/webpack/index.ddtx': {
-										handlers: [
-											{
-												handler: nodejs.Server.Http.StaticPage,
-												// TODO: Auto-build
-												path: files.Path.parse(modules.resolve('@doodad-js/test')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/webpack/pages/Test_Pages_Webpack_Index.ddt' : './build/server/webpack/pages/Test_Pages_Webpack_Index.ddtx'), {os: 'linux'}),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,

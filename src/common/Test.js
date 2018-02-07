@@ -98,25 +98,26 @@ exports.add = function add(DD_MODULES) {
 				let units = namespace.CHILDREN;
 				if (!units) {
 					units = namespace.CHILDREN = [];
-					for (const name in namespace) {
-						if (types.has(namespace, name)) {
-							const nso = namespace[name];
-							if (types._instanceof(nso, root.Namespace) && (nso.DD_PARENT === namespace)) {
-								const unit = namespaces.get(nso.DD_FULL_NAME, entries.TestModule);
-								if (unit) {
-									const len = units.length;
-									let priority = (types.isNothing(nso.priority) ? 20 : nso.priority);
-									for (let pos = 0; pos < len; pos++) {
-										const item = units[pos];
-										if (item.priority > priority) {
-											priority = null;
-											units.splice(pos, 0, unit);
-											break;
-										};
+					const names = types.keys(namespace),
+						namesLen = names.length;
+					for (let i = 0; i < namesLen; i++) {
+						const name = names[i];
+						const nso = namespace[name];
+						if (types._instanceof(nso, root.Namespace) && (nso.DD_PARENT === namespace)) {
+							const unit = namespaces.get(nso.DD_FULL_NAME, entries.TestModule);
+							if (unit) {
+								const len = units.length;
+								let priority = (types.isNothing(nso.priority) ? 20 : nso.priority);
+								for (let pos = 0; pos < len; pos++) {
+									const item = units[pos];
+									if (item.priority > priority) {
+										priority = null;
+										units.splice(pos, 0, unit);
+										break;
 									};
-									if (priority !== null) {
-										units.push(unit);
-									};
+								};
+								if (priority !== null) {
+									units.push(unit);
 								};
 							};
 						};
@@ -175,20 +176,7 @@ exports.add = function add(DD_MODULES) {
 					//let resultCount = 0;
 					success = success && !!resultValue;
 					if (success) {
-						let keys;
-						if (global.Object.keys) {
-							keys = global.Object.keys(expectedValue);
-						} else {
-							keys = [];
-							for (const key in expectedValue) {
-								if (global.Object.prototype.hasOwnProperty.call(expectedValue, key)) {
-									keys.push(key);
-								};
-							};
-						};
-						if (global.Object.getOwnPropertySymbols) {
-							keys.push.apply(keys, global.Object.getOwnPropertySymbols(expectedValue));
-						};
+						const keys = tools.append(types.keys(expectedValue), types.symbols(expectedValue));
 						for (let i = 0; i < keys.length; i++) {
 							const key = keys[i];
 							if (inherited) {
@@ -197,7 +185,7 @@ exports.add = function add(DD_MODULES) {
 									break;
 								};
 							} else {
-								if (!global.Object.prototype.hasOwnProperty.call(resultValue, key)) {
+								if (!types.has(resultValue, key)) {
 									success = false;
 									break;
 								};

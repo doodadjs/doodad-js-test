@@ -451,7 +451,7 @@ module.exports = function(root, options, _shared) {
 									'/units/index.ddtx': {
 										handlers: [
 											{
-												handler: nodejs.Server.Http.StaticPage,
+												handler: nodejs.Server.Http.FileSystemPage,
 												// TODO: Auto-build
 												path: files.Path.parse(modules.resolve('@doodad-js/test')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/units/pages/Test_Pages_Units_Index.ddt' : './build/server/units/pages/Test_Pages_Units_Index.ddtx'), {os: 'linux'}),
 												showFolders: true,
@@ -464,7 +464,7 @@ module.exports = function(root, options, _shared) {
 									'/widgets/index.ddtx': {
 										handlers: [
 											{
-												handler: nodejs.Server.Http.StaticPage,
+												handler: nodejs.Server.Http.FileSystemPage,
 												// TODO: Auto-build
 												path: files.Path.parse(modules.resolve('@doodad-js/test')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/widgets/pages/Test_Pages_Widgets_Index.ddt' : './build/server/widgets/pages/Test_Pages_Widgets_Index.ddtx'), {os: 'linux'}),
 												showFolders: true,
@@ -477,7 +477,7 @@ module.exports = function(root, options, _shared) {
 									'/widgets/crossRealm.ddtx': {
 										handlers: [
 											{
-												handler: nodejs.Server.Http.StaticPage,
+												handler: nodejs.Server.Http.FileSystemPage,
 												// TODO: Auto-build
 												path: files.Path.parse(modules.resolve('@doodad-js/test')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/widgets/pages/Test_Pages_Widgets_CrossRealm.ddt' : './build/server/widgets/pages/Test_Pages_Widgets_CrossRealm.ddtx'), {os: 'linux'}),
 												showFolders: true,
@@ -490,7 +490,7 @@ module.exports = function(root, options, _shared) {
 									'/browserify/index.ddtx': {
 										handlers: [
 											{
-												handler: nodejs.Server.Http.StaticPage,
+												handler: nodejs.Server.Http.FileSystemPage,
 												// TODO: Auto-build
 												path: files.Path.parse(modules.resolve('@doodad-js/test')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/browserify/pages/Test_Pages_Browserify_Index.ddt' : './build/server/browserify/pages/Test_Pages_Browserify_Index.ddtx'), {os: 'linux'}),
 												showFolders: true,
@@ -503,7 +503,7 @@ module.exports = function(root, options, _shared) {
 									'/webpack/index.ddtx': {
 										handlers: [
 											{
-												handler: nodejs.Server.Http.StaticPage,
+												handler: nodejs.Server.Http.FileSystemPage,
 												// TODO: Auto-build
 												path: files.Path.parse(modules.resolve('@doodad-js/test')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/webpack/pages/Test_Pages_Webpack_Index.ddt' : './build/server/webpack/pages/Test_Pages_Webpack_Index.ddtx'), {os: 'linux'}),
 												showFolders: true,
@@ -552,7 +552,7 @@ module.exports = function(root, options, _shared) {
 									'/@doodad-js/core': {
 										handlers: [
 											{
-												handler: nodejs.Server.Http.StaticPage,
+												handler: nodejs.Server.Http.FileSystemPage,
 												path: files.Path.parse(modules.resolve('@doodad-js/core')).set({file: null}).combine('./dist/@doodad-js/core/', {os: 'linux'}),
 												showFolders: true,
 												//mimeTypes: ['application/javascript; charset=utf-8', 'application/x-javascript; charset=utf-8'],  // TEST FILTER ON FOLDER DISPLAY
@@ -565,7 +565,7 @@ module.exports = function(root, options, _shared) {
 									'/@doodad-js/dates': {
 										handlers: [
 											{
-												handler: nodejs.Server.Http.StaticPage,
+												handler: nodejs.Server.Http.FileSystemPage,
 												path: files.Path.parse(modules.resolve('@doodad-js/dates')).set({file: null}).combine('./dist/@doodad-js/dates/', {os: 'linux'}),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
@@ -577,7 +577,7 @@ module.exports = function(root, options, _shared) {
 									'/@doodad-js/io': {
 										handlers: [
 											{
-												handler: nodejs.Server.Http.StaticPage,
+												handler: nodejs.Server.Http.FileSystemPage,
 												path: files.Path.parse(modules.resolve('@doodad-js/io')).set({file: null}).combine('./dist/@doodad-js/io/', {os: 'linux'}),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
@@ -589,7 +589,7 @@ module.exports = function(root, options, _shared) {
 									'/@doodad-js/locale': {
 										handlers: [
 											{
-												handler: nodejs.Server.Http.StaticPage,
+												handler: nodejs.Server.Http.FileSystemPage,
 												path: files.Path.parse(modules.resolve('@doodad-js/locale')).set({file: null}).combine('./dist/@doodad-js/locale/', {os: 'linux'}),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
@@ -601,7 +601,7 @@ module.exports = function(root, options, _shared) {
 									'/@doodad-js/mime': {
 										handlers: [
 											{
-												handler: nodejs.Server.Http.StaticPage,
+												handler: nodejs.Server.Http.FileSystemPage,
 												path: files.Path.parse(modules.resolve('@doodad-js/mime')).set({file: null}).combine('./dist/@doodad-js/mime/', {os: 'linux'}),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
@@ -613,7 +613,7 @@ module.exports = function(root, options, _shared) {
 									'/@doodad-js/minifiers': {
 										handlers: [
 											{
-												handler: nodejs.Server.Http.StaticPage,
+												handler: nodejs.Server.Http.FileSystemPage,
 												path: files.Path.parse(modules.resolve('@doodad-js/minifiers')).set({file: null}).combine('./dist/@doodad-js/minifiers/', {os: 'linux'}),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
@@ -625,7 +625,7 @@ module.exports = function(root, options, _shared) {
 									'/@doodad-js/templates': {
 										handlers: [
 											{
-												handler: nodejs.Server.Http.StaticPage,
+												handler: nodejs.Server.Http.FileSystemPage,
 												path: files.Path.parse(modules.resolve('@doodad-js/templates')).set({file: null}).combine('./dist/@doodad-js/templates/', {os: 'linux'}),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
@@ -637,7 +637,7 @@ module.exports = function(root, options, _shared) {
 									'/@doodad-js/templates/Boot.min.js': {
 										handlers: [
 											{
-												handler: nodejs.Server.Http.JavascriptPage,
+												handler: nodejs.Server.Http.JavascriptFileSystemPage,
 												path: files.Path.parse(modules.resolve('@doodad-js/templates')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/res/js/Boot.templ.js' : './build/server/res/js/Boot.templ.js'), {os: 'linux'}),
 												showFolders: false,
 												mimeTypes: staticMimeTypes,
@@ -649,7 +649,7 @@ module.exports = function(root, options, _shared) {
 									'/@doodad-js/test': {
 										handlers: [
 											{
-												handler: nodejs.Server.Http.StaticPage,
+												handler: nodejs.Server.Http.FileSystemPage,
 												path: files.Path.parse(modules.resolve('@doodad-js/test')).set({file: null}).combine('./dist/@doodad-js/test/', {os: 'linux'}),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
@@ -661,7 +661,7 @@ module.exports = function(root, options, _shared) {
 									'/@doodad-js/widgets': {
 										handlers: [
 											{
-												handler: nodejs.Server.Http.StaticPage,
+												handler: nodejs.Server.Http.FileSystemPage,
 												path: files.Path.parse(modules.resolve('@doodad-js/widgets')).set({file: null}).combine('./dist/@doodad-js/widgets/', {os: 'linux'}),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
@@ -673,7 +673,7 @@ module.exports = function(root, options, _shared) {
 									'/@doodad-js/xml': {
 										handlers: [
 											{
-												handler: nodejs.Server.Http.StaticPage,
+												handler: nodejs.Server.Http.FileSystemPage,
 												path: files.Path.parse(modules.resolve('@doodad-js/xml')).set({file: null}).combine('./dist/@doodad-js/xml/', {os: 'linux'}),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
@@ -685,7 +685,7 @@ module.exports = function(root, options, _shared) {
 									'/@doodad-js/loader': {
 										handlers: [
 											{
-												handler: nodejs.Server.Http.StaticPage,
+												handler: nodejs.Server.Http.FileSystemPage,
 												path: files.Path.parse(modules.resolve('@doodad-js/loader')).set({file: null}).combine('./dist/@doodad-js/loader/', {os: 'linux'}),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
@@ -697,7 +697,7 @@ module.exports = function(root, options, _shared) {
 									'/@doodad-js/safeeval': {
 										handlers: [
 											{
-												handler: nodejs.Server.Http.StaticPage,
+												handler: nodejs.Server.Http.FileSystemPage,
 												path: files.Path.parse(modules.resolve('@doodad-js/safeeval')).set({file: null}).combine('./dist/@doodad-js/safeeval/', {os: 'linux'}),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
@@ -709,7 +709,7 @@ module.exports = function(root, options, _shared) {
 									'/@doodad-js/unicode': {
 										handlers: [
 											{
-												handler: nodejs.Server.Http.StaticPage,
+												handler: nodejs.Server.Http.FileSystemPage,
 												path: files.Path.parse(modules.resolve('@doodad-js/unicode')).set({file: null}).combine('./dist/@doodad-js/unicode/', {os: 'linux'}),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
@@ -721,7 +721,7 @@ module.exports = function(root, options, _shared) {
 									'/lib/sax': saxPath && {
 										handlers: [
 											{
-												handler: nodejs.Server.Http.JavascriptPage,
+												handler: nodejs.Server.Http.JavascriptFileSystemPage,
 												path: saxPath,
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
@@ -732,7 +732,7 @@ module.exports = function(root, options, _shared) {
 									'/lib/moment': momentPath && {
 										handlers: [
 											{
-												handler: nodejs.Server.Http.StaticPage,
+												handler: nodejs.Server.Http.FileSystemPage,
 												path: momentPath,
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
@@ -744,7 +744,7 @@ module.exports = function(root, options, _shared) {
 									'/lib/moment-timezone': momentTzPath && {
 										handlers: [
 											{
-												handler: nodejs.Server.Http.StaticPage,
+												handler: nodejs.Server.Http.FileSystemPage,
 												path: momentTzPath,
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
@@ -756,7 +756,7 @@ module.exports = function(root, options, _shared) {
 									'/lib/moment-timezone/data': momentTzDataPath && {
 										handlers: [
 											{
-												handler: nodejs.Server.Http.StaticPage,
+												handler: nodejs.Server.Http.FileSystemPage,
 												path: momentTzDataPath,
 												showFolders: true,
 												mimeTypes: staticMimeTypes,

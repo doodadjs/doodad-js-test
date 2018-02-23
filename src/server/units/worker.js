@@ -155,7 +155,7 @@ module.exports = function(root, options, _shared) {
 		const forceCaseSensitive = !tools.getOS().caseSensitive;
 
 		const staticVariables = {
-			modulesUri: "../../..",
+			modulesUri: "..",
 			momentDataUri: "/app/lib/moment-timezone/data/",
 		};
 

@@ -311,7 +311,7 @@ module.exports = function(root, options, _shared) {
 						revision: 0,
 						params: null,
 						returns: 'undefined',
-						description: tools.format("Clears the cache folder. Warning: Before running this command, be sure you have nothing important in that folder: '~0~'.", [options.cachePath.toString()]),
+						description: tools.format('Clears the cache folder. Warning: Before running this command, be sure you have nothing important in that folder: "~0~".', [options.cachePath.toString()]),
 					}, function clearCache() {
 						// TODO: Abort and invalidate all cached objects before, and have an argument to delete the folder.
 						return tools.Files.rmdirAsync(options.cachePath, {force: true})

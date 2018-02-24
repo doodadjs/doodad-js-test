@@ -29,7 +29,7 @@ window.onload = function() {
 
 	const options = {};
 	options['Doodad.Modules'] = {
-		modulesUri: '../../..',
+		modulesUri: '..',
 	};
 	
 	const modules = {};

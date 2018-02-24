@@ -432,7 +432,7 @@ module.exports = function(root, options, _shared) {
 											},
 										],
 									},
-									'/rowserify': {
+									'/browserify': {
 										handlers: [
 											{
 												handler: server.Http.RedirectHandler,

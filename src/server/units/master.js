@@ -44,9 +44,10 @@ module.exports = function(root, options, _shared) {
 	const startup = function _startup() {
 		const server = doodad.Server;
 
-		const args = tools.getCurrentLocation().args,
-			maxCpus = types.toInteger(args.get('cpus') || process.env.NODE_CPUS) || 4,
-			unitName = args.get('unit');
+		const location = tools.getCurrentLocation(),
+			maxCpus = types.toInteger(location.getArg('cpus', true) || process.env.NODE_CPUS) || 4,
+			unitName = location.getArg('unit', true);
+			//toolsOptions = tools.getOptions();
 	
 		if (unitName !== undefined) {
 			return modules.load([
@@ -64,6 +65,9 @@ module.exports = function(root, options, _shared) {
 				], tools.depthExtend(15, options, {startup: {secret: _shared.SECRET}}))
 				.then(function(dummy) {
 					const test = doodad.Test;
+					//if (toolsOptions.logLevel > tools.LogLevels.Info) {
+					//	test.setOutput();
+					//};
 					return test.run({name: (unitName || test.DD_FULL_NAME)})
 						.then(function(success) {
 							if (success) {
@@ -146,6 +150,7 @@ module.exports = function(root, options, _shared) {
 									throw nodejs.Server.Http.Request.$getStats();
 								};
 							};
+							return undefined;
 						});
 					});
 			
@@ -170,6 +175,7 @@ module.exports = function(root, options, _shared) {
 									return nodejs.Server.Http.Request.$getActives();
 								};
 							};
+							return undefined;
 						});
 					});
 			
@@ -198,6 +204,7 @@ module.exports = function(root, options, _shared) {
 									return tools.Dates.secondsToPeriod(process.uptime());
 								};
 							};
+							return undefined;
 						});
 					});
 			
@@ -222,6 +229,7 @@ module.exports = function(root, options, _shared) {
 									throw new types.NotAvailable("Command not available.");
 								};
 							};
+							return undefined;
 						});
 					});
 			
@@ -265,6 +273,7 @@ module.exports = function(root, options, _shared) {
 										};
 									});
 							};
+							return undefined;
 						});
 					});
 			
@@ -318,6 +327,7 @@ module.exports = function(root, options, _shared) {
 									throw new types.NotAvailable("Command not available.");
 								};
 							};
+							return undefined;
 						});
 					});
 
@@ -368,6 +378,7 @@ module.exports = function(root, options, _shared) {
 										throw new types.NotAvailable("Command not available.");
 									};
 								};
+								return undefined;
 							});
 						});
 	

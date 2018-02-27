@@ -123,6 +123,7 @@ module.exports = function(root, options, _shared) {
 										if (!err) {
 											return messenger.callService('MyServerService', 'sendResult', [id, result]);
 										};
+										return undefined;
 									}, null, this)
 									.catch(tools.catchAndExit);
 								type.$__tasks[id] = task;
@@ -139,6 +140,7 @@ module.exports = function(root, options, _shared) {
 						const task = type.$__tasks[taskId];
 						return task.privateData.cancelable.cancel(reason);
 					};
+					return undefined;
 				}),
 			}));
 

@@ -28,7 +28,8 @@
 
 const nodeOs = require('os'),
 	nodeCluster = require('cluster'),
-	nodeChildProcess = require('child_process');
+	nodeChildProcess = require('child_process'),
+	nodeUtil = require('util');
 
 module.exports = function(root, options, _shared) {
 	const doodad = root.Doodad,
@@ -132,19 +133,20 @@ module.exports = function(root, options, _shared) {
 						returns: 'arrayof(object)',
 						description: "Returns server statistics.",
 					}, function() {
-						if (ready) {
-							if (cpus > 1) {
-								return messenger.callService('MyPrivateService', 'stats', null, {
-										ttl: 500, // ms
-										retryDelay: 100, // ms
-										timeout: TIMEOUT,
-									})
-									.then(mapWorkers);
-							} else {
-								return Promise.resolve(nodejs.Server.Http.Request.$getStats());
+						return Promise.try(function statsPromise() {
+							if (ready) {
+								if (cpus > 1) {
+									return messenger.callService('MyPrivateService', 'stats', null, {
+											ttl: 500, // ms
+											retryDelay: 100, // ms
+											timeout: TIMEOUT,
+										})
+										.then(mapWorkers);
+								} else {
+									throw nodejs.Server.Http.Request.$getStats();
+								};
 							};
-						};
-						return undefined;
+						});
 					});
 			
 				const actives = root.DD_DOC(
@@ -155,19 +157,20 @@ module.exports = function(root, options, _shared) {
 						returns: 'arrayof(string)',
 						description: "Returns the URLs of the active requests.",
 					}, function() {
-						if (ready) {
-							if (cpus > 1) {
-								return messenger.callService('MyPrivateService', 'actives', null, {
-										ttl: 500, // ms
-										retryDelay: 100, // ms
-										timeout: TIMEOUT,
-									})
-									.then(mapWorkers);
-							} else {
-								return Promise.resolve(nodejs.Server.Http.Request.$getActives());
+						return Promise.try(function activesPromise() {
+							if (ready) {
+								if (cpus > 1) {
+									return messenger.callService('MyPrivateService', 'actives', null, {
+											ttl: 500, // ms
+											retryDelay: 100, // ms
+											timeout: TIMEOUT,
+										})
+										.then(mapWorkers);
+								} else {
+									return nodejs.Server.Http.Request.$getActives();
+								};
 							};
-						};
-						return undefined;
+						});
 					});
 			
 				const uptime = root.DD_DOC(
@@ -178,23 +181,24 @@ module.exports = function(root, options, _shared) {
 						returns: 'arrayof(object)',
 						description: "Returns server uptime.",
 					}, function() {
-						if (ready) {
-							if (cpus > 1) {
-								return messenger.callService('MyPrivateService', 'uptime', null, {
-										ttl: 500, // ms
-										retryDelay: 100, // ms
-										timeout: TIMEOUT,
-									})
-									.then(mapWorkers)
-									.then(function(result) {
-										result['M:1'] = tools.Dates.secondsToPeriod(process.uptime());
-										return result;
-									});
-							} else {
-								return Promise.resolve(tools.Dates.secondsToPeriod(process.uptime()));
+						return Promise.try(function uptimePromise() {
+							if (ready) {
+								if (cpus > 1) {
+									return messenger.callService('MyPrivateService', 'uptime', null, {
+											ttl: 500, // ms
+											retryDelay: 100, // ms
+											timeout: TIMEOUT,
+										})
+										.then(mapWorkers)
+										.then(function(result) {
+											result['M:1'] = tools.Dates.secondsToPeriod(process.uptime());
+											return result;
+										});
+								} else {
+									return tools.Dates.secondsToPeriod(process.uptime());
+								};
 							};
-						};
-						return undefined;
+						});
 					});
 			
 				const ping = root.DD_DOC(
@@ -205,19 +209,20 @@ module.exports = function(root, options, _shared) {
 						returns: 'arrayof(object)',
 						description: "Pings each worker and returns the delays.",
 					}, function() {
-						if (ready) {
-							if (cpus > 1) {
-								return messenger.ping({
-										ttl: 500, // ms
-										retryDelay: 100, // ms
-										timeout: TIMEOUT,
-									})
-									.then(mapWorkers);
-							} else {
-								return Promise.reject(new types.NotAvailable("Command not available."));
+						return Promise.try(function pingPromise() {
+							if (ready) {
+								if (cpus > 1) {
+									return messenger.ping({
+											ttl: 500, // ms
+											retryDelay: 100, // ms
+											timeout: TIMEOUT,
+										})
+										.then(mapWorkers);
+								} else {
+									throw new types.NotAvailable("Command not available.");
+								};
 							};
-						};
-						return undefined;
+						});
 					});
 			
 				const browser = root.DD_DOC(
@@ -228,46 +233,46 @@ module.exports = function(root, options, _shared) {
 						returns: 'undefined',
 						description: "Opens your favorite browser to the application's main page.",
 					}, function() {
-						if (ready) {
-							return Promise.try(function browserPromise() { // Sets Promise's name to "browserPromise" instead of "statsPromise"
-									return stats();
-								})
-								.thenCreate(function launchBrowser(result, resolve, reject) {
-									let url = "http://";
-									url += (options.listeningAddress === '0.0.0.0' ? '127.0.0.1' : options.listeningAddress);
-									url += ':' + options.listeningPort;
-									url += '/';
-									const os = tools.getOS();
-									// Reference: http://www.dwheeler.com/essays/open-files-urls.html
-									let child = null;
-									if (os.name === 'win32') {
-										child = nodeChildProcess.spawn("start", [url], {shell: true});
-									} else if (os.name === 'darwin') {
-										child = nodeChildProcess.spawn("open", [url]);
-									} else {
-										child = nodeChildProcess.spawn("xdg-open", [url]);
-									};
-									if (child) {
-										child.on('exit', function(code, signal) {
-											if (code === 0) {
-												resolve();
-											} else {
-												reject(new types.Error("Failed to start browser. Please manually navigate to ' ~0~ '.", [url]));
-											};
-										});
-										child.on('error', function(err) {
-											reject(new types.Error("Failed to start browser. Please manually navigate to ' ~0~ '.", [url]));
-										});
-									};
-								});
-						};
-						return undefined;
+						return Promise.try(function browserPromise() {
+							if (ready) {
+								return stats()
+									.thenCreate(function launchBrowser(result, resolve, reject) {
+										let url = "http://";
+										url += (options.listeningAddress === '0.0.0.0' ? '127.0.0.1' : options.listeningAddress);
+										url += ':' + options.listeningPort;
+										url += '/';
+										const os = tools.getOS();
+										// Reference: http://www.dwheeler.com/essays/open-files-urls.html
+										let child = null;
+										if (os.name === 'win32') {
+											child = nodeChildProcess.spawn("start", [url], {shell: true});
+										} else if (os.name === 'darwin') {
+											child = nodeChildProcess.spawn("open", [url]);
+										} else {
+											child = nodeChildProcess.spawn("xdg-open", [url]);
+										};
+										if (child) {
+											child.on('exit', function(code, signal) {
+												if (code === 0) {
+													resolve();
+												} else {
+													throw new types.Error("Failed to start browser. Please manually navigate to ' ~0~ '.", [url]);
+												};
+											});
+											child.on('error', function(err) {
+												throw new types.Error("Failed to start browser. Please manually navigate to ' ~0~ '.", [url]);
+											});
+										};
+									});
+							};
+						});
 					});
 			
+				// NOTE: Experimental
 				const run = root.DD_DOC(
 					{
 						author: "Claude Petit",
-						revision: 0,
+						revision: 1,
 						params: {
 							wid: {
 								type: 'integer',
@@ -279,33 +284,94 @@ module.exports = function(root, options, _shared) {
 								optional: false,
 								description: "Function to run on the worker. That function receives 'root' as its first argument.",
 							},
+							timeout: {
+								type: 'integer',
+								optional: true,
+								description: "Timeout in milliseconds.",
+							},
 						},
 						returns: 'any',
-						description: "Runs an arbitrary function on the specified worker.",
+						description: "<EXPERIMENTAL> Runs an arbitrary function on the specified worker.",
 					}, function(wid, fn, /*optional*/timeout) {
-						if (ready) {
-							if (!types.isInteger(wid)) {
-								throw new types.ValueError("Invalid worker id.");
+						return Promise.try(function runPromise() {
+							if (ready) {
+								if (!types.isInteger(wid)) {
+									throw new types.ValueError("Invalid worker id.");
+								};
+								if (!types.isCustomFunction(fn)) {
+									throw new types.ValueError("Invalid function.");
+								};
+								if (cpus > 1) {
+									return messenger.callService('MyPrivateService', 'run', [fn.toString()], {
+											ttl: (types.isNothing(timeout) ? TIMEOUT : timeout), // ms
+											worker: wid,
+										})
+										.then(function(result) {
+											const retVal = result[wid];
+											if (types._instanceof(retVal, root.MyTask)) {
+												console.log(`New task created. To cancel, please run : cancel(${tools.toSource(wid)}, ${tools.toSource(retVal.id)})`);
+												return undefined;
+											};
+											return retVal;
+										});
+								} else {
+									throw new types.NotAvailable("Command not available.");
+								};
 							};
-							if (!types.isCustomFunction(fn)) {
-								throw new types.ValueError("Invalid function.");
-							};
-							if (cpus > 1) {
-								return messenger.callService('MyPrivateService', 'run', [fn.toString()], {
-										ttl: (types.isNothing(timeout) ? TIMEOUT : timeout), // ms
-										worker: wid,
-									})
-									.then(function(result) {
-										return result[wid];
-									});
-							} else {
-								return Promise.reject(new types.NotAvailable("Command not available."));
-							};
-						};
-						return undefined;
+						});
 					});
 
-				const clearCache = root.DD_DOC(
+					// NOTE: Experimental
+					const cancel = root.DD_DOC(
+						{
+							author: "Claude Petit",
+							revision: 0,
+							params: {
+								wid: {
+									type: 'integer',
+									optional: false,
+									description: "Worker ID",
+								},
+								taskId: {
+									type: 'string',
+									optional: false,
+									description: "ID of the task to cancel.",
+								},
+								reason: {
+									type: 'Error',
+									optional: true,
+									description: "Reason.",
+								},
+							},
+							returns: 'any',
+							description: "<EXPERIMENTAL> Cancels a task.",
+						}, function(wid, taskId, /*optional*/reason) {
+							return Promise.try(function cancelPromise() {
+								if (ready) {
+									if (!types.isInteger(wid)) {
+										throw new types.ValueError("Invalid worker id.");
+									};
+									if (!types.isStringAndNotEmpty(taskId)) {
+										throw new types.ValueError("Invalid task id.");
+									};
+									if (!types.isNothing(reason) && !types.isError(reason)) {
+										throw new types.ValueError("Invalid reason.");
+									};
+									if (cpus > 1) {
+										return messenger.callService('MyPrivateService', 'cancel', [taskId], {
+												worker: wid,
+											})
+											.then(function(result) {
+												return result[wid];
+											});
+									} else {
+										throw new types.NotAvailable("Command not available.");
+									};
+								};
+							});
+						});
+	
+					const clearCache = root.DD_DOC(
 					{
 						author: "Claude Petit",
 						revision: 0,
@@ -314,10 +380,12 @@ module.exports = function(root, options, _shared) {
 						description: tools.format('Clears the cache folder. Warning: Before running this command, be sure you have nothing important in that folder: "~0~".', [options.cachePath.toString()]),
 					}, function clearCache() {
 						// TODO: Abort and invalidate all cached objects before, and have an argument to delete the folder.
-						return tools.Files.rmdirAsync(options.cachePath, {force: true})
-							.then((dummy) => {
-								console.info(tools.format('Cache folder "~0~" deleted.', [options.cachePath.toString()]));
-							});
+						return Promise.try(function clearCachePromise() {
+							return tools.Files.rmdirAsync(options.cachePath, {force: true})
+								.then((dummy) => {
+									console.info(tools.format('Cache folder "~0~" deleted.', [options.cachePath.toString()]));
+								});
+						});
 					});
 			
 				const term = new nodejs.Terminal.Ansi.Javascript(0, {
@@ -336,15 +404,16 @@ module.exports = function(root, options, _shared) {
 						Promise: Promise,
 					},
 					commands: {
-						stats: stats,
-						actives: actives,
-						uptime: uptime,
-						ping: ping,
+						stats,
+						actives,
+						uptime,
+						ping,
 						getAttribute: types.getAttribute,
 						setAttribute: types.setAttribute,
-						browser: browser,
-						w: run,
-						clearCache: clearCache,
+						browser,
+						run,
+						cancel,
+						clearCache,
 					},
 				});
 
@@ -353,6 +422,24 @@ module.exports = function(root, options, _shared) {
 				});
 
 				term.listen();
+
+				// NOTE: Experimental
+				// TODO: Make an official service for Tasks
+				root.REGISTER(doodad.Object.$extend(
+					server.Ipc.MixIns.Service,
+				{
+					$TYPE_NAME: 'MyServerService',
+				
+					sendResult: server.Ipc.CALLABLE(function sendResult(request, taskId, result) {
+						// TODO: Change "terminal" to make a "printAsyncResult" available
+						const ansi = nodeUtil.inspect(result, {colors: true});
+						term.consoleWrite('log', [`<W:${request.msg.worker.id} TASK:${tools.toSource(taskId)}> ${ansi}`], {callback: doodad.AsyncCallback(null, function(err) {
+							if (!err) {
+								term.refresh();
+							};
+						})});
+					}),
+				}));
 			};
 
 			return startWorkers()

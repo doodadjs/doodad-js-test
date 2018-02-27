@@ -46,8 +46,8 @@ module.exports = function(root, options, _shared) {
 
 		const location = tools.getCurrentLocation(),
 			maxCpus = types.toInteger(location.getArg('cpus', true) || process.env.NODE_CPUS) || 4,
-			unitName = location.getArg('unit', true);
-			//toolsOptions = tools.getOptions();
+			unitName = location.getArg('unit', true),
+			toolsOptions = tools.getOptions();
 	
 		if (unitName !== undefined) {
 			return modules.load([
@@ -65,9 +65,9 @@ module.exports = function(root, options, _shared) {
 				], tools.depthExtend(15, options, {startup: {secret: _shared.SECRET}}))
 				.then(function(dummy) {
 					const test = doodad.Test;
-					//if (toolsOptions.logLevel > tools.LogLevels.Info) {
-					//	test.setOutput();
-					//};
+					if (toolsOptions.logLevel > tools.LogLevels.Info) {
+						test.setOutput(new doodad.IO.NullTextOutputStream());
+					};
 					return test.run({name: (unitName || test.DD_FULL_NAME)})
 						.then(function(success) {
 							if (success) {

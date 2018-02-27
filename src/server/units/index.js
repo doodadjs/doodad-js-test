@@ -89,10 +89,27 @@ const startup = function _startup(root, _shared) {
 	/* eslint global-require: "off" */
 
 	const doodad = root.Doodad,
+		types = doodad.Types,
 		tools = doodad.Tools,
 		files = tools.Files;
 					
 	tools.trapUnhandledErrors();
+
+	const location = tools.getCurrentLocation();
+
+	const toolsOptions = tools.getOptions();
+
+	let	changedTools = false,
+		logLevel = toolsOptions.logLevel;
+
+	if (location.hasArg('logLevel')) {
+		logLevel = location.getArg('logLevel', true);
+		changedTools = true;
+	};
+
+	if (changedTools) {
+		tools.setOptions({logLevel});
+	};
 
 	addSearchPaths(root);
 	
@@ -105,6 +122,34 @@ const startup = function _startup(root, _shared) {
 		listeningSSLPort: 8181,
 	};
 	
+	// NOTE: Experimental
+	// TODO: Make an official Task object
+	root.REGISTER(doodad.Object.$extend(
+		doodad.Interfaces.Serializable,
+	{
+		$TYPE_NAME: 'MyTask',
+
+		id: doodad.PUBLIC(doodad.READ_ONLY(null)), // serialized
+		
+		privateData: doodad.PUBLIC(doodad.READ_ONLY(null)),
+
+		$unserialize: doodad.OVERRIDE(function $unserialize(data) {
+			return new this(data.id);
+		}),
+
+		create: doodad.OVERRIDE(function create(id) {
+			this._super();
+
+			types.setAttributes(this, {id, privateData: tools.nullObject()});
+		}),
+
+		serialize: doodad.OVERRIDE(function serialize() {
+			return {
+				id: this.id,
+			};
+		}),
+	}));
+
 	if (nodeCluster.isMaster) {
 		return require('./master.js')(root, options, _shared);
 	};
@@ -113,7 +158,12 @@ const startup = function _startup(root, _shared) {
 };
 
 const options = {
-	startup: {secret: SECRET},
+	startup: {
+		secret: SECRET,
+	},
+	"Doodad.Tools": {
+		logLevel: 2,
+	},
 };
 
 require('@doodad-js/core').createRoot(null, options, startup);

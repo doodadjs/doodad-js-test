@@ -147,7 +147,7 @@ module.exports = function(root, options, _shared) {
 										})
 										.then(mapWorkers);
 								} else {
-									throw nodejs.Server.Http.Request.$getStats();
+									return nodejs.Server.Http.Request.$getStats();
 								};
 							};
 							return undefined;

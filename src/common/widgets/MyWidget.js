@@ -127,7 +127,7 @@ exports.add = function add(DD_MODULES) {
 				}),
 					
 				render: doodad.OVERRIDE(function render() {
-					this.write('<span' + this.renderAttributes(['main', 'mergeTest']) + '>' + tools.escapeHtml(this.message || '', this.document) + '</span>');
+					this.write('<span' + this.renderAttributes(['main', 'mergeTest']) + '>' + tools.escapeHtml(this.message || '', this.document, true) + '</span>');
 				}),
 			}));
 

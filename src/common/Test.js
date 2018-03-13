@@ -288,8 +288,8 @@ exports.add = function add(DD_MODULES) {
 				__Internal__.runPromise = __Internal__.runPromise
 					.then(function(dummy) {
 						if (html) {
-							stream.openElement({tag: 'div', attrs: 'class="command"'});
-							stream.print(fnName, {attrs: 'class="name"'});
+							stream.openElement({tag: 'div', attrs: {"class": "command"}});
+							stream.print(fnName, {attrs: {"class": "name"}});
 						} else {
 							stream.print("Name: " + fnName);
 						};
@@ -356,9 +356,9 @@ exports.add = function add(DD_MODULES) {
 							
 								if (html) {
 									if (dom) {
-										stream.openElement({tag: 'div', attrs: 'class="run bindMe"'});
+										stream.openElement({tag: 'div', attrs: {"class": "run bindMe"}});
 									} else {
-										stream.openElement({tag: 'div', attrs: 'class="run"'});
+										stream.openElement({tag: 'div', attrs: {"class": "run"}});
 									};
 								};
 								runElementOpened = true;
@@ -381,13 +381,13 @@ exports.add = function add(DD_MODULES) {
 										
 									printOpts = {};
 									if (html) {
-										printOpts.attrs = 'class="name"';
+										printOpts.attrs = {"class": "name"};
 									};
 									stream.print(command.replace(/[~]/g, '~~'), printOpts);
 								
 									printOpts = {};
 									if (html) {
-										printOpts.attrs = ('class="' + expectedCls + '"');
+										printOpts.attrs = {"class": expectedCls};
 									};
 									stream.print(expectedStr.replace(/[~]/g, '~~'), printOpts);
 								
@@ -481,7 +481,7 @@ exports.add = function add(DD_MODULES) {
 								
 									printOpts = {};
 									if (html) {
-										printOpts.attrs = ('class="' + resultCls + '"');
+										printOpts.attrs = {"class": resultCls};
 									};
 									stream.print(resultStr.replace(/[~]/g, '~~'), printOpts);
 								
@@ -493,7 +493,7 @@ exports.add = function add(DD_MODULES) {
 									resultCls = 'result error';
 									printOpts = {};
 									if (html) {
-										printOpts.attrs = ('class="' + resultCls + '"');
+										printOpts.attrs = {"class": resultCls};
 									};
 									stream.print(resultStr.replace(/[~]/g, '~~'), printOpts);
 								
@@ -510,7 +510,7 @@ exports.add = function add(DD_MODULES) {
 								};
 								printOpts = {};
 								if (html) {
-									printOpts.attrs = ('class="' + resultCls + '"');
+									printOpts.attrs = {"class": resultCls};
 								};
 								stream.print(resultStr.replace(/[~]/g, '~~'), printOpts);
 							
@@ -518,7 +518,7 @@ exports.add = function add(DD_MODULES) {
 								resultCls = 'time';
 								printOpts = {};
 								if (html) {
-									printOpts.attrs = ('class="' + resultCls + '"');
+									printOpts.attrs = {"class": resultCls};
 								};
 								stream.print(resultStr.replace(/[~]/g, '~~'), printOpts);
 							
@@ -526,7 +526,7 @@ exports.add = function add(DD_MODULES) {
 								if (note) {
 									printOpts = {};
 									if (html) {
-										printOpts.attrs = 'class="note"';
+										printOpts.attrs = {"class": "note"};
 									};
 									stream.print("Note: " + note.replace(/[~]/g, '~~'), printOpts);
 								};
@@ -599,8 +599,8 @@ exports.add = function add(DD_MODULES) {
 						html = types._implements(stream, io.HtmlOutputStream),
 						buffered = types._implements(stream, ioMixIns.BufferedStreamBase);
 					if (html) {
-						stream.openElement({tag: 'div', attrs: 'class="unit" title="' + unit.DD_FULL_NAME + '"'});
-						stream.print(unit.DD_FULL_NAME, {attrs: 'class="name"'});
+						stream.openElement({tag: 'div', attrs: {"class": "unit", "title": unit.DD_FULL_NAME}});
+						stream.print(unit.DD_FULL_NAME, {attrs: {"class": "name"}});
 					} else {
 						stream.print(unit.DD_FULL_NAME);
 					};
@@ -653,7 +653,7 @@ exports.add = function add(DD_MODULES) {
 					state = {};
 					
 				if (test.FAILED_TESTS) {
-					stream.openElement({tag: 'div', attrs: 'class="failedPopup bindMe"'});
+					stream.openElement({tag: 'div', attrs: {"class": "failedPopup bindMe"}});
 					stream.write('<a id="failedBookmark" class="failedToolbar bindMe"></a><button class="prevFailed bindMe">Previous</button><button class="nextFailed bindMe">Next</button><span class="failedOf bindMe"></span>');
 					stream.flush({flushElement: true});
 					const popup = stream.element;
@@ -879,7 +879,7 @@ exports.add = function add(DD_MODULES) {
 				
 			__Internal__.showNavigator = function showNavigator() {
 				const stream = test.getOutput();
-				stream.openElement({tag: 'div', attrs: 'class="navigator"'});
+				stream.openElement({tag: 'div', attrs: {"class": "navigator"}});
 				stream.write('<button class="index bindMe">Index</button><button class="prevUnit bindMe">&lt;&lt;&lt;</button><span class="unitName"></span><button class="nextUnit bindMe">&gt;&gt;&gt;</button>');
 				stream.flush({flushElement: true});
 				const root = stream.element;
@@ -973,7 +973,7 @@ exports.add = function add(DD_MODULES) {
 				for (let i = 0; i < len; i++) {
 					// Sorry for using the same variable
 					const unit = units[i];
-					html += '<li><a href="#" unitname="' + unit.DD_FULL_NAME + '" class="indexMenuItem bindMe">' + tools.escapeHtml(unit.DD_FULL_NAME) + '</a></li>';
+					html += '<li><a href="#" unitname="' + unit.DD_FULL_NAME + '" class="indexMenuItem bindMe">' + tools.escapeHtml(unit.DD_FULL_NAME, true) + '</a></li>';
 					html += __Internal__.buildIndexItems(unit);
 				};
 					
@@ -982,7 +982,7 @@ exports.add = function add(DD_MODULES) {
 				
 			__Internal__.showIndex = function showIndex(unit) {
 				const stream = test.getOutput();
-				stream.openElement({tag: 'div', attrs: 'class="indexMenu"'});
+				stream.openElement({tag: 'div', attrs: {"class": "indexMenu"}});
 				stream.write(__Internal__.buildIndexItems(test));
 				stream.flush({flushElement: true});
 				const root = stream.element;
@@ -1030,7 +1030,7 @@ exports.add = function add(DD_MODULES) {
 						isIndex = false;
 						
 					if (html) {
-						stream.openElement({tag: 'div', attrs: 'class="test"'});
+						stream.openElement({tag: 'div', attrs: {"class": "test"}});
 					};
 
 					if (name) {

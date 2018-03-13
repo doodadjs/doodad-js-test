@@ -863,7 +863,9 @@ module.exports = function(root, options, _shared) {
 					.then(function(dummy) {})
 					.catch(function(ex) {
 						if (root.getOptions().debug) {
-							console.error(ex);
+							if (!types._instanceof(ex, types.HttpError) || (ex.code !== 406)) {
+								console.error(ex);
+							};
 						};
 					});
 			};

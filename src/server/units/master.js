@@ -419,8 +419,6 @@ module.exports = function(root, options, _shared) {
 						actives,
 						uptime,
 						ping,
-						getAttribute: types.getAttribute,
-						setAttribute: types.setAttribute,
 						browser,
 						run,
 						cancel,

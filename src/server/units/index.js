@@ -169,7 +169,7 @@ const options = {
 require('@doodad-js/core').createRoot(null, options, startup);
 
 /* Cross-Origin (simple request) : Should return an index file with appropriated headers
-GET /app/doodad-js-test/ HTTP/1.0
+GET /app/@doodad-js/test/ HTTP/1.0
 Content-Type: text/html
 User-Agent: HTTPTool/1.0
 Origin: www.test.local
@@ -178,7 +178,7 @@ Host: www.doodad-js.local
 */
 
 /* Cross-Origin (full request) : Should return appropriated headers, without content
-OPTIONS /app/doodad-js-test/ HTTP/1.0
+OPTIONS /app/@doodad-js/test/ HTTP/1.0
 Content-Type: text/html
 User-Agent: HTTPTool/1.0
 Origin: www.test.local
@@ -206,7 +206,7 @@ Content-Length: 384
 */
 
 /* Should return the content and headers. Request should not be aborted or stalled.
-GET /app/doodad-js/common/Doodad.js HTTP/1.0
+GET /app/@doodad-js/core/common/Doodad.js HTTP/1.0
 Accept: application/javascript
 
 */
@@ -231,13 +231,13 @@ Accept: application/javascript
 */
 
 /* Should return folder's content in JSON
-GET /app/doodad-js-locale/locales/ HTTP/1.0
+GET /app/@doodad-js/locale/locales/ HTTP/1.0
 Accept: application/json
 
 */
 
 /* Should return folder's content in JSON compressed
-GET /app/doodad-js-locale/locales/ HTTP/1.0
+GET /app/@doodad-js/locale/locales/ HTTP/1.0
 Accept: application/json
 Accept-Encoding: gzip
 

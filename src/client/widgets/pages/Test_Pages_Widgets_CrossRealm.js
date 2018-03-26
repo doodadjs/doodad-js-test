@@ -31,9 +31,9 @@
 	"use strict";
 //! END_IF()
 
-exports.add = function add(DD_MODULES) {
-	DD_MODULES = (DD_MODULES || {});
-	DD_MODULES['Test.Pages.Widgets/crossRealm'] = {
+exports.add = function add(modules) {
+	modules = (modules || {});
+	modules['Test.Pages.Widgets/crossRealm'] = {
 		version: /*! REPLACE_BY(TO_SOURCE(VERSION(MANIFEST("name")))) */ null /*! END_REPLACE()*/,
 		//dependencies: [
 		//	//{
@@ -80,7 +80,7 @@ exports.add = function add(DD_MODULES) {
 			};
 		},
 	};
-	return DD_MODULES;
+	return modules;
 };
 
 //! END_MODULE()

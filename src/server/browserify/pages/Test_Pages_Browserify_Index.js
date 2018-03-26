@@ -24,9 +24,9 @@
 //	limitations under the License.
 //! END_REPLACE()
 
-exports.add = function add(DD_MODULES) {
-	DD_MODULES = (DD_MODULES || {});
-	DD_MODULES['Test.Pages.Browserify/index'] = {
+exports.add = function add(modules) {
+	modules = (modules || {});
+	modules['Test.Pages.Browserify/index'] = {
 		version: /*! REPLACE_BY(TO_SOURCE(VERSION(MANIFEST("name")))) */ null /*! END_REPLACE()*/,
 		dependencies: ['@doodad-js/templates'],
 
@@ -58,7 +58,7 @@ exports.add = function add(DD_MODULES) {
 			})));
 		},
 	};
-	return DD_MODULES;
+	return modules;
 };
 
 //! END_MODULE()

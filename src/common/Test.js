@@ -268,51 +268,83 @@ exports.add = function add(modules) {
 				return (!types.get(options, 'not', false) === success);
 			});
 
-			__Internal__.performanceEnabled = !!(global.performance && global.performance.now);
-			__Internal__.processHrTimeEnabled = !__Internal__.performanceEnabled && !!(nodejs && global.process.hrtime);
-			__Internal__.consoleTimingEnabled = !__Internal__.processHrTimeEnabled && !!(global.console && global.console.time && global.console.timeEnd);
-			__Internal__.runPromise = null;
+			__Internal__.performanceEnabled = !!(global.performance && global.performance.now); // <FUTURE> Global to threads
+			__Internal__.processHrTimeEnabled = !__Internal__.performanceEnabled && !!(nodejs && global.process.hrtime); // <FUTURE> Global to threads
+			__Internal__.consoleTimingEnabled = !__Internal__.processHrTimeEnabled && !!(global.console && global.console.time && global.console.timeEnd); // <FUTURE> Global to threads
+			__Internal__.runPromise = null; // <FUTURE> Local to thread
 
 
-			test.ADD('prepareCommand', function prepareCommand(fn, fnName) {
+			test.ADD('runCommand', function prepareCommand(commandFn, commandFnName, stepsFn, /*optional*/options) {
 				//const Promise = types.getPromise();
 
+				// State
+				let ended = false;
+				let commandElementOpened = false;
+				const skipCommand = types.get(options, 'skip', false);
+					
 				const stream = test.getOutput(),
 					html = types._implements(stream, io.HtmlOutputStream),
 					dom = (clientIO ? types._instanceof(stream, clientIO.DomOutputStream) : false),
 					buffered = types._implements(stream, ioMixIns.BufferedStreamBase);
 					
-				let ended = false;
-				let commandElementOpened = false;
-					
 				__Internal__.runPromise = __Internal__.runPromise
 					.then(function(dummy) {
 						if (html) {
 							stream.openElement({tag: 'div', attrs: {"class": "command"}});
-							stream.print(fnName, {attrs: {"class": "name"}});
+							stream.print(commandFnName, {attrs: {"class": "name"}});
 						} else {
-							stream.print("Name: " + fnName);
+							stream.print("Name: " + commandFnName);
 						};
 						commandElementOpened = true;
 					});
 
-				return {
+				stepsFn({
+					isEnded: function() {
+						return ended;
+					},
+
 					chain: function(then) {
 						if (ended) {
 							throw new types.NotAvailable("Command has been ended.");
 						};
 
 						__Internal__.runPromise = __Internal__.runPromise
-							.then(then);
+							.then(function(dummy) {
+								const Promise = types.getPromise();
+								const oldRunPromise = __Internal__.runPromise;
+								return Promise.try(function() {
+									__Internal__.runPromise = Promise.resolve();
+									then();
+									return __Internal__.runPromise;
+								}).nodeify(function(err, dummy) {
+									__Internal__.runPromise = oldRunPromise;
+									if (err) {
+										throw err;
+									};
+								});
+							});
 
 						return this;
 					},
-					run: function (expected, /*optional*/options, /*paramarray*/...params) {
+
+					runGroup: function runGroup(groupFnName, groupFn, /*optional*/options) {
 						if (ended) {
 							throw new types.NotAvailable("Command has been ended.");
 						};
 
+						test.runCommand(commandFn, groupFnName, function(group, options) {
+							groupFn(group, options);
+						}, options);
+					},
+
+					runStep: function runStep(expected, /*optional*/options, /*paramarray*/...params) {
+						if (ended) {
+							throw new types.NotAvailable("Command has been ended.");
+						};
+
+						// State
 						let runElementOpened = false;
+						const skipStep = skipCommand || types.get(options, 'skip', false);
 
 						__Internal__.runPromise = __Internal__.runPromise
 							.then(function(dummy) {
@@ -367,7 +399,7 @@ exports.add = function add(modules) {
 									expected = types.toObject(expected);
 								
 									const command = "Command: " + (types.get(options, 'command', null) ||
-											fnName + 
+											commandFnName + 
 											"(" + 
 											tools.map(params, function(val, key) {
 													if (isEval && types.isString(val)) {
@@ -410,7 +442,30 @@ exports.add = function add(modules) {
 
 								let time = null;
 
-								if (!evalError) {
+								if (skipStep) {
+									resultStr = ">>> SKIPPED <<<";
+									resultCls = 'got skipped';
+
+									printOpts = {};
+									if (html) {
+										printOpts.attrs = {"class": resultCls};
+									};
+									stream.print(resultStr.replace(/[~]/g, '~~'), printOpts);
+
+									result = true;
+
+								} else if (evalError) {
+									resultStr = "Expression error : " + evalError.toString();
+									resultCls = 'result error';
+									printOpts = {};
+									if (html) {
+										printOpts.attrs = {"class": resultCls};
+									};
+									stream.print(resultStr.replace(/[~]/g, '~~'), printOpts);
+								
+									result = false;
+
+								} else {
 									resultStr = "Got: ";
 									resultCls = 'got';
 
@@ -419,7 +474,7 @@ exports.add = function add(modules) {
 										for (let i = 0; i < repetitions; i++) {
 											const now = performance.now();
 											try {
-												result = fn.apply(this, params);
+												result = commandFn.apply(this, params);
 											} catch(ex) {
 												result = ex;
 											};
@@ -430,7 +485,7 @@ exports.add = function add(modules) {
 										for (let i = 0; i < repetitions; i++) {
 											let now = process.hrtime();
 											try {
-												result = fn.apply(this, params);
+												result = commandFn.apply(this, params);
 											} catch(ex) {
 												result = ex;
 											};
@@ -442,7 +497,7 @@ exports.add = function add(modules) {
 										for (let i = 0; i < repetitions; i++) {
 											console.time("Time");
 											try {
-												result = fn.apply(this, params);
+												result = commandFn.apply(this, params);
 											} catch(ex) {
 												result = ex;
 											};
@@ -453,7 +508,7 @@ exports.add = function add(modules) {
 										};
 									} else {
 										try {
-											result = fn.apply(this, params);
+											result = commandFn.apply(this, params);
 										} catch(ex) {
 											result = ex;
 										};
@@ -479,25 +534,13 @@ exports.add = function add(modules) {
 										result = types.toObject(result);
 									};
 								
-									printOpts = {};
-									if (html) {
-										printOpts.attrs = {"class": resultCls};
-									};
-									stream.print(resultStr.replace(/[~]/g, '~~'), printOpts);
-								
 									result = (types.get(options, 'compareFn', null) || test.compare)(expected, result, options);
-								};
-							
-								if (evalError) {
-									resultStr = "Expression error :" + evalError.toString();
-									resultCls = 'result error';
+
 									printOpts = {};
 									if (html) {
 										printOpts.attrs = {"class": resultCls};
 									};
 									stream.print(resultStr.replace(/[~]/g, '~~'), printOpts);
-								
-									result = false;
 								};
 							
 								resultStr = "Result: " + (result ? "OK !" : ">>> FAILED <<<");
@@ -547,31 +590,23 @@ exports.add = function add(modules) {
 
 						return this;
 					},
-					
-					end: function() {
-						if (ended) {
-							throw new types.NotAvailable("Command has been ended.");
+				}, options);
+
+				__Internal__.runPromise = __Internal__.runPromise
+					.nodeify(function(err, dummy) {
+						ended = true;
+						if (commandElementOpened) {
+							if (html) {
+								stream.flush({flushElement: true});
+								stream.closeElement();
+							} else {
+								buffered && stream.flush();
+							};
 						};
-
-						__Internal__.runPromise = __Internal__.runPromise
-							.nodeify(function(err, dummy) {
-								ended = true;
-								if (commandElementOpened) {
-									if (html) {
-										stream.flush({flushElement: true});
-										stream.closeElement();
-									} else {
-										buffered && stream.flush();
-									};
-								};
-								if (err) {
-									throw err;
-								};
-							});
-
-						return this;
-					},
-				};
+						if (err) {
+							throw err;
+						};
+					});
 			});
 				
 			__Internal__.runChildren = function runChildren(unit) {
@@ -1097,7 +1132,8 @@ exports.add = function add(modules) {
 									} else if (err) {
 										if (!err.bubble) {
 											types.DEBUGGER();
-											io.stderr.write(err);
+											io.stderr.write(err.message);
+											io.stderr.write(err.stack);
 											//io.stderr.flush();
 											tools.alert("An error occurred while testing.");
 											success = false;
@@ -1115,7 +1151,8 @@ exports.add = function add(modules) {
 									} else if (err) {
 										if (!err.bubble) {
 											types.DEBUGGER();
-											io.stderr.write(err);
+											io.stderr.print(err.message);
+											io.stderr.print(err.stack);
 											//io.stderr.flush();
 											io.stderr.print("End: An error occurred while testing.");
 											success = false;

@@ -50,6 +50,8 @@ module.exports = function(root, options, _shared) {
 			toolsOptions = tools.getOptions();
 	
 		if (unitName !== undefined) {
+			root.setOptions({enableDebugger: false});
+			
 			return modules.load([
 					/*{
 						module: '@doodad-js/core',

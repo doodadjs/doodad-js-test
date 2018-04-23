@@ -275,12 +275,14 @@ exports.add = function add(modules) {
 
 
 			test.ADD('runCommand', function prepareCommand(commandFn, commandFnName, stepsFn, /*optional*/options) {
-				//const Promise = types.getPromise();
+				const Promise = types.getPromise();
 
 				// State
 				let ended = false;
 				let commandElementOpened = false;
+				let finalizers = null;
 				const skipCommand = types.get(options, 'skip', false);
+				const title = types.get(options, 'title', commandFnName);
 					
 				const stream = test.getOutput(),
 					html = types._implements(stream, io.HtmlOutputStream),
@@ -291,9 +293,9 @@ exports.add = function add(modules) {
 					.then(function(dummy) {
 						if (html) {
 							stream.openElement({tag: 'div', attrs: {"class": "command"}});
-							stream.print(commandFnName, {attrs: {"class": "name"}});
+							stream.print(title, {attrs: {"class": "name"}});
 						} else {
-							stream.print("Name: " + commandFnName);
+							stream.print("Name: " + title);
 						};
 						commandElementOpened = true;
 					});
@@ -314,8 +316,14 @@ exports.add = function add(modules) {
 								const oldRunPromise = __Internal__.runPromise;
 								return Promise.try(function() {
 									__Internal__.runPromise = Promise.resolve();
-									then();
-									return __Internal__.runPromise;
+									const promise = then();
+									if (types.isPromise(promise)) {
+										return __Internal__.runPromise
+											.then(function() {
+												return promise;
+											});
+									};
+									return undefined;
 								}).nodeify(function(err, dummy) {
 									__Internal__.runPromise = oldRunPromise;
 									if (err) {
@@ -323,8 +331,18 @@ exports.add = function add(modules) {
 									};
 								});
 							});
+					},
 
-						return this;
+					finalize: function(finalizerCb) {
+						if (ended) {
+							throw new types.NotAvailable("Command has been ended.");
+						};
+
+						if (!finalizers) {
+							finalizers = [];
+						};
+
+						finalizers.push(finalizerCb);
 					},
 
 					runGroup: function runGroup(groupFnName, groupFn, /*optional*/options) {
@@ -332,9 +350,9 @@ exports.add = function add(modules) {
 							throw new types.NotAvailable("Command has been ended.");
 						};
 
-						test.runCommand(commandFn, groupFnName, function(group, options) {
+						test.runCommand(commandFn, commandFnName, function(group, options) {
 							groupFn(group, options);
-						}, options);
+						}, tools.extend({}, options, {title: groupFnName}));
 					},
 
 					runStep: function runStep(expected, /*optional*/options, /*paramarray*/...params) {
@@ -587,14 +605,26 @@ exports.add = function add(modules) {
 									throw err;
 								};
 							});
-
-						return this;
 					},
 				}, options);
 
 				__Internal__.runPromise = __Internal__.runPromise
 					.nodeify(function(err, dummy) {
+						if (finalizers) {
+							let promise = (err ? Promise.reject(err) : Promise.resolve(dummy));
+							const len = finalizers.length;
+							for (let i = 0; i < len; i++) {
+								promise = promise.nodeify(finalizers[i]);
+							};
+							return promise;
+						} else if (err) {
+							throw err;
+						};
+						return undefined;
+					})
+					.nodeify(function(err, dummy) {
 						ended = true;
+						finalizers = null;
 						if (commandElementOpened) {
 							if (html) {
 								stream.flush({flushElement: true});
@@ -645,6 +675,7 @@ exports.add = function add(modules) {
 					};
 					return __Internal__.runPromise
 						.nodeify(function(err, dummy) {
+							__Internal__.runPromise = null; // free memory
 							if (html) {
 								stream.flush({flushElement: true});
 								stream.closeElement();
@@ -1109,66 +1140,80 @@ exports.add = function add(modules) {
 						
 					return promise
 						.nodeify(function(err, dummy) {
-							__Internal__.runPromise = null; // free memory
-
-							if (html) {
-								stream.closeElement();
-							};
-					
-							buffered && stream.flush();
-							stream.reset();
-					
-							//io.stderr.flush();
-							io.stderr.reset();
-					
-							if (dom) {
-								__Internal__.showUnitName();
-							};
-					
-							if (!isIndex) {
+							return Promise.try(function() {
+								if (html) {
+									stream.closeElement();
+								};
+						
+								buffered && stream.flush();
+								stream.reset();
+						
+								if (types._implements(io.stderr, ioMixIns.BufferedStreamBase)) {
+									io.stderr.flush();
+								};
+								io.stderr.reset();
+							})
+							.nodeify(function(dummy1, dummy2) {
 								if (dom) {
-									if (!unit) {
-										tools.alert("There is nothing to test.");
-									} else if (err) {
-										if (!err.bubble) {
-											types.DEBUGGER();
-											io.stderr.write(err.message);
-											io.stderr.write(err.stack);
-											//io.stderr.flush();
-											tools.alert("An error occurred while testing.");
+									__Internal__.showUnitName();
+								};
+						
+								if (!isIndex) {
+									if (dom) {
+										if (!unit) {
+											tools.alert("There is nothing to test.");
+										} else if (err) {
+											if (!err.bubble) {
+												types.DEBUGGER();
+												io.stderr.write(err.message);
+												io.stderr.write(err.stack);
+												tools.alert("An error occurred while testing.");
+												success = false;
+											};
+										} else {
+											__Internal__.showFails();
+											if (!test.FAILED_TESTS) {
+												tools.alert("Every tests passed.    Total: ~0~.", [test.TESTS_COUNT]);
+											};
 											success = false;
 										};
 									} else {
-										__Internal__.showFails();
-										if (!test.FAILED_TESTS) {
-											tools.alert("Every tests passed.    Total: ~0~.", [test.TESTS_COUNT]);
-										};
-										success = false;
-									};
-								} else {
-									if (!unit) {
-										stream.print("End: There is nothing to test.");
-									} else if (err) {
-										if (!err.bubble) {
-											types.DEBUGGER();
-											io.stderr.print(err.message);
-											io.stderr.print(err.stack);
-											//io.stderr.flush();
-											io.stderr.print("End: An error occurred while testing.");
+										if (!unit) {
+											stream.print("End: There is nothing to test.");
+										} else if (err) {
+											if (!err.bubble) {
+												types.DEBUGGER();
+												io.stderr.print(err.message);
+												io.stderr.print(err.stack);
+												io.stderr.print("End: An error occurred while testing.");
+												success = false;
+											};
+										} else if (test.FAILED_TESTS) {
+											io.stderr.print("End: " + test.FAILED_TESTS + " test(s) failed.");
 											success = false;
+										} else {
+											stream.print("End: Every tests passed.    Total: " + test.TESTS_COUNT);
 										};
-									} else if (test.FAILED_TESTS) {
-										io.stderr.print("End: " + test.FAILED_TESTS + " test(s) failed.");
-										success = false;
-									} else {
-										stream.print("End: Every tests passed.    Total: " + test.TESTS_COUNT);
 									};
 								};
-								buffered && stream.flush();
-								//io.stderr.flush();
-							};
-					
-							return success;
+						
+								return success;
+							})
+							.nodeify(function(err, success) {
+								if (types._implements(io.stderr, ioMixIns.BufferedStreamBase)) {
+									io.stderr.flush();
+								};
+
+								if (buffered) {
+									stream.flush();
+								};
+
+								if (err) {
+									throw err;
+								};
+
+								return success;
+							});
 						});
 				});
 			});

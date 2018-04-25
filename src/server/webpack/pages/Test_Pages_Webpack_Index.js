@@ -26,7 +26,7 @@
 
 //! IF_SET("mjs")
 //! ELSE()
-	"use strict";
+"use strict";
 //! END_IF()
 
 exports.add = function add(modules) {
@@ -53,12 +53,12 @@ exports.add = function add(modules) {
 
 
 			pagesWebpack.REGISTER(doodad.BASE(templatesHtml.PageTemplate.$extend(
-			{
-				$TYPE_NAME: 'Index',
+				{
+					$TYPE_NAME: 'Index',
 
 				//create: doodad.OVERRIDE(function create(request, cacheHandler) {
 				//}),
-			})));
+				})));
 		},
 	};
 	return modules;

@@ -73,86 +73,86 @@ module.exports = function(root, options, _shared) {
 
 			root.REGISTER(doodad.Object.$extend(
 				server.Ipc.MixIns.Service,
-			{
-				$TYPE_NAME: 'MyPrivateService',
+				{
+					$TYPE_NAME: 'MyPrivateService',
 
-				// TODO: Purge "$__tasks" in background
-				$__tasks: doodad.PROTECTED(null),
+					// TODO: Purge "$__tasks" in background
+					$__tasks: doodad.PROTECTED(null),
 
-				$create: doodad.OVERRIDE(function $create() {
-					this._super();
+					$create: doodad.OVERRIDE(function $create() {
+						this._super();
 
-					this.$__tasks = tools.nullObject();
-				}),
+						this.$__tasks = tools.nullObject();
+					}),
 
-				stats: server.Ipc.CALLABLE(function stats(request) {
-					return nodejs.Server.Http.Request.$getStats();
-				}),
+					stats: server.Ipc.CALLABLE(function stats(request) {
+						return nodejs.Server.Http.Request.$getStats();
+					}),
 
-				actives: server.Ipc.CALLABLE(function actives(request) {
-					return nodejs.Server.Http.Request.$getActives();
-				}),
+					actives: server.Ipc.CALLABLE(function actives(request) {
+						return nodejs.Server.Http.Request.$getActives();
+					}),
 
-				uptime: server.Ipc.CALLABLE(function uptime(request) {
-					return tools.Dates.secondsToPeriod(process.uptime());
-				}),
+					uptime: server.Ipc.CALLABLE(function uptime(request) {
+						return tools.Dates.secondsToPeriod(process.uptime());
+					}),
 
-				// NOTE: Experimental
-				run: server.Ipc.CALLABLE(function run(request, fnStr) {
-					const Promise = types.getPromise();
-					const fn = tools.SafeEval.eval(fnStr, null, null, {
-						allowFunctions: true,
-						allowNew: true,
-					});
-					return Promise.resolve(fn(root))
-						.then(function(retVal) {
-							if (types.isCancelable(retVal)) {
-								const type = types.getType(this);
-								const id = tools.generateUUID();
-								const task = new root.MyTask(id);
-								task.privateData.cancelable = retVal;
-								retVal.start()
-									.nodeify(function (err, result) {
-										delete type.$__tasks[id];
-										if (err) {
-											throw err;
-										};
-										return result;
-									}, this)
-									.nodeify(function(err, result) {
-										if (!err) {
-											return messenger.callService('MyServerService', 'sendResult', [id, result]);
-										};
-										return undefined;
-									}, null, this)
-									.catch(tools.catchAndExit);
-								type.$__tasks[id] = task;
-								return task;
-							};
-							return retVal;
-						}, null, this);
-				}),
+					// NOTE: Experimental
+					run: server.Ipc.CALLABLE(function run(request, fnStr) {
+						const Promise = types.getPromise();
+						const fn = tools.SafeEval.eval(fnStr, null, null, {
+							allowFunctions: true,
+							allowNew: true,
+						});
+						return Promise.resolve(fn(root))
+							.then(function(retVal) {
+								if (types.isCancelable(retVal)) {
+									const type = types.getType(this);
+									const id = tools.generateUUID();
+									const task = new root.MyTask(id);
+									task.privateData.cancelable = retVal;
+									retVal.start()
+										.nodeify(function (err, result) {
+											delete type.$__tasks[id];
+											if (err) {
+												throw err;
+											};
+											return result;
+										}, this)
+										.nodeify(function(err, result) {
+											if (!err) {
+												return messenger.callService('MyServerService', 'sendResult', [id, result]);
+											};
+											return undefined;
+										}, null, this)
+										.catch(tools.catchAndExit);
+									type.$__tasks[id] = task;
+									return task;
+								};
+								return retVal;
+							}, null, this);
+					}),
 
-				// NOTE: Experimental
-				cancel: server.Ipc.CALLABLE(function cancel(request, taskId, /*optional*/reason) {
-					const type = types.getType(this);
-					if (types.has(type.$__tasks, taskId)) {
-						const task = type.$__tasks[taskId];
-						return task.privateData.cancelable.cancel(reason);
-					};
-					return undefined;
-				}),
-			}));
+					// NOTE: Experimental
+					cancel: server.Ipc.CALLABLE(function cancel(request, taskId, /*optional*/reason) {
+						const type = types.getType(this);
+						if (types.has(type.$__tasks, taskId)) {
+							const task = type.$__tasks[taskId];
+							return task.privateData.cancelable.cancel(reason);
+						};
+						return undefined;
+					}),
+				}));
 
 			root.REGISTER(doodad.Object.$extend(
 				server.Http.JsonRpc.MixIns.Service,
-			{
-				$TYPE_NAME: 'MyService',
+				{
+					$TYPE_NAME: 'MyService',
 
-				hello: server.Ipc.CALLABLE(function hello(request) {
-					return "Hello world !";
-				}),
-			}));
+					hello: server.Ipc.CALLABLE(function hello(request) {
+						return "Hello world !";
+					}),
+				}));
 		};
 
 		const currentPath = files.Path.parse(__dirname);
@@ -244,11 +244,11 @@ module.exports = function(root, options, _shared) {
 									const handlerState = request.getHandlerState(),
 										args = handlerState.matcherResult.queryArgs;
 									return request.response.getStream({contentType: 'text/plain', encoding: 'utf-8'}).then(function(stream) {
-											if (request.verb !== 'HEAD') {
-												return stream.writeAsync((args.mode === 'edit' ? "Editing" : "Viewing") + " id " + args.id);
-											};
-											return undefined;
-										})
+										if (request.verb !== 'HEAD') {
+											return stream.writeAsync((args.mode === 'edit' ? "Editing" : "Viewing") + " id " + args.id);
+										};
+										return undefined;
+									})
 										.then(function(dummy) {
 											// Do nothing
 										});
@@ -264,11 +264,11 @@ module.exports = function(root, options, _shared) {
 									const handlerState = request.getHandlerState(),
 										args = handlerState.matcherResult.urlArgs;
 									return request.response.getStream({contentType: 'text/plain', encoding: 'utf-8'}).then(function(stream) {
-											if (request.verb !== 'HEAD') {
-												return stream.writeAsync((args.mode === 'edit' ? "Editing" : "Viewing") + " id " + args.id);
-											};
-											return undefined;
-										})
+										if (request.verb !== 'HEAD') {
+											return stream.writeAsync((args.mode === 'edit' ? "Editing" : "Viewing") + " id " + args.id);
+										};
+										return undefined;
+									})
 										.then(function(dummy) {
 											// Do nothing
 										});
@@ -897,12 +897,12 @@ module.exports = function(root, options, _shared) {
 	};
 
 	return modules.load([
-			{
-				module: '@doodad-js/cluster',
-			},
-			{
-				module: '@doodad-js/http_jsonrpc',
-			},
-		], tools.depthExtend(15, options, {startup: {secret: _shared.SECRET}}))
-			.then(startup);
+		{
+			module: '@doodad-js/cluster',
+		},
+		{
+			module: '@doodad-js/http_jsonrpc',
+		},
+	], tools.depthExtend(15, options, {startup: {secret: _shared.SECRET}}))
+		.then(startup);
 };

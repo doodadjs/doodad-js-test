@@ -28,7 +28,7 @@
 
 //! IF_SET("mjs")
 //! ELSE()
-	"use strict";
+"use strict";
 //! END_IF()
 
 exports.add = function add(modules) {
@@ -374,14 +374,14 @@ exports.add = function add(modules) {
 										(types.get(options, 'contains', false) ? 'Contains ' : '') +
 										(
 											(mode === 'isinstance')
-											?
+												?
 												('Instance Of ' + (isEval && types.isString(expected) ? expected : (types.isFunction(expected) ? types.getFunctionName(expected) : types.getFunctionName(expected.constructor))))
-											:
-											(mode === 'is')
-											?
-												('Is ' + (isEval && types.isString(expected) ? expected : (types.isFunction(expected) ? types.getFunctionName(expected) : types.getFunctionName(expected.constructor))))
-											:
-												((mode === 'compare') ? 'Equals ' : '') +
+												:
+												(mode === 'is')
+													?
+													('Is ' + (isEval && types.isString(expected) ? expected : (types.isFunction(expected) ? types.getFunctionName(expected) : types.getFunctionName(expected.constructor))))
+													:
+													((mode === 'compare') ? 'Equals ' : '') +
 												(isEval && types.isString(expected) ? expected : tools.toSource(expected, types.get(options, 'depth', 0), sourceOpts))
 										);
 								const expectedCls = 'expected';
@@ -418,13 +418,13 @@ exports.add = function add(modules) {
 											commandFnName +
 											"(" +
 											tools.map(params, function(val, key) {
-													if (isEval && types.isString(val)) {
-														return val;
-													} else {
-														sourceOpts = {};
-														return tools.toSource(val, types.get(options, 'depth', 0), sourceOpts);
-													};
-												}).join(', ') +
+												if (isEval && types.isString(val)) {
+													return val;
+												} else {
+													sourceOpts = {};
+													return tools.toSource(val, types.get(options, 'depth', 0), sourceOpts);
+												};
+											}).join(', ') +
 											");");
 
 									printOpts = {};
@@ -544,7 +544,7 @@ exports.add = function add(modules) {
 												((mode === 'isinstance') ?
 													'Instance Of ' + (types.isFunction(result) ? result.name : (types.isObjectLike(result) ? result.constructor.name : '????')) +
 													' (' + tools.toSource(result, types.get(options, 'depth', 0), sourceOpts) + ')'
-												:
+													:
 													tools.toSource(result, types.get(options, 'depth', 0), sourceOpts)
 												);
 										result = types.toObject(result);
@@ -956,66 +956,66 @@ exports.add = function add(modules) {
 				const state = {};
 
 				tools.extend(state, {
-						index: types.bind(state, function(ev) { // JS click
-							try {
-								__Internal__.moveToUnit(null);
-								ev.preventDefault();
-								return false;
-							} catch(ex) {
-								if (!ex.bubble) {
-									io.stderr.write(ex);
-									//io.stderr.flush();
-								};
+					index: types.bind(state, function(ev) { // JS click
+						try {
+							__Internal__.moveToUnit(null);
+							ev.preventDefault();
+							return false;
+						} catch(ex) {
+							if (!ex.bubble) {
+								io.stderr.write(ex);
+								//io.stderr.flush();
 							};
-							return undefined;
-						}),
-						prev: types.bind(state, function(ev) { // JS click
-							try {
-								if (test.CURRENT_UNIT) {
-									const units = test.getUnits(test.CURRENT_UNIT.DD_PARENT);
-									let unit = test.CURRENT_UNIT,
-										pos = tools.findItem(units, unit);
-									if (pos <= 0) {
-										pos = units.length;
-									};
-									unit = units[pos - 1];
-									__Internal__.moveToUnit(unit);
-									return undefined;
+						};
+						return undefined;
+					}),
+					prev: types.bind(state, function(ev) { // JS click
+						try {
+							if (test.CURRENT_UNIT) {
+								const units = test.getUnits(test.CURRENT_UNIT.DD_PARENT);
+								let unit = test.CURRENT_UNIT,
+									pos = tools.findItem(units, unit);
+								if (pos <= 0) {
+									pos = units.length;
 								};
-								ev.preventDefault();
-								return false;
-							} catch(ex) {
-								if (!ex.bubble) {
-									io.stderr.write(ex);
-									//io.stderr.flush();
-								};
+								unit = units[pos - 1];
+								__Internal__.moveToUnit(unit);
+								return undefined;
 							};
-							return undefined;
-						}),
-						next: types.bind(state, function(ev) { // JS click
-							try {
-								if (test.CURRENT_UNIT) {
-									const units = test.getUnits(test.CURRENT_UNIT.DD_PARENT);
-									let unit = test.CURRENT_UNIT,
-										pos = tools.findItem(units, unit);
-									if ((pos < 0) || (pos >= units.length - 1)) {
-										pos = -1;
-									};
-									unit = units[pos + 1];
-									__Internal__.moveToUnit(unit);
-									return undefined;
-								};
-								ev.preventDefault();
-								return false;
-							} catch(ex) {
-								if (!ex.bubble) {
-									io.stderr.write(ex);
-									//io.stderr.flush();
-								};
+							ev.preventDefault();
+							return false;
+						} catch(ex) {
+							if (!ex.bubble) {
+								io.stderr.write(ex);
+								//io.stderr.flush();
 							};
-							return undefined;
-						}),
-					});
+						};
+						return undefined;
+					}),
+					next: types.bind(state, function(ev) { // JS click
+						try {
+							if (test.CURRENT_UNIT) {
+								const units = test.getUnits(test.CURRENT_UNIT.DD_PARENT);
+								let unit = test.CURRENT_UNIT,
+									pos = tools.findItem(units, unit);
+								if ((pos < 0) || (pos >= units.length - 1)) {
+									pos = -1;
+								};
+								unit = units[pos + 1];
+								__Internal__.moveToUnit(unit);
+								return undefined;
+							};
+							ev.preventDefault();
+							return false;
+						} catch(ex) {
+							if (!ex.bubble) {
+								io.stderr.write(ex);
+								//io.stderr.flush();
+							};
+						};
+						return undefined;
+					}),
+				});
 
 
 				indexButton.onclick = state.index;
@@ -1151,67 +1151,67 @@ exports.add = function add(modules) {
 								};
 								io.stderr.reset();
 							})
-							.nodeify(function(dummy1, dummy2) {
-								if (dom) {
-									__Internal__.showUnitName();
-								};
-
-								if (!isIndex) {
+								.nodeify(function(dummy1, dummy2) {
 									if (dom) {
-										if (!unit) {
-											tools.alert("There is nothing to test.");
-										} else if (err) {
-											if (!err.bubble) {
-												types.DEBUGGER();
-												io.stderr.write(err.message);
-												io.stderr.write(err.stack);
-												tools.alert("An error occurred while testing.");
+										__Internal__.showUnitName();
+									};
+
+									if (!isIndex) {
+										if (dom) {
+											if (!unit) {
+												tools.alert("There is nothing to test.");
+											} else if (err) {
+												if (!err.bubble) {
+													types.DEBUGGER();
+													io.stderr.write(err.message);
+													io.stderr.write(err.stack);
+													tools.alert("An error occurred while testing.");
+													success = false;
+												};
+											} else {
+												__Internal__.showFails();
+												if (!test.FAILED_TESTS) {
+													tools.alert("Every tests passed.    Total: ~0~.", [test.TESTS_COUNT]);
+												};
 												success = false;
 											};
 										} else {
-											__Internal__.showFails();
-											if (!test.FAILED_TESTS) {
-												tools.alert("Every tests passed.    Total: ~0~.", [test.TESTS_COUNT]);
-											};
-											success = false;
-										};
-									} else {
-										if (!unit) {
-											stream.print("End: There is nothing to test.");
-										} else if (err) {
-											if (!err.bubble) {
-												types.DEBUGGER();
-												io.stderr.print(err.message);
-												io.stderr.print(err.stack);
-												io.stderr.print("End: An error occurred while testing.");
+											if (!unit) {
+												stream.print("End: There is nothing to test.");
+											} else if (err) {
+												if (!err.bubble) {
+													types.DEBUGGER();
+													io.stderr.print(err.message);
+													io.stderr.print(err.stack);
+													io.stderr.print("End: An error occurred while testing.");
+													success = false;
+												};
+											} else if (test.FAILED_TESTS) {
+												io.stderr.print("End: " + test.FAILED_TESTS + " test(s) failed.");
 												success = false;
+											} else {
+												stream.print("End: Every tests passed.    Total: " + test.TESTS_COUNT);
 											};
-										} else if (test.FAILED_TESTS) {
-											io.stderr.print("End: " + test.FAILED_TESTS + " test(s) failed.");
-											success = false;
-										} else {
-											stream.print("End: Every tests passed.    Total: " + test.TESTS_COUNT);
 										};
 									};
-								};
 
-								return success;
-							})
-							.nodeify(function(err, success) {
-								if (types._implements(io.stderr, ioMixIns.BufferedStreamBase)) {
-									io.stderr.flush();
-								};
+									return success;
+								})
+								.nodeify(function(err, success) {
+									if (types._implements(io.stderr, ioMixIns.BufferedStreamBase)) {
+										io.stderr.flush();
+									};
 
-								if (buffered) {
-									stream.flush();
-								};
+									if (buffered) {
+										stream.flush();
+									};
 
-								if (err) {
-									throw err;
-								};
+									if (err) {
+										throw err;
+									};
 
-								return success;
-							});
+									return success;
+								});
 						});
 				});
 			});

@@ -126,29 +126,29 @@ const startup = function _startup(root, _shared) {
 	// TODO: Make an official Task object
 	root.REGISTER(doodad.Object.$extend(
 		doodad.Interfaces.Serializable,
-	{
-		$TYPE_NAME: 'MyTask',
+		{
+			$TYPE_NAME: 'MyTask',
 
-		id: doodad.PUBLIC(doodad.READ_ONLY(null)), // serialized
+			id: doodad.PUBLIC(doodad.READ_ONLY(null)), // serialized
 
-		privateData: doodad.PUBLIC(doodad.READ_ONLY(null)),
+			privateData: doodad.PUBLIC(doodad.READ_ONLY(null)),
 
-		$unserialize: doodad.OVERRIDE(function $unserialize(data) {
-			return new this(data.id);
-		}),
+			$unserialize: doodad.OVERRIDE(function $unserialize(data) {
+				return new this(data.id);
+			}),
 
-		create: doodad.OVERRIDE(function create(id) {
-			this._super();
+			create: doodad.OVERRIDE(function create(id) {
+				this._super();
 
-			types.setAttributes(this, {id, privateData: tools.nullObject()});
-		}),
+				types.setAttributes(this, {id, privateData: tools.nullObject()});
+			}),
 
-		serialize: doodad.OVERRIDE(function serialize() {
-			return {
-				id: this.id,
-			};
-		}),
-	}));
+			serialize: doodad.OVERRIDE(function serialize() {
+				return {
+					id: this.id,
+				};
+			}),
+		}));
 
 	if (nodeCluster.isMaster) {
 		return require('./master.js')(root, options, _shared);

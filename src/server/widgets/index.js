@@ -89,12 +89,12 @@ const startup = function _startup(root, _shared) {
 	addSearchPaths(root);
 
 	return modules.load([
-			{
-				module: '@doodad-js/test',
-				// TODO: Auto-Load from "src" or "build".
-				path: (root.getOptions().fromSource ? 'src/common/widgets/MyWidget_loader.js' : 'build/widgets/MyWidget_loader.js'),
-			},
-		], {startup: {secret: _shared.SECRET}});
+		{
+			module: '@doodad-js/test',
+			// TODO: Auto-Load from "src" or "build".
+			path: (root.getOptions().fromSource ? 'src/common/widgets/MyWidget_loader.js' : 'build/widgets/MyWidget_loader.js'),
+		},
+	], {startup: {secret: _shared.SECRET}});
 };
 
 const options = {

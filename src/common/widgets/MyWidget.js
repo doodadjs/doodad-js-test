@@ -26,7 +26,7 @@
 
 //! IF_SET("mjs")
 //! ELSE()
-	"use strict";
+"use strict";
 //! END_IF()
 
 exports.add = function add(modules) {
@@ -72,77 +72,77 @@ exports.add = function add(modules) {
 			// MyWidget
 			//===================================
 			const MyWidgetStep1 = doodad.REGISTER(widgets.HtmlWidget.$extend(
-			{
-				$TYPE_NAME: '__MyWidgetStep1__',
+				{
+					$TYPE_NAME: '__MyWidgetStep1__',
 
-				__attributes: {
-					main: {
-						class: 'main',
-					},
-					mergeTest: null,
-				},
-				__styles: {
-					main: {
-						border: "solid 1px black",
-					},
-				},
-
-				// Test property with "value"
-				message: (types.hasDefinePropertyEnabled() ?
-					doodad.PROPERTY({
-						value: null,
-						writable: true,
-					}) :
-					doodad.PUBLIC(null)
-				),
-
-				// Test property with "get" and "set"
-				__value: 1,
-				value: (types.hasDefinePropertyEnabled() ?
-					doodad.PROPERTY({
-						get: function() {
-							return this.__value;
+					__attributes: {
+						main: {
+							class: 'main',
 						},
-						set: function(value) {
-							this.__value = value;
+						mergeTest: null,
+					},
+					__styles: {
+						main: {
+							border: "solid 1px black",
 						},
-					}) :
-					doodad.PUBLIC(1)
-				),
+					},
 
-				// Test private
-				myPrivateAttr: doodad.PRIVATE("private"),
-				myPrivateFn: doodad.PRIVATE(function() {
-					return "private";
-				}),
+					// Test property with "value"
+					message: (types.hasDefinePropertyEnabled() ?
+						doodad.PROPERTY({
+							value: null,
+							writable: true,
+						}) :
+						doodad.PUBLIC(null)
+					),
 
-				// Test RENAME
-				functionToRename: doodad.PUBLIC(function() {
-					return "1";
-				}),
+					// Test property with "get" and "set"
+					__value: 1,
+					value: (types.hasDefinePropertyEnabled() ?
+						doodad.PROPERTY({
+							get: function() {
+								return this.__value;
+							},
+							set: function(value) {
+								this.__value = value;
+							},
+						}) :
+						doodad.PUBLIC(1)
+					),
 
-				// Test _superFrom
-				getVersion: doodad.PUBLIC(function() {
-					return 1;
-				}),
+					// Test private
+					myPrivateAttr: doodad.PRIVATE("private"),
+					myPrivateFn: doodad.PRIVATE(function() {
+						return "private";
+					}),
 
-				render: doodad.OVERRIDE(function render() {
-					this.write('<span' + this.renderAttributes(['main', 'mergeTest']) + '>' + tools.escapeHtml(this.message || '', this.document, true) + '</span>');
-				}),
-			}));
+					// Test RENAME
+					functionToRename: doodad.PUBLIC(function() {
+						return "1";
+					}),
+
+					// Test _superFrom
+					getVersion: doodad.PUBLIC(function() {
+						return 1;
+					}),
+
+					render: doodad.OVERRIDE(function render() {
+						this.write('<span' + this.renderAttributes(['main', 'mergeTest']) + '>' + tools.escapeHtml(this.message || '', this.document, true) + '</span>');
+					}),
+				}));
 
 			if (root.serverSide) {
 				me.REGISTER(MyWidgetStep1.$extend(
-				{
-					$TYPE_NAME: 'MyWidget',
-				}));
+					{
+						$TYPE_NAME: 'MyWidget',
+					}));
 			} else {
 				const MyWidgetStep2 = doodad.REGISTER(doodad.BASE(MyWidgetStep1.$extend(
-				{
-					$TYPE_NAME: '__MyWidgetStep2__',
+					{
+						$TYPE_NAME: '__MyWidgetStep2__',
 
-					onJsClick: doodad.JS_EVENT('click', function onJsClick(context) {
-						tools.alert('click');
+						onJsClick: doodad.JS_EVENT('click', function onJsClick(context) {
+							tools.alert('click');
 						//console.log(tools.getStackTrace());
 						//throw new Error("error");
 						/*
@@ -159,53 +159,53 @@ exports.add = function add(modules) {
 							console.log('private attribute from inside failed :(');
 						};
 						*/
-					}),
+						}),
 
-					// Test RENAME
-					functionToRename: doodad.RENAME_OVERRIDE(function renamedFunction() {
-						return this._super() + " ,2";
-					}),
+						// Test RENAME
+						functionToRename: doodad.RENAME_OVERRIDE(function renamedFunction() {
+							return this._super() + " ,2";
+						}),
 
-					acquire: doodad.OVERRIDE(function acquire() {
-						this._super();
-						const span = client.getFirstElement(this.element);
-						this.onJsClick.attach(span);
-					}),
+						acquire: doodad.OVERRIDE(function acquire() {
+							this._super();
+							const span = client.getFirstElement(this.element);
+							this.onJsClick.attach(span);
+						}),
 
-					release: doodad.OVERRIDE(function release() {
-						this._super();
-						this.onJsClick.clear();
-					}),
+						release: doodad.OVERRIDE(function release() {
+							this._super();
+							this.onJsClick.clear();
+						}),
 
-					// Test _superFrom
-					getVersion: doodad.OVERRIDE(function() {
-						return this._super() + 2;
-					}),
+						// Test _superFrom
+						getVersion: doodad.OVERRIDE(function() {
+							return this._super() + 2;
+						}),
 
-				})));
+					})));
 
 				// Test adding js event type
 				const MyWidgetStep3 = doodad.REGISTER(doodad.BASE(MyWidgetStep2.$extend(
-				{
-					$TYPE_NAME: '__MyWidgetStep3__',
+					{
+						$TYPE_NAME: '__MyWidgetStep3__',
 
-					// Test _superFrom
-					getVersion: doodad.REPLACE(function() {
-						return 3;
-					}),
+						// Test _superFrom
+						getVersion: doodad.REPLACE(function() {
+							return 3;
+						}),
 
-				})));
+					})));
 
 				const MyWidgetStep4 = doodad.REGISTER(doodad.BASE(MyWidgetStep3.$extend(
-				{
-					$TYPE_NAME: '__MyWidgetStep4__',
+					{
+						$TYPE_NAME: '__MyWidgetStep4__',
 
-					onJsClick: doodad.OVERRIDE(function onJsClick(context) {
-						this._super(context);
+						onJsClick: doodad.OVERRIDE(function onJsClick(context) {
+							this._super(context);
 
-						// Test re-render
-						this.message += ' Click !';
-						this.render();
+							// Test re-render
+							this.message += ' Click !';
+							this.render();
 
 						/* Test "EXTERNAL"
 						this.destroy();
@@ -227,49 +227,49 @@ exports.add = function add(modules) {
 
 						//throw new types.Error("test");
 
-					}),
+						}),
 
-					// Test _superFrom
-					getVersion: doodad.OVERRIDE(function() {
-						return this._super() + 4;
-					}),
+						// Test _superFrom
+						getVersion: doodad.OVERRIDE(function() {
+							return this._super() + 4;
+						}),
 
-				})));
+					})));
 
 				// Test overriding js event handler
 				me.REGISTER(MyWidgetStep4.$extend(
-				{
-					$TYPE_NAME: 'MyWidget',
+					{
+						$TYPE_NAME: 'MyWidget',
 
-					// Test property overriding
-					value: (types.hasDefinePropertyEnabled() ?
-						doodad.PROPERTY({
-							get: doodad.OVERRIDE(function() {
-								return this._super() + 1;
-							}),
-						}) :
-						doodad.PUBLIC(2)
-					),
+						// Test property overriding
+						value: (types.hasDefinePropertyEnabled() ?
+							doodad.PROPERTY({
+								get: doodad.OVERRIDE(function() {
+									return this._super() + 1;
+								}),
+							}) :
+							doodad.PUBLIC(2)
+						),
 
-					// Test private override
-					/*
+						// Test private override
+						/*
 					myPrivateAttr: "private overridden",
 					myPrivateFn: doodad.OVERRIDE(function() {
 						return "private overriden";
 					}),
 					*/
 
-					// Test RENAME (must respect the contract)
-					functionToRename: doodad.OVERRIDE(function functionToRename() {
-						return this.renamedFunction();
-					}),
+						// Test RENAME (must respect the contract)
+						functionToRename: doodad.OVERRIDE(function functionToRename() {
+							return this.renamedFunction();
+						}),
 
-					// Test _superFrom
-					getVersion: doodad.REPLACE(function() {
-						return this._superFrom(MyWidgetStep2)();
-					}),
+						// Test _superFrom
+						getVersion: doodad.REPLACE(function() {
+							return this._superFrom(MyWidgetStep2)();
+						}),
 
-				}));
+					}));
 			};
 
 

@@ -28,7 +28,7 @@
 
 //! IF_SET("mjs")
 //! ELSE()
-	"use strict";
+"use strict";
 //! END_IF()
 
 exports.add = function add(modules) {
@@ -55,14 +55,14 @@ exports.add = function add(modules) {
 				const realmWindow = document.getElementById('crossRealm').contentWindow;
 
 				return new Promise(function(resolve, reject) {
-						realmWindow.setRealmRoot = function(err, root) {
-							if (err) {
-								reject(err);
-							} else {
-								resolve(root);
-							};
+					realmWindow.setRealmRoot = function(err, root) {
+						if (err) {
+							reject(err);
+						} else {
+							resolve(root);
 						};
-					})
+					};
+				})
 					.then(function(realmRoot) {
 						const loadingImg = document.getElementById('loading');
 						const oldLoadingDisplayStyle = loadingImg && loadingImg.style.display;

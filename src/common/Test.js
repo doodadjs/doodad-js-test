@@ -46,8 +46,6 @@ exports.add = function add(modules) {
 		},
 
 		create: function create(root, /*optional*/_options, _shared) {
-			root.enableAsserts();
-				
 			// Unit test module entry
 			const doodad = root.Doodad,
 				types = doodad.Types,
@@ -60,32 +58,32 @@ exports.add = function add(modules) {
 				clientIO = client && client.IO,
 				nodejs = doodad.NodeJs,
 				test = doodad.Test;
-					
+
 			tools.complete(_shared.Natives, {
 				windowParseInt: global.parseInt,
 
 				/* eslint no-restricted-properties: "off" */
 				windowIsNaN: global.isNaN,
 			});
-					
+
 			const __Internal__ = {
 				stdout: null,
 			};
-				
+
 			entries.REGISTER(entries.Module.$inherit(
 				/*typeProto*/
 				{
 					$TYPE_NAME: 'TestModule'
 				}
 			));
-				
+
 			entries.REGISTER(entries.Package.$inherit(
 				/*typeProto*/
 				{
 					$TYPE_NAME: 'TestPackage'
 				}
 			));
-				
+
 			test.ADD('setOutput', function setOutput(stream) {
 				__Internal__.stdout = stream;
 			});
@@ -125,11 +123,11 @@ exports.add = function add(modules) {
 				};
 				return units;
 			});
-				
+
 			test.ADD('getUnit', function getUnit(name) {
 				return (name === test.DD_FULL_NAME ? test : namespaces.get(name, entries.TestModule));
 			});
-				
+
 			test.EmptySlot = function EmptySlot() {};
 			test.EmptySlot.prototype.toString = function() {
 				return "<empty>";
@@ -138,7 +136,7 @@ exports.add = function add(modules) {
 				return "undefined";
 			};
 			test.ADD('EmptySlot', new test.EmptySlot());
-				
+
 			test.ADD('compare', function compare(expected, result, /*optional*/options) {
 				expected = types.toObject(expected);
 				result = types.toObject(result);
@@ -254,11 +252,11 @@ exports.add = function add(modules) {
 				} else if (mode === 'compare') {
 					success =
 						(
-							success 
+							success
 							&&
 							(
 								(resultValue === expectedValue)
-								|| 
+								||
 								// Patch for NaN. See "types.isNaN".
 								/* eslint no-self-compare: "off" */
 								((resultValue !== resultValue) && (expectedValue !== expectedValue))
@@ -283,12 +281,12 @@ exports.add = function add(modules) {
 				let finalizers = null;
 				const skipCommand = types.get(options, 'skip', false);
 				const title = types.get(options, 'title', commandFnName);
-					
+
 				const stream = test.getOutput(),
 					html = types._implements(stream, io.HtmlOutputStream),
 					dom = (clientIO ? types._instanceof(stream, clientIO.DomOutputStream) : false),
 					buffered = types._implements(stream, ioMixIns.BufferedStreamBase);
-					
+
 				__Internal__.runPromise = __Internal__.runPromise
 					.then(function(dummy) {
 						if (html) {
@@ -371,23 +369,23 @@ exports.add = function add(modules) {
 								sourceOpts = {};
 								const mode = types.get(options, 'mode', null),
 									isEval = types.get(options, 'eval', false);
-								const expectedStr = "Expected: " + 
-										(types.get(options, 'not', false) ? 'Not ' : '') + 
+								const expectedStr = "Expected: " +
+										(types.get(options, 'not', false) ? 'Not ' : '') +
 										(types.get(options, 'contains', false) ? 'Contains ' : '') +
 										(
 											(mode === 'isinstance')
-											? 
+											?
 												('Instance Of ' + (isEval && types.isString(expected) ? expected : (types.isFunction(expected) ? types.getFunctionName(expected) : types.getFunctionName(expected.constructor))))
-											: 
+											:
 											(mode === 'is')
-											? 
+											?
 												('Is ' + (isEval && types.isString(expected) ? expected : (types.isFunction(expected) ? types.getFunctionName(expected) : types.getFunctionName(expected.constructor))))
-											: 
-												((mode === 'compare') ? 'Equals ' : '') + 
+											:
+												((mode === 'compare') ? 'Equals ' : '') +
 												(isEval && types.isString(expected) ? expected : tools.toSource(expected, types.get(options, 'depth', 0), sourceOpts))
 										);
 								const expectedCls = 'expected';
-								
+
 								let evalError = null;
 								if (isEval && types.isString(expected)) {
 									try {
@@ -398,12 +396,12 @@ exports.add = function add(modules) {
 								};
 
 								test.TESTS_COUNT++;
-							
+
 								let	result,
 									resultStr,
 									resultCls,
 									printOpts;
-							
+
 								if (html) {
 									if (dom) {
 										stream.openElement({tag: 'div', attrs: {"class": "run bindMe"}});
@@ -412,13 +410,13 @@ exports.add = function add(modules) {
 									};
 								};
 								runElementOpened = true;
-							
+
 								if (!evalError) {
 									expected = types.toObject(expected);
-								
+
 									const command = "Command: " + (types.get(options, 'command', null) ||
-											commandFnName + 
-											"(" + 
+											commandFnName +
+											"(" +
 											tools.map(params, function(val, key) {
 													if (isEval && types.isString(val)) {
 														return val;
@@ -426,21 +424,21 @@ exports.add = function add(modules) {
 														sourceOpts = {};
 														return tools.toSource(val, types.get(options, 'depth', 0), sourceOpts);
 													};
-												}).join(', ') + 
+												}).join(', ') +
 											");");
-										
+
 									printOpts = {};
 									if (html) {
 										printOpts.attrs = {"class": "name"};
 									};
 									stream.print(command.replace(/[~]/g, '~~'), printOpts);
-								
+
 									printOpts = {};
 									if (html) {
 										printOpts.attrs = {"class": expectedCls};
 									};
 									stream.print(expectedStr.replace(/[~]/g, '~~'), printOpts);
-								
+
 									if (isEval) {
 										try {
 											params = tools.map(params, function(expr) {
@@ -480,7 +478,7 @@ exports.add = function add(modules) {
 										printOpts.attrs = {"class": resultCls};
 									};
 									stream.print(resultStr.replace(/[~]/g, '~~'), printOpts);
-								
+
 									result = false;
 
 								} else {
@@ -542,16 +540,16 @@ exports.add = function add(modules) {
 										if (!types.get(options, 'showFunctions', false)) {
 											sourceOpts.includeFunctions = false;
 										};
-										resultStr += 
-												((mode === 'isinstance') ? 
-													'Instance Of ' + (types.isFunction(result) ? result.name : (types.isObjectLike(result) ? result.constructor.name : '????')) + 
+										resultStr +=
+												((mode === 'isinstance') ?
+													'Instance Of ' + (types.isFunction(result) ? result.name : (types.isObjectLike(result) ? result.constructor.name : '????')) +
 													' (' + tools.toSource(result, types.get(options, 'depth', 0), sourceOpts) + ')'
-												: 
+												:
 													tools.toSource(result, types.get(options, 'depth', 0), sourceOpts)
-												); 
+												);
 										result = types.toObject(result);
 									};
-								
+
 									result = (types.get(options, 'compareFn', null) || test.compare)(expected, result, options);
 
 									printOpts = {};
@@ -560,7 +558,7 @@ exports.add = function add(modules) {
 									};
 									stream.print(resultStr.replace(/[~]/g, '~~'), printOpts);
 								};
-							
+
 								resultStr = "Result: " + (result ? "OK !" : ">>> FAILED <<<");
 								resultCls = 'result';
 								if (result) {
@@ -574,7 +572,7 @@ exports.add = function add(modules) {
 									printOpts.attrs = {"class": resultCls};
 								};
 								stream.print(resultStr.replace(/[~]/g, '~~'), printOpts);
-							
+
 								resultStr = "Time: " + ((time === null) ? 'Not available' : (types.toString(time) + ' ms' + ((repetitions > 1) ? (' / ' + repetitions + ' = ' + types.toString(time / repetitions) + ' ms') : '')));
 								resultCls = 'time';
 								printOpts = {};
@@ -582,7 +580,7 @@ exports.add = function add(modules) {
 									printOpts.attrs = {"class": resultCls};
 								};
 								stream.print(resultStr.replace(/[~]/g, '~~'), printOpts);
-							
+
 								const note = types.get(options, 'note', null);
 								if (note) {
 									printOpts = {};
@@ -638,7 +636,7 @@ exports.add = function add(modules) {
 						};
 					});
 			});
-				
+
 			__Internal__.runChildren = function runChildren(unit) {
 				const Promise = types.getPromise();
 				return Promise.try(function() {
@@ -656,7 +654,7 @@ exports.add = function add(modules) {
 					return loop(0);
 				});
 			};
-				
+
 			__Internal__.runUnit = function runUnit(unit, /*optional*/options) {
 				const Promise = types.getPromise();
 				return Promise.try(function() {
@@ -690,7 +688,7 @@ exports.add = function add(modules) {
 						});
 				});
 			};
-				
+
 			__Internal__.showFailsOnReady = function showFailsOnReady(ev) {
 				const key = ev.data.valueOf();
 				if (!key.functionKeys) {
@@ -710,25 +708,25 @@ exports.add = function add(modules) {
 					};
 				};
 			};
-				
+
 			__Internal__.showFails = function showFails() {
 				const stream = test.getOutput(),
 					root = stream.element,
 					runElements = Array.prototype.slice.call(root.getElementsByClassName("run bindMe"), 0), // <PRB> Returned objects collection is dynamic
 					failedRuns = [],
 					state = {};
-					
+
 				if (test.FAILED_TESTS) {
 					stream.openElement({tag: 'div', attrs: {"class": "failedPopup bindMe"}});
 					stream.write('<a id="failedBookmark" class="failedToolbar bindMe"></a><button class="prevFailed bindMe">Previous</button><button class="nextFailed bindMe">Next</button><span class="failedOf bindMe"></span>');
 					stream.flush({flushElement: true});
 					const popup = stream.element;
 					stream.closeElement();
-						
+
 					const failedToolbar = popup.getElementsByClassName('failedToolbar bindMe')[0],
 						prevButton = popup.getElementsByClassName('prevFailed bindMe')[0],
 						nextButton = popup.getElementsByClassName('nextFailed bindMe')[0];
-							
+
 					tools.extend(state, {
 						popup: popup,
 						failedOf: popup.getElementsByClassName('failedOf bindMe')[0],
@@ -879,7 +877,7 @@ exports.add = function add(modules) {
 					nextButton.onclick = state.next;
 					nextButton.className = nextButton.className.replace('bindMe', '');
 				};
-					
+
 				for (let i = 0; i < runElements.length; i++) {
 					const runElement = runElements[i],
 						resultElement = runElement.getElementsByClassName('result')[0];
@@ -895,15 +893,15 @@ exports.add = function add(modules) {
 					};
 					runElement.className = runElement.className.replace('bindMe', '');
 				};
-					
+
 				if (test.FAILED_TESTS) {
 					state.move(true);
-						
+
 					io.stdin.onReady.attach(state, __Internal__.showFailsOnReady);
 					io.stdin.listen();
 				};
 			};
-				
+
 			__Internal__.showUnitName = function showUnitName() {
 				const name = (test.CURRENT_UNIT ? test.CURRENT_UNIT.DD_FULL_NAME : ''),
 					stream = test.getOutput(),
@@ -942,7 +940,7 @@ exports.add = function add(modules) {
 					};
 				};
 			};
-				
+
 			__Internal__.showNavigator = function showNavigator() {
 				const stream = test.getOutput();
 				stream.openElement({tag: 'div', attrs: {"class": "navigator"}});
@@ -950,7 +948,7 @@ exports.add = function add(modules) {
 				stream.flush({flushElement: true});
 				const root = stream.element;
 				stream.closeElement();
-					
+
 				const indexButton = root.getElementsByClassName('index bindMe')[0],
 					prevButton = root.getElementsByClassName('prevUnit bindMe')[0],
 					nextButton = root.getElementsByClassName('nextUnit bindMe')[0];
@@ -1018,8 +1016,8 @@ exports.add = function add(modules) {
 							return undefined;
 						}),
 					});
-						
-						
+
+
 				indexButton.onclick = state.index;
 				indexButton.className = indexButton.className.replace('bindMe', '');
 				prevButton.onclick = state.prev;
@@ -1030,7 +1028,7 @@ exports.add = function add(modules) {
 				io.stdin.onReady.attach(state, __Internal__.showNavigatorOnReady);
 				io.stdin.listen();
 			};
-				
+
 			__Internal__.buildIndexItems = function(namespace) {
 				let html = '<ul>';
 
@@ -1042,10 +1040,10 @@ exports.add = function add(modules) {
 					html += '<li><a href="#" unitname="' + unit.DD_FULL_NAME + '" class="indexMenuItem bindMe">' + tools.escapeHtml(unit.DD_FULL_NAME, true) + '</a></li>';
 					html += __Internal__.buildIndexItems(unit);
 				};
-					
+
 				return html + '</ul>';
 			};
-				
+
 			__Internal__.showIndex = function showIndex(unit) {
 				const stream = test.getOutput();
 				stream.openElement({tag: 'div', attrs: {"class": "indexMenu"}});
@@ -1053,9 +1051,9 @@ exports.add = function add(modules) {
 				stream.flush({flushElement: true});
 				const root = stream.element;
 				stream.closeElement();
-					
+
 				const elements = Array.prototype.slice.call(root.getElementsByClassName("indexMenuItem bindMe"), 0); // <PRB> Returned objects collection is dynamic
-						
+
 				const click = function(ev) {
 					try {
 						const name = ev.currentTarget.getAttribute('unitname'),
@@ -1070,31 +1068,31 @@ exports.add = function add(modules) {
 					ev.preventDefault();
 					return false;
 				};
-						
+
 				for (let i = 0; i < elements.length; i++) {
 					const element = elements[i];
 					element.className = '';
 					element.onclick = click;
 				};
 			};
-				
+
 			test.ADD('run', function run(/*optional*/options) {
 				const Promise = types.getPromise();
 				return Promise.try(function() {
 					let success = true;
 
 					test.FAILED_TESTS = 0;
-					
+
 					const stream = test.getOutput(),
 						html = types._implements(stream, io.HtmlOutputStream),
 						dom = (clientIO ? types._instanceof(stream, clientIO.DomOutputStream) : false),
 						buffered = types._implements(stream, ioMixIns.BufferedStreamBase);
-					
+
 					const name = types.get(options, 'name');
 
 					let unit = test.getUnits(test), // also initialize some attributes
 						isIndex = false;
-						
+
 					if (html) {
 						stream.openElement({tag: 'div', attrs: {"class": "test"}});
 					};
@@ -1115,7 +1113,7 @@ exports.add = function add(modules) {
 					};
 
 					let promise = Promise.resolve();
-					
+
 					if (!isIndex) {
 						if (dom) {
 							__Internal__.showNavigator();
@@ -1123,13 +1121,13 @@ exports.add = function add(modules) {
 
 						if (unit) {
 							test.CURRENT_UNIT = unit;
-							
+
 							promise = promise
 								.then(function(dummy) {
 									return __Internal__.runUnit(unit);
 								});
 						};
-						
+
 						if (dom) {
 							promise = promise
 								.then(function(dummy) {
@@ -1137,17 +1135,17 @@ exports.add = function add(modules) {
 								});
 						};
 					};
-						
+
 					return promise
 						.nodeify(function(err, dummy) {
 							return Promise.try(function() {
 								if (html) {
 									stream.closeElement();
 								};
-						
+
 								buffered && stream.flush();
 								stream.reset();
-						
+
 								if (types._implements(io.stderr, ioMixIns.BufferedStreamBase)) {
 									io.stderr.flush();
 								};
@@ -1157,7 +1155,7 @@ exports.add = function add(modules) {
 								if (dom) {
 									__Internal__.showUnitName();
 								};
-						
+
 								if (!isIndex) {
 									if (dom) {
 										if (!unit) {
@@ -1196,7 +1194,7 @@ exports.add = function add(modules) {
 										};
 									};
 								};
-						
+
 								return success;
 							})
 							.nodeify(function(err, success) {

@@ -47,7 +47,7 @@ exports.add = function add(modules) {
 
 			//const __Internal__ = {
 			//};
-				
+
 			//tools.complete(_shared.Natives, {
 			//});
 

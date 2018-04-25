@@ -39,19 +39,19 @@ exports.add = function add(modules) {
 				name: '@doodad-js/core',
 				version: /*! REPLACE_BY(TO_SOURCE(VERSION('@doodad-js/core'))) */ null /*! END_REPLACE() */,
 				type: /*! REPLACE_BY(TO_SOURCE(MAKE_MANIFEST('type', '@doodad-js/core'))) */ 'Package' /*! END_REPLACE() */,
-			}, 
+			},
 			{
 				name: '@doodad-js/io',
 				version: /*! REPLACE_BY(TO_SOURCE(VERSION('@doodad-js/io'))) */ null /*! END_REPLACE() */,
 				type: /*! REPLACE_BY(TO_SOURCE(MAKE_MANIFEST('type', '@doodad-js/io'))) */ 'Package' /*! END_REPLACE() */,
-			}, 
+			},
 			{
 				name: '@doodad-js/widgets',
 				version: /*! REPLACE_BY(TO_SOURCE(VERSION('@doodad-js/widgets'))) */ null /*! END_REPLACE() */,
 				type: /*! REPLACE_BY(TO_SOURCE(MAKE_MANIFEST('type', '@doodad-js/widgets'))) */ 'Package' /*! END_REPLACE() */,
-			}, 
+			},
 		],
-			
+
 		create: function create(root, /*optional*/_options, _shared) {
 			//===================================
 			// Get namespaces
@@ -74,7 +74,7 @@ exports.add = function add(modules) {
 			const MyWidgetStep1 = doodad.REGISTER(widgets.HtmlWidget.$extend(
 			{
 				$TYPE_NAME: '__MyWidgetStep1__',
-					
+
 				__attributes: {
 					main: {
 						class: 'main',
@@ -86,19 +86,19 @@ exports.add = function add(modules) {
 						border: "solid 1px black",
 					},
 				},
-					
+
 				// Test property with "value"
-				message: (types.hasDefinePropertyEnabled() ? 
+				message: (types.hasDefinePropertyEnabled() ?
 					doodad.PROPERTY({
 						value: null,
 						writable: true,
-					}) : 
+					}) :
 					doodad.PUBLIC(null)
 				),
-					
+
 				// Test property with "get" and "set"
 				__value: 1,
-				value: (types.hasDefinePropertyEnabled() ? 
+				value: (types.hasDefinePropertyEnabled() ?
 					doodad.PROPERTY({
 						get: function() {
 							return this.__value;
@@ -109,23 +109,23 @@ exports.add = function add(modules) {
 					}) :
 					doodad.PUBLIC(1)
 				),
-					
+
 				// Test private
 				myPrivateAttr: doodad.PRIVATE("private"),
 				myPrivateFn: doodad.PRIVATE(function() {
 					return "private";
 				}),
-					
+
 				// Test RENAME
 				functionToRename: doodad.PUBLIC(function() {
 					return "1";
 				}),
-					
+
 				// Test _superFrom
 				getVersion: doodad.PUBLIC(function() {
 					return 1;
 				}),
-					
+
 				render: doodad.OVERRIDE(function render() {
 					this.write('<span' + this.renderAttributes(['main', 'mergeTest']) + '>' + tools.escapeHtml(this.message || '', this.document, true) + '</span>');
 				}),
@@ -140,7 +140,7 @@ exports.add = function add(modules) {
 				const MyWidgetStep2 = doodad.REGISTER(doodad.BASE(MyWidgetStep1.$extend(
 				{
 					$TYPE_NAME: '__MyWidgetStep2__',
-						
+
 					onJsClick: doodad.JS_EVENT('click', function onJsClick(context) {
 						tools.alert('click');
 						//console.log(tools.getStackTrace());
@@ -160,55 +160,55 @@ exports.add = function add(modules) {
 						};
 						*/
 					}),
-					
+
 					// Test RENAME
 					functionToRename: doodad.RENAME_OVERRIDE(function renamedFunction() {
 						return this._super() + " ,2";
 					}),
-						
+
 					acquire: doodad.OVERRIDE(function acquire() {
 						this._super();
 						const span = client.getFirstElement(this.element);
 						this.onJsClick.attach(span);
 					}),
-						
+
 					release: doodad.OVERRIDE(function release() {
 						this._super();
 						this.onJsClick.clear();
 					}),
-						
+
 					// Test _superFrom
 					getVersion: doodad.OVERRIDE(function() {
 						return this._super() + 2;
 					}),
-					
+
 				})));
-					
+
 				// Test adding js event type
 				const MyWidgetStep3 = doodad.REGISTER(doodad.BASE(MyWidgetStep2.$extend(
 				{
 					$TYPE_NAME: '__MyWidgetStep3__',
-						
+
 					// Test _superFrom
 					getVersion: doodad.REPLACE(function() {
 						return 3;
 					}),
-					
+
 				})));
-					
+
 				const MyWidgetStep4 = doodad.REGISTER(doodad.BASE(MyWidgetStep3.$extend(
 				{
 					$TYPE_NAME: '__MyWidgetStep4__',
 
 					onJsClick: doodad.OVERRIDE(function onJsClick(context) {
 						this._super(context);
-							
+
 						// Test re-render
 						this.message += ' Click !';
 						this.render();
 
 						/* Test "EXTERNAL"
-						this.destroy();		
+						this.destroy();
 						*/
 						/*
 						try {
@@ -224,23 +224,23 @@ exports.add = function add(modules) {
 							console.log('private attribute from outside ok :)');
 						};
 						*/
-							
+
 						//throw new types.Error("test");
-							
+
 					}),
-						
+
 					// Test _superFrom
 					getVersion: doodad.OVERRIDE(function() {
 						return this._super() + 4;
 					}),
-					
+
 				})));
-					
+
 				// Test overriding js event handler
 				me.REGISTER(MyWidgetStep4.$extend(
 				{
 					$TYPE_NAME: 'MyWidget',
-					
+
 					// Test property overriding
 					value: (types.hasDefinePropertyEnabled() ?
 						doodad.PROPERTY({
@@ -258,7 +258,7 @@ exports.add = function add(modules) {
 						return "private overriden";
 					}),
 					*/
-					
+
 					// Test RENAME (must respect the contract)
 					functionToRename: doodad.OVERRIDE(function functionToRename() {
 						return this.renamedFunction();
@@ -268,32 +268,32 @@ exports.add = function add(modules) {
 					getVersion: doodad.REPLACE(function() {
 						return this._superFrom(MyWidgetStep2)();
 					}),
-				
+
 				}));
 			};
-					
-					
+
+
 			//===================================
 			// Init
 			//===================================
 			return function init(/*options*/) {
 				const Promise = types.getPromise();
-					
+
 				const colors = ['white', 'red', 'magenta', 'green', 'black', 'yellow', 'blue', 'pink', 'gray', 'acqua', 'brown', 'gold', 'silver'];
-					
+
 				const createMyWidget = function createMyWidget(name, message, /*optional*/element) {
 					let color;
 
 					if (types.isString(element)) {
 						element = global.document.getElementById(element);
 					};
-						
+
 					const myWidget = new me.MyWidget({element: element});
-						
+
 					const id = myWidget.getIdentity();
 					id.id = id.name = id.class = name;
 					myWidget.setIdentity(id);
-						
+
 					let styles;
 
 					color = Math.floor(Math.random() * colors.length);
@@ -301,22 +301,22 @@ exports.add = function add(modules) {
 					styles.color = colors[color];
 					colors.splice(color, 1);
 					myWidget.setStyles(styles);
-						
+
 					const attributes = myWidget.getAttributes('mergeTest');
 					attributes.class = 'mergeTest';
 					myWidget.setAttributes(attributes, 'mergeTest');
-						
+
 					color = Math.floor(Math.random() * colors.length);
 					styles = myWidget.getStyles('mergeTest');
 					styles.backgroundColor = colors[color];
 					colors.splice(color, 1);
 					myWidget.setStyles(styles, 'mergeTest');
-						
+
 					myWidget.message = message;
-						
+
 					return myWidget;
 				};
-					
+
 				if (root.serverSide) {
 					const myWidget = createMyWidget('myWidget1', 'Console !', null);
 					myWidget.pipe(io.stdout);
@@ -331,13 +331,13 @@ exports.add = function add(modules) {
 					myWidget2.onRender.attach(null, function onRender(ev) {
 						tools.alert('render 2');
 					});
-						
+
 					//// Test "destroy"
 					//const myWidget3 = createMyWidget('myWidget3', 'Ciao !', 'test3');
 					//myWidget3.onRender.attach(null, function onRender(ev) {alert('render 3')});
 					////myWidget3.render('test3');
 					//myWidget3.destroy();
-						
+
 					const myWidget3 = createMyWidget('myWidget3', 'Ciao !', 'test3');
 					myWidget3.onRender.attach(null, function onRender(ev) {
 						tools.alert('render 3');

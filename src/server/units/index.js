@@ -84,7 +84,7 @@ const addSearchPaths = function _addSearchPaths(root) {
 		};
 	};
 };
-	
+
 const startup = function _startup(root, _shared) {
 	/* eslint global-require: "off" */
 
@@ -92,7 +92,7 @@ const startup = function _startup(root, _shared) {
 		types = doodad.Types,
 		tools = doodad.Tools,
 		files = tools.Files;
-					
+
 	tools.trapUnhandledErrors();
 
 	const location = tools.getCurrentLocation();
@@ -112,16 +112,16 @@ const startup = function _startup(root, _shared) {
 	};
 
 	addSearchPaths(root);
-	
+
 	const cachePath = files.Path.parse(tools.Files.getTempFolder()).combine('./nodesjs/doodad-js/', {os: 'linux'});
-	
+
 	const options = {
 		cachePath: cachePath,
-		listeningAddress: '0.0.0.0', 
+		listeningAddress: '0.0.0.0',
 		listeningPort: 8080,
 		listeningSSLPort: 8181,
 	};
-	
+
 	// NOTE: Experimental
 	// TODO: Make an official Task object
 	root.REGISTER(doodad.Object.$extend(
@@ -130,7 +130,7 @@ const startup = function _startup(root, _shared) {
 		$TYPE_NAME: 'MyTask',
 
 		id: doodad.PUBLIC(doodad.READ_ONLY(null)), // serialized
-		
+
 		privateData: doodad.PUBLIC(doodad.READ_ONLY(null)),
 
 		$unserialize: doodad.OVERRIDE(function $unserialize(data) {

@@ -38,9 +38,9 @@ exports.add = function add(modules) {
 				name: '@doodad-js/loader',
 				version: /*! REPLACE_BY(TO_SOURCE(VERSION('@doodad-js/loader'))) */ null /*! END_REPLACE() */,
 				type: /*! REPLACE_BY(TO_SOURCE(MAKE_MANIFEST('type', '@doodad-js/loader'))) */ 'Package' /*! END_REPLACE() */,
-			}, 
+			},
 		],
-			
+
 		create: function create(root, /*optional*/_options, _shared) {
 			const doodad = root.Doodad,
 				loader = doodad.Loader;
@@ -118,7 +118,7 @@ exports.add = function add(modules) {
 						]
 					},
 				];
-					
+
 				return loader.loadScripts(DD_SCRIPTS, {secret: _shared.SECRET});
 			};
 		},

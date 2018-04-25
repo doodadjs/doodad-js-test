@@ -75,16 +75,16 @@ module.exports = function(root, options, _shared) {
 				server.Ipc.MixIns.Service,
 			{
 				$TYPE_NAME: 'MyPrivateService',
-			
+
 				// TODO: Purge "$__tasks" in background
 				$__tasks: doodad.PROTECTED(null),
 
 				$create: doodad.OVERRIDE(function $create() {
 					this._super();
-		
+
 					this.$__tasks = tools.nullObject();
 				}),
-		
+
 				stats: server.Ipc.CALLABLE(function stats(request) {
 					return nodejs.Server.Http.Request.$getStats();
 				}),
@@ -101,7 +101,7 @@ module.exports = function(root, options, _shared) {
 				run: server.Ipc.CALLABLE(function run(request, fnStr) {
 					const Promise = types.getPromise();
 					const fn = tools.SafeEval.eval(fnStr, null, null, {
-						allowFunctions: true, 
+						allowFunctions: true,
 						allowNew: true,
 					});
 					return Promise.resolve(fn(root))
@@ -148,7 +148,7 @@ module.exports = function(root, options, _shared) {
 				server.Http.JsonRpc.MixIns.Service,
 			{
 				$TYPE_NAME: 'MyService',
-			
+
 				hello: server.Ipc.CALLABLE(function hello(request) {
 					return "Hello world !";
 				}),
@@ -156,7 +156,7 @@ module.exports = function(root, options, _shared) {
 		};
 
 		const currentPath = files.Path.parse(__dirname);
-		
+
 		let saxPath;
 		try {
 			saxPath = files.Path.parse(modules.resolve('sax/package.json'))
@@ -166,7 +166,7 @@ module.exports = function(root, options, _shared) {
 		} catch(ex) {
 			console.warn("The library 'sax' is not available. Some features, like page templates, will be disabled.");
 		};
-		
+
 		let momentPath;
 		try {
 			momentPath = files.Path.parse(modules.resolve('moment/package.json'))
@@ -442,7 +442,7 @@ module.exports = function(root, options, _shared) {
 						//verbs: ['GET', 'HEAD'],
 						handlers: [
 							{
-								handler: server.Http.CrossOriginHandler, 
+								handler: server.Http.CrossOriginHandler,
 							},
 							{
 								handler: server.Http.ClientCrashHandler,
@@ -819,7 +819,7 @@ module.exports = function(root, options, _shared) {
 							},
 						],
 					},
-					
+
 					//  Test infinite redirects
 					//'/favicon.ico': {
 					//	handlers: [
@@ -880,7 +880,7 @@ module.exports = function(root, options, _shared) {
 		service.onError.attach(null, onerror);
 		service.onNewRequest.attach(null, onrequest);
 		service.listen({
-			target: options.listeningAddress, 
+			target: options.listeningAddress,
 			port: options.listeningPort,
 		});
 
@@ -891,11 +891,11 @@ module.exports = function(root, options, _shared) {
 			protocol: 'https',
 			certFile: currentPath.combine('www.doodad-js.local.crt'),
 			keyFile: currentPath.combine('www.doodad-js.local.key'),
-			target: options.listeningAddress, 
+			target: options.listeningAddress,
 			port: options.listeningSSLPort,
 		});
 	};
-	
+
 	return modules.load([
 			{
 				module: '@doodad-js/cluster',

@@ -52,7 +52,7 @@ const addSearchPaths = function _addSearchPaths(root) {
 
 		if (folders) {
 			// Application (@doodad-js/test) packages folder found.
-			
+
 			let name;
 
 			// Include the "node_modules" folder of these packages in the search path.
@@ -70,24 +70,24 @@ const addSearchPaths = function _addSearchPaths(root) {
 					};
 				};
 			};
-			
+
 			// Include application (@doodad-js/test) folder as a package.
 			name = path.moveUp(2).toString();
 			nodeFs.statSync(name);
 			modules.addSearchPath(name);
-			
+
 			// We should have all the search paths we need.
 			break;
 		};
 	};
 };
-			
+
 const startup = function _startup(root, _shared) {
 	const doodad = root.Doodad,
 		modules = doodad.Modules;
-					
+
 	addSearchPaths(root);
-	
+
 	return modules.load([
 			{
 				module: '@doodad-js/test',

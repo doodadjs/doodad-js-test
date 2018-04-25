@@ -37,7 +37,7 @@ module.exports = function(root, options, _shared) {
 		modules = doodad.Modules,
 		types = doodad.Types,
 		tools = doodad.Tools,
-		
+
 		Promise = types.getPromise();
 
 
@@ -48,10 +48,12 @@ module.exports = function(root, options, _shared) {
 			maxCpus = types.toInteger(location.getArg('cpus', true) || process.env.NODE_CPUS) || 4,
 			unitName = location.getArg('unit', true),
 			toolsOptions = tools.getOptions();
-	
+
 		if (unitName !== undefined) {
-			root.setOptions({enableDebugger: false});
-			
+			root.setOptions({
+				enableDebugger: false
+			});
+
 			return modules.load([
 					/*{
 						module: '@doodad-js/core',
@@ -117,10 +119,10 @@ module.exports = function(root, options, _shared) {
 
 			if (process.stdout.isTTY && process.stdin.setRawMode) {
 				process.stdin.setRawMode(true);
-			
+
 				const messenger = new nodejs.Cluster.ClusterMessenger(server.Ipc.ServiceManager);
 				messenger.connect();
-			
+
 				const TIMEOUT = 1000 * 60 * 2;
 
 				const mapWorkers = function mapWorkers(result) {
@@ -155,7 +157,7 @@ module.exports = function(root, options, _shared) {
 							return undefined;
 						});
 					});
-			
+
 				const actives = root.DD_DOC(
 					{
 						author: "Claude Petit",
@@ -180,7 +182,7 @@ module.exports = function(root, options, _shared) {
 							return undefined;
 						});
 					});
-			
+
 				const uptime = root.DD_DOC(
 					{
 						author: "Claude Petit",
@@ -209,7 +211,7 @@ module.exports = function(root, options, _shared) {
 							return undefined;
 						});
 					});
-			
+
 				const ping = root.DD_DOC(
 					{
 						author: "Claude Petit",
@@ -234,7 +236,7 @@ module.exports = function(root, options, _shared) {
 							return undefined;
 						});
 					});
-			
+
 				const browser = root.DD_DOC(
 					{
 						author: "Claude Petit",
@@ -278,7 +280,7 @@ module.exports = function(root, options, _shared) {
 							return undefined;
 						});
 					});
-			
+
 				// NOTE: Experimental
 				const run = root.DD_DOC(
 					{
@@ -383,7 +385,7 @@ module.exports = function(root, options, _shared) {
 								return undefined;
 							});
 						});
-	
+
 					const clearCache = root.DD_DOC(
 					{
 						author: "Claude Petit",
@@ -400,7 +402,7 @@ module.exports = function(root, options, _shared) {
 								});
 						});
 					});
-			
+
 				const term = new nodejs.Terminal.Ansi.Javascript(0, {
 					infoColor: 'Green',
 					warnColor: 'Yellow',
@@ -440,7 +442,7 @@ module.exports = function(root, options, _shared) {
 					server.Ipc.MixIns.Service,
 				{
 					$TYPE_NAME: 'MyServerService',
-				
+
 					sendResult: server.Ipc.CALLABLE(function sendResult(request, taskId, result) {
 						// TODO: Change "terminal" to make a "printAsyncResult" available
 						const ansi = nodeUtil.inspect(result, {colors: true});

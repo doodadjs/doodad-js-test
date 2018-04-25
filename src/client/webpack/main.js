@@ -31,12 +31,12 @@ window.onload = function() {
 	options['Doodad.Modules'] = {
 		modulesUri: '..',
 	};
-	
+
 	const modules = {};
 	require('@doodad-js/unicode').add(modules);
 	require('@doodad-js/locale').add(modules);
 	require('@doodad-js/dates').add(modules);
-	
+
 	require('@doodad-js/core').createRoot(modules, options)
 		.then(function(root) {
 			const tools = root.Doodad.Tools;

@@ -291,7 +291,9 @@ exports.add = function add(modules) {
 					const myWidget = new me.MyWidget({element: element});
 
 					const id = myWidget.getIdentity();
-					id.id = id.name = id.class = name;
+					id.id = name;
+					id.name = name;
+					id.class = name;
 					myWidget.setIdentity(id);
 
 					let styles;

@@ -95,7 +95,8 @@ exports.add = function add(modules) {
 			test.ADD('getUnits', function getUnits(namespace) {
 				let units = namespace.CHILDREN;
 				if (!units) {
-					units = namespace.CHILDREN = [];
+					units = [];
+					namespace.CHILDREN = units;
 					const names = types.keys(namespace),
 						namesLen = names.length;
 					for (let i = 0; i < namesLen; i++) {

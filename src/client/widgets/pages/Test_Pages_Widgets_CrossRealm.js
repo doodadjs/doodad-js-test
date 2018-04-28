@@ -45,9 +45,9 @@ exports.add = function add(modules) {
 		create: function create(root, /*optional*/_options, _shared) {
 			const doodad = root.Doodad,
 				types = doodad.Types;
-				//tools = doodad.Tools,
-				//test = doodad.Test,
-				//pages = root.Test.Pages;
+			//tools = doodad.Tools,
+			//test = doodad.Test,
+			//pages = root.Test.Pages;
 
 			//const __Internal__ = {
 			//};

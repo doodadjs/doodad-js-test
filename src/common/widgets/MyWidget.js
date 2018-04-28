@@ -66,7 +66,7 @@ exports.add = function add(modules) {
 				types = doodad.Types,
 				//exceptions = doodad.Exceptions,
 				io = doodad.IO;
-				//nodejs = doodad.NodeJs;
+			//nodejs = doodad.NodeJs;
 
 			//===================================
 			// MyWidget
@@ -143,22 +143,22 @@ exports.add = function add(modules) {
 
 						onJsClick: doodad.JS_EVENT('click', function onJsClick(context) {
 							tools.alert('click');
-						//console.log(tools.getStackTrace());
-						//throw new Error("error");
-						/*
-						try {
-							this.myPrivateFn();
-							console.log('private method from inside ok :)');
-						} catch(ex) {
-							console.log('private method from inside failed :(');
-						};
-						try {
-							this.myPrivateAttr;
-							console.log('private attribute from inside ok :)');
-						} catch(ex) {
-							console.log('private attribute from inside failed :(');
-						};
-						*/
+							//console.log(tools.getStackTrace());
+							//throw new Error("error");
+							/*
+								try {
+									this.myPrivateFn();
+									console.log('private method from inside ok :)');
+								} catch(ex) {
+									console.log('private method from inside failed :(');
+								};
+								try {
+									this.myPrivateAttr;
+									console.log('private attribute from inside ok :)');
+								} catch(ex) {
+									console.log('private attribute from inside failed :(');
+								};
+							*/
 						}),
 
 						// Test RENAME
@@ -207,25 +207,25 @@ exports.add = function add(modules) {
 							this.message += ' Click !';
 							this.render();
 
-						/* Test "EXTERNAL"
-						this.destroy();
-						*/
-						/*
-						try {
-							this.myPrivateFn();
-							console.log('private method from outside failed :(');
-						} catch(ex) {
-							console.log('private method from outside ok :)');
-						};
-						try {
-							this.myPrivateAttr;
-							console.log('private attribute from outside failed :(');
-						} catch(ex) {
-							console.log('private attribute from outside ok :)');
-						};
-						*/
+							/* Test "EXTERNAL"
+								this.destroy();
+							*/
+							/*
+								try {
+									this.myPrivateFn();
+									console.log('private method from outside failed :(');
+								} catch(ex) {
+									console.log('private method from outside ok :)');
+								};
+								try {
+									this.myPrivateAttr;
+									console.log('private attribute from outside failed :(');
+								} catch(ex) {
+									console.log('private attribute from outside ok :)');
+								};
+							*/
 
-						//throw new types.Error("test");
+							//throw new types.Error("test");
 
 						}),
 
@@ -253,11 +253,11 @@ exports.add = function add(modules) {
 
 						// Test private override
 						/*
-					myPrivateAttr: "private overridden",
-					myPrivateFn: doodad.OVERRIDE(function() {
-						return "private overriden";
-					}),
-					*/
+							myPrivateAttr: "private overridden",
+							myPrivateFn: doodad.OVERRIDE(function() {
+								return "private overriden";
+							}),
+						*/
 
 						// Test RENAME (must respect the contract)
 						functionToRename: doodad.OVERRIDE(function functionToRename() {

@@ -43,8 +43,8 @@ exports.add = function add(modules) {
 				tools = doodad.Tools,
 				modules = doodad.Modules,
 				mixIns = doodad.MixIns;
-				//test = doodad.Test,
-				//pages = root.Test.Pages;
+			//test = doodad.Test,
+			//pages = root.Test.Pages;
 
 			//tools.complete(_shared.Natives, {
 			//});

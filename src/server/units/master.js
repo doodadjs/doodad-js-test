@@ -331,7 +331,7 @@ module.exports = function(root, options, _shared) {
 						});
 					});
 
-					// NOTE: Experimental
+				// NOTE: Experimental
 				const cancel = root.DD_DOC(
 					{
 						author: "Claude Petit",
@@ -440,7 +440,7 @@ module.exports = function(root, options, _shared) {
 						$TYPE_NAME: 'MyServerService',
 
 						sendResult: server.Ipc.CALLABLE(function sendResult(request, taskId, result) {
-						// TODO: Change "terminal" to make a "printAsyncResult" available
+							// TODO: Change "terminal" to make a "printAsyncResult" available
 							const ansi = nodeUtil.inspect(result, {colors: true});
 							term.consoleWrite('log', [`<W:${request.msg.worker.id} TASK:${tools.toSource(taskId)}> ${ansi}`], {callback: doodad.AsyncCallback(null, function(err) {
 								if (!err) {

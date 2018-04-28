@@ -42,8 +42,8 @@ exports.add = function add(modules) {
 				tools = doodad.Tools,
 				test = doodad.Test,
 				clientIO = doodad.Client.IO;
-				//pages = root.Test.Pages,
-				//pagesUnits = pages.Units;
+			//pages = root.Test.Pages,
+			//pagesUnits = pages.Units;
 
 			//const __Internal__ = {
 			//};

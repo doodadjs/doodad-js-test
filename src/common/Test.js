@@ -1084,6 +1084,15 @@ exports.add = function add(modules) {
 
 					test.FAILED_TESTS = 0;
 
+					const rootOptions = root.getOptions(),
+						oldEnableAsserts = rootOptions.enableAsserts,
+						oldEnableDebugger = rootOptions.enableDebugger;
+
+					root.setOptions({
+						enableAsserts: true,
+						enableDebugger: false,
+					});
+
 					const stream = test.getOutput(),
 						html = types._implements(stream, io.HtmlOutputStream),
 						dom = (clientIO ? types._instanceof(stream, clientIO.DomOutputStream) : false),
@@ -1140,6 +1149,11 @@ exports.add = function add(modules) {
 					return promise
 						.nodeify(function(err, dummy) {
 							return Promise.try(function() {
+								root.setOptions({
+									enableAsserts: oldEnableAsserts,
+									enableDebugger: oldEnableDebugger,
+								});
+
 								if (html) {
 									stream.closeElement();
 								};

@@ -1085,11 +1085,9 @@ exports.add = function add(modules) {
 					test.FAILED_TESTS = 0;
 
 					const rootOptions = root.getOptions(),
-						oldEnableAsserts = rootOptions.enableAsserts,
 						oldEnableDebugger = rootOptions.enableDebugger;
 
 					root.setOptions({
-						enableAsserts: true,
 						enableDebugger: false,
 					});
 
@@ -1150,7 +1148,6 @@ exports.add = function add(modules) {
 						.nodeify(function(err, dummy) {
 							return Promise.try(function() {
 								root.setOptions({
-									enableAsserts: oldEnableAsserts,
 									enableDebugger: oldEnableDebugger,
 								});
 

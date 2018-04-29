@@ -1177,7 +1177,7 @@ exports.add = function add(modules) {
 													types.DEBUGGER();
 													io.stderr.write(err.message);
 													io.stderr.write(err.stack);
-													tools.alert("An error occurred while testing.");
+													tools.alert("An error occurred while testing : ~0~.", [err.message]);
 													success = false;
 												};
 											} else {

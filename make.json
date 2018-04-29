@@ -381,10 +381,9 @@
           "destination": "%INSTALLDIR%/%PACKAGENAME%/webpack/bundle.js"
         },
         {
-          "class": "Make.Webpack.Bundle",
-          "source": "%SOURCEDIR%/client/webpack/main.js",
-          "destination": "%INSTALLDIR%/%PACKAGENAME%/webpack/bundle.min.js",
-          "minify": true
+          "class": "Make.File.Javascript",
+          "source": "%INSTALLDIR%/%PACKAGENAME%/webpack/bundle.js",
+          "destination": "%INSTALLDIR%/%PACKAGENAME%/webpack/bundle.min.js"
         }
       ]
     },

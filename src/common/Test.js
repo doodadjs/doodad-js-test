@@ -1088,6 +1088,8 @@ exports.add = function add(modules) {
 						oldEnableDebugger = rootOptions.enableDebugger;
 
 					root.setOptions({
+						secret: _shared.SECRET, // to unlock "setOptions"
+
 						enableDebugger: false,
 					});
 
@@ -1148,6 +1150,8 @@ exports.add = function add(modules) {
 						.nodeify(function(err, dummy) {
 							return Promise.try(function() {
 								root.setOptions({
+									secret: _shared.SECRET, // to unlock "setOptions"
+
 									enableDebugger: oldEnableDebugger,
 								});
 

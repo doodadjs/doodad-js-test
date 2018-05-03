@@ -108,7 +108,11 @@ const startup = function _startup(root, _shared) {
 	};
 
 	if (changedTools) {
-		tools.setOptions({logLevel});
+		tools.setOptions({
+			secret: _shared.SECRET, // to unlock "setOptions"
+
+			logLevel,
+		});
 	};
 
 	addSearchPaths(root);
@@ -280,31 +284,31 @@ curl -v -F écho=écho -F hello=hello -F bonjour=bonjour -F ciao=ciao -F écho=�
 */
 
 /*
-GET /app/doodad-js-test/units/index.ddtx HTTP/1.0
+GET /app/units/index.ddtx HTTP/1.0
 Accept: text/html
 
 */
 
 /*
-GET /app/doodad-js-test/units/index.ddtx HTTP/1.0
+GET /app/units/index.ddtx HTTP/1.0
 Accept: application/xml
 
 */
 
 /*
-GET /app/doodad-js-test/units/index.ddtx HTTP/1.0
+GET /app/units/index.ddtx HTTP/1.0
 Accept: application/javascript
 
 */
 
 /*
-GET /app/doodad-js-test/units/index.ddtx HTTP/1.0
+GET /app/units/index.ddtx HTTP/1.0
 Accept: text/html, application/xml, application/javascript
 
 */
 
 /*
-GET /app/doodad-js-test/units/index.ddtx HTTP/1.0
+GET /app/units/index.ddtx HTTP/1.0
 Accept: application/xml, application/javascript, text/html
 
 */

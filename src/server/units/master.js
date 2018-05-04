@@ -116,6 +116,8 @@ module.exports = function(root, options, _shared) {
 			if (process.stdout.isTTY && process.stdin.setRawMode) {
 				process.stdin.setRawMode(true);
 
+				const inspectSymbol = nodejs.getCustomInspectSymbol();
+
 				const messenger = new nodejs.Cluster.ClusterMessenger(server.Ipc.ServiceManager);
 				messenger.connect();
 
@@ -124,7 +126,11 @@ module.exports = function(root, options, _shared) {
 				const mapWorkers = function mapWorkers(result) {
 					const retval = {};
 					tools.forEach(result, function(workerResult, workerId) {
-						retval['W:' + workerId] = workerResult;
+						retval['W:' + workerId] = {
+							[inspectSymbol]: function(depth, options) {
+								return nodeUtil.inspect(workerResult, tools.extend(options, {depth: 1}));
+							}
+						}
 					});
 					return retval;
 				};

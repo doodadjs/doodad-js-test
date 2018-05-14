@@ -1,405 +1,384 @@
+// JSON5
+// Encoding: utf8
+//
+// doodad-js  -  Object-oriented programming framework
+//    File: make.json - Make data file
+//    Project home: https://github.com/doodadjs/
+//    Author: Claude Petit, Quebec city
+//    Contact: doodadjs [at] gmail.com
+//    Note: I'm still in alpha-beta stage, so expect to find some bugs or incomplete parts !
+//    Licence: Apache V2
+//
+//    Copyright 2015-2018 Claude Petit
+//
+//    Licensed under the Apache License, Version 2.0 (the \"License\");
+//    you may not use this file except in compliance with the License.
+//    You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+//    Unless required by applicable law or agreed to in writing, software
+//    distributed under the License is distributed on an \"AS IS\" BASIS,
+//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//    See the License for the specific language governing permissions and
+//    limitations under the License.
+//
 {
-  "//": "Encoding: utf8",
-  "//": "",
-  "//": "    doodad-js  -  Object-oriented programming framework",
-  "//": "    File: make.json - Make data file",
-  "//": "    Project home: https://github.com/doodadjs/",
-  "//": "    Author: Claude Petit, Quebec city",
-  "//": "    Contact: doodadjs [at] gmail.com",
-  "//": "    Note: I'm still in alpha-beta stage, so expect to find some bugs or incomplete parts !",
-  "//": "    Licence: Apache V2",
-  "//": "",
-  "//": "    Copyright 2015-2018 Claude Petit",
-  "//": "",
-  "//": "    Licensed under the Apache License, Version 2.0 (the \"License\");",
-  "//": "    you may not use this file except in compliance with the License.",
-  "//": "    You may obtain a copy of the License at",
-  "//": "",
-  "//": "     http://www.apache.org/licenses/LICENSE-2.0",
-  "//": "",
-  "//": "    Unless required by applicable law or agreed to in writing, software",
-  "//": "    distributed under the License is distributed on an \"AS IS\" BASIS,",
-  "//": "    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.",
-  "//": "    See the License for the specific language governing permissions and",
-  "//": "    limitations under the License.",
-  "//": "",
-  "version": "3.0.0",
-  "stage": "a",
-  "dependencies": [
-    {
-      "//": "For the package.",
-      "name": "@doodad-js/core",
-      "client": true,
-      "server": true,
-      "browserify": true
-    },
-    {
-      "//": "For the package.",
-      "name": "@doodad-js/io",
-      "client": true,
-      "server": true,
-      "browserify": true
-    },
+	version: "3.0.0",
+	stage: "a",
+	dependencies: [
+		// For the package
+		{
+			name: "@doodad-js/core",
+			client: true,
+			server: true,
+			browserify: true
+		},
+		{
+			name: "@doodad-js/io",
+			client: true,
+			server: true,
+			browserify: true
+		},
 
-    {
-      "//": "For the application",
-      "name": "@doodad-js/cluster",
-      "client": false,
-      "server": false,
-      "browserify": false
-    },
-    {
-      "//": "For the application",
-      "name": "@doodad-js/dates",
-      "client": false,
-      "server": false,
-      "browserify": false
-    },
-    {
-      "//": "For the application",
-      "name": "@doodad-js/http",
-      "client": false,
-      "server": false,
-      "browserify": false
-    },
-    {
-      "//": "For the application",
-      "name": "@doodad-js/http_jsonrpc",
-      "client": false,
-      "server": false,
-      "browserify": false
-    },
-    {
-      "//": "For the application",
-      "name": "@doodad-js/locale",
-      "client": false,
-      "server": false,
-      "browserify": false
-    },
-    {
-      "//": "For the application",
-      "name": "@doodad-js/loader",
-      "client": false,
-      "server": false,
-      "browserify": false
-    },
-    {
-      "//": "For the application",
-      "name": "@doodad-js/mime",
-      "client": false,
-      "server": false,
-      "browserify": false
-    },
-    {
-      "//": "For the application",
-      "name": "@doodad-js/minifiers",
-      "client": false,
-      "server": false,
-      "browserify": false
-    },
-    {
-      "//": "For the application",
-      "name": "@doodad-js/templates",
-      "client": false,
-      "server": false,
-      "browserify": false
-    },
-    {
-      "//": "For the application",
-      "name": "@doodad-js/terminal",
-      "client": false,
-      "server": false,
-      "browserify": false
-    },
-    {
-      "//": "For the application",
-      "name": "@doodad-js/unicode",
-      "client": false,
-      "server": false,
-      "browserify": false
-    },
-    {
-      "//": "For the application",
-      "name": "@doodad-js/widgets",
-      "client": false,
-      "server": false,
-      "browserify": false
-    },
-    {
-      "//": "For the application",
-      "name": "@doodad-js/xml",
-      "client": false,
-      "server": false,
-      "browserify": false
-    }
-  ],
-  "modules": [
-    {
-      "//": "For the package.",
-      "src": "common/Test.js",
-      "client": true,
-      "server": true,
-      "browserify": true
-    },
-    {
-      "//": "For the application.",
-      "src": "common/widgets/MyWidget.js",
-      "dest": "widgets/MyWidget.js",
-      "client": true,
-      "server": true,
-      "browserify": false,
-      "exclude": true
-    },
-    {
-      "//": "For the application.",
-      "src": "common/widgets/MyWidget_loader.js",
-      "dest": "widgets/MyWidget_loader.js",
-      "client": true,
-      "server": true,
-      "browserify": false,
-      "exclude": true
-    },
-    {
-      "//": "For the application.",
-      "src": "server/units/pages/Test_Pages_Units_Index.js",
-      "client": false,
-      "server": true,
-      "browserify": false,
-      "exclude": true
-    },
-    {
-      "//": "For the application.",
-      "src": "server/widgets/pages/Test_Pages_Widgets_Index.js",
-      "client": false,
-      "server": true,
-      "browserify": false,
-      "exclude": true
-    },
-    {
-      "//": "For the application.",
-      "src": "server/widgets/pages/Test_Pages_Widgets_CrossRealm.js",
-      "client": false,
-      "server": true,
-      "browserify": false,
-      "exclude": true
-    },
-    {
-      "//": "For the application.",
-      "src": "server/browserify/pages/Test_Pages_Browserify_Index.js",
-      "client": false,
-      "server": true,
-      "browserify": false,
-      "exclude": true
-    },
-    {
-      "//": "For the application.",
-      "src": "server/webpack/pages/Test_Pages_Webpack_Index.js",
-      "client": false,
-      "server": true,
-      "browserify": false,
-      "exclude": true
-    }
-  ],
-  "resources": [
-  ],
-  "tasks": {
-    "ddtx": {
-      "operations": [
-        {
-          "class": "Make.Modules.Load",
-          "files": [
-            {
-              "module": "@doodad-js/templates",
-              "path": "src/make/Templates_Html_Make.js"
-            }
-          ]
-        },
-        {
-          "class": "Doodad.Templates.Html.Make.Compile",
-          "source": "%SOURCEDIR%/server/units/pages/Test_Pages_Units_Index.ddt",
-          "destination": "%BUILDDIR%/server/units/pages/Test_Pages_Units_Index.ddtx",
-          "variables": {
-            "serverSide": true
-          }
-        },
-        {
-          "class": "Doodad.Templates.Html.Make.Compile",
-          "source": "%SOURCEDIR%/server/widgets/pages/Test_Pages_Widgets_Index.ddt",
-          "destination": "%BUILDDIR%/server/widgets/pages/Test_Pages_Widgets_Index.ddtx",
-          "variables": {
-            "serverSide": true
-          }
-        },
-        {
-          "class": "Doodad.Templates.Html.Make.Compile",
-          "source": "%SOURCEDIR%/server/widgets/pages/Test_Pages_Widgets_CrossRealm.ddt",
-          "destination": "%BUILDDIR%/server/widgets/pages/Test_Pages_Widgets_CrossRealm.ddtx",
-          "variables": {
-            "serverSide": true
-          }
-        },
-        {
-          "class": "Doodad.Templates.Html.Make.Compile",
-          "source": "%SOURCEDIR%/server/browserify/pages/Test_Pages_Browserify_Index.ddt",
-          "destination": "%BUILDDIR%/server/browserify/pages/Test_Pages_Browserify_Index.ddtx",
-          "variables": {
-            "serverSide": true
-          }
-        },
-        {
-          "class": "Doodad.Templates.Html.Make.Compile",
-          "source": "%SOURCEDIR%/server/webpack/pages/Test_Pages_Webpack_Index.ddt",
-          "destination": "%BUILDDIR%/server/webpack/pages/Test_Pages_Webpack_Index.ddtx",
-          "variables": {
-            "serverSide": true
-          }
-        }
-      ]
-    },
-    "make": {
-      "operations": [
-        {
-          "class": "Make.Generate.Package"
-        },
-
-        {
-          "class": "Make.Task",
-          "name": "install"
-        },
-        {
-          "class": "Make.Task",
-          "name": "browserify"
-        },
-        {
-          "class": "Make.Task",
-          "name": "webpack"
-        },
-        {
-          "class": "Make.Task",
-          "name": "ddtx"
-        }
-      ]
-    },
-    "install": {
-      "operations": [
-        {
-          "class": "Make.Generate.Package"
-        },
-
-        {
-          "class": "Make.Folder.Copy",
-          "source": "%SOURCEDIR%/client/units/res/",
-          "destination": "%INSTALLDIR%/%PACKAGENAME%/units/"
-        },
-
-        {
-          "class": "Make.File.Javascript",
-          "source": "%SOURCEDIR%/client/units/pages/Test_Pages_Units_Index.js",
-          "destination": "%INSTALLDIR%/%PACKAGENAME%/units/js/Test_Pages_Units_Index.js",
-          "runDirectives": true,
-          "keepComments": true,
-          "keepSpaces": true,
-          "variables": {
-            "debug": true,
-            "autoAdd": true
-          }
-        },
-        {
-          "class": "Make.File.Javascript",
-          "source": "%SOURCEDIR%/client/units/pages/Test_Pages_Units_Index.js",
-          "destination": "%INSTALLDIR%/%PACKAGENAME%/units/js/Test_Pages_Units_Index.min.js",
-          "runDirectives": true
-        },
-
-        {
-          "class": "Make.Folder.Copy",
-          "source": "%SOURCEDIR%/client/widgets/res/",
-          "destination": "%INSTALLDIR%/%PACKAGENAME%/widgets/"
-        },
-
-        {
-          "class": "Make.File.Javascript",
-          "source": "%SOURCEDIR%/client/widgets/pages/Test_Pages_Widgets_CrossRealm.js",
-          "destination": "%INSTALLDIR%/%PACKAGENAME%/widgets/js/Test_Pages_Widgets_CrossRealm.js",
-          "runDirectives": true,
-          "keepComments": true,
-          "keepSpaces": true,
-          "variables": {
-            "debug": true,
-            "autoAdd": true
-          }
-        },
-        {
-          "class": "Make.File.Javascript",
-          "source": "%SOURCEDIR%/client/widgets/pages/Test_Pages_Widgets_CrossRealm.js",
-          "destination": "%INSTALLDIR%/%PACKAGENAME%/widgets/js/Test_Pages_Widgets_CrossRealm.min.js",
-          "runDirectives": true
-        },
-
-        {
-          "class": "Make.File.Javascript",
-          "source": "%SOURCEDIR%/client/widgets/pages/Test_Pages_Widgets_Index.js",
-          "destination": "%INSTALLDIR%/%PACKAGENAME%/widgets/js/Test_Pages_Widgets_Index.js",
-          "runDirectives": true,
-          "keepComments": true,
-          "keepSpaces": true,
-          "variables": {
-            "debug": true,
-            "autoAdd": true
-          }
-        },
-        {
-          "class": "Make.File.Javascript",
-          "source": "%SOURCEDIR%/client/widgets/pages/Test_Pages_Widgets_Index.js",
-          "destination": "%INSTALLDIR%/%PACKAGENAME%/widgets/js/Test_Pages_Widgets_Index.min.js",
-          "runDirectives": true
-        },
-
-        {
-          "class": "Make.Folder.Create",
-          "destination": "%INSTALLDIR%/%PACKAGENAME%/browserify/"
-        },
-        {
-          "class": "Make.Browserify.Bundle",
-          "source": "%SOURCEDIR%/client/browserify/main.js",
-          "destination": "%INSTALLDIR%/%PACKAGENAME%/browserify/bundle.js"
-        },
-        {
-          "class": "Make.Browserify.Bundle",
-          "source": "%SOURCEDIR%/client/browserify/main.js",
-          "destination": "%INSTALLDIR%/%PACKAGENAME%/browserify/bundle.min.js",
-          "minify": true
-        },
-
-        {
-          "class": "Make.Folder.Create",
-          "destination": "%INSTALLDIR%/%PACKAGENAME%/webpack/"
-        },
-        {
-          "class": "Make.Webpack.Bundle",
-          "source": "%SOURCEDIR%/client/webpack/main.js",
-          "destination": "%INSTALLDIR%/%PACKAGENAME%/webpack/bundle.js"
-        },
-        {
-          "class": "Make.File.Javascript",
-          "source": "%INSTALLDIR%/%PACKAGENAME%/webpack/bundle.js",
-          "destination": "%INSTALLDIR%/%PACKAGENAME%/webpack/bundle.min.js"
-        }
-      ]
-    },
-    "browserify": {
-      "operations": [
-        {
-          "class": "Make.Generate.Package"
-        }
-      ]
-    },
-    "webpack": {
-      "operations": [
-        {
-          "class": "Make.Generate.Package"
-        }
-      ]
-    }
-  }
+		// For the application
+		{
+			name: "@doodad-js/cluster",
+			client: false,
+			server: false,
+			browserify: false
+		},
+		{
+			name: "@doodad-js/dates",
+			client: false,
+			server: false,
+			browserify: false
+		},
+		{
+			name: "@doodad-js/http",
+			client: false,
+			server: false,
+			browserify: false
+		},
+		{
+			name: "@doodad-js/http_jsonrpc",
+			client: false,
+			server: false,
+			browserify: false
+		},
+		{
+			name: "@doodad-js/locale",
+			client: false,
+			server: false,
+			browserify: false
+		},
+		{
+			name: "@doodad-js/loader",
+			client: false,
+			server: false,
+			browserify: false
+		},
+		{
+			name: "@doodad-js/mime",
+			client: false,
+			server: false,
+			browserify: false
+		},
+		{
+			name: "@doodad-js/minifiers",
+			client: false,
+			server: false,
+			browserify: false
+		},
+		{
+			name: "@doodad-js/templates",
+			client: false,
+			server: false,
+			browserify: false
+		},
+		{
+			name: "@doodad-js/terminal",
+			client: false,
+			server: false,
+			browserify: false
+		},
+		{
+			name: "@doodad-js/unicode",
+			client: false,
+			server: false,
+			browserify: false
+		},
+		{
+			name: "@doodad-js/widgets",
+			client: false,
+			server: false,
+			browserify: false
+		},
+		{
+			name: "@doodad-js/xml",
+			client: false,
+			server: false,
+			browserify: false
+		}
+	],
+	modules: [
+		{
+			"//": "For the package.",
+			src: "common/Test.js",
+			client: true,
+			server: true,
+			browserify: true
+		},
+		{
+			"//": "For the application.",
+			src: "common/widgets/MyWidget.js",
+			dest: "widgets/MyWidget.js",
+			client: true,
+			server: true,
+			browserify: false,
+			exclude: true
+		},
+		{
+			"//": "For the application.",
+			src: "common/widgets/MyWidget_loader.js",
+			dest: "widgets/MyWidget_loader.js",
+			client: true,
+			server: true,
+			browserify: false,
+			exclude: true
+		},
+		{
+			"//": "For the application.",
+			src: "server/units/pages/Test_Pages_Units_Index.js",
+			client: false,
+			server: true,
+			browserify: false,
+			exclude: true
+		},
+		{
+			"//": "For the application.",
+			src: "server/widgets/pages/Test_Pages_Widgets_Index.js",
+			client: false,
+			server: true,
+			browserify: false,
+			exclude: true
+		},
+		{
+			"//": "For the application.",
+			src: "server/widgets/pages/Test_Pages_Widgets_CrossRealm.js",
+			client: false,
+			server: true,
+			browserify: false,
+			exclude: true
+		},
+		{
+			"//": "For the application.",
+			src: "server/browserify/pages/Test_Pages_Browserify_Index.js",
+			client: false,
+			server: true,
+			browserify: false,
+			exclude: true
+		},
+		{
+			"//": "For the application.",
+			src: "server/webpack/pages/Test_Pages_Webpack_Index.js",
+			client: false,
+			server: true,
+			browserify: false,
+			exclude: true
+		}
+	],
+	resources: [],
+	tasks: {
+		ddtx: {
+			operations: [
+				{
+					class: "Make.Modules.Load",
+					files: [
+						{
+							module: "@doodad-js/templates",
+							path: "src/make/Templates_Html_Make.js"
+						}
+					]
+				},
+				{
+					class: "Doodad.Templates.Html.Make.Compile",
+					source: "%SOURCEDIR%/server/units/pages/Test_Pages_Units_Index.ddt",
+					destination: "%BUILDDIR%/server/units/pages/Test_Pages_Units_Index.ddtx",
+					variables: {
+						serverSide: true
+					}
+				},
+				{
+					class: "Doodad.Templates.Html.Make.Compile",
+					source: "%SOURCEDIR%/server/widgets/pages/Test_Pages_Widgets_Index.ddt",
+					destination: "%BUILDDIR%/server/widgets/pages/Test_Pages_Widgets_Index.ddtx",
+					variables: {
+						serverSide: true
+					}
+				},
+				{
+					class: "Doodad.Templates.Html.Make.Compile",
+					source: "%SOURCEDIR%/server/widgets/pages/Test_Pages_Widgets_CrossRealm.ddt",
+					destination: "%BUILDDIR%/server/widgets/pages/Test_Pages_Widgets_CrossRealm.ddtx",
+					variables: {
+						serverSide: true
+					}
+				},
+				{
+					class: "Doodad.Templates.Html.Make.Compile",
+					source: "%SOURCEDIR%/server/browserify/pages/Test_Pages_Browserify_Index.ddt",
+					destination: "%BUILDDIR%/server/browserify/pages/Test_Pages_Browserify_Index.ddtx",
+					variables: {
+						serverSide: true
+					}
+				},
+				{
+					class: "Doodad.Templates.Html.Make.Compile",
+					source: "%SOURCEDIR%/server/webpack/pages/Test_Pages_Webpack_Index.ddt",
+					destination: "%BUILDDIR%/server/webpack/pages/Test_Pages_Webpack_Index.ddtx",
+					variables: {
+						serverSide: true
+					}
+				}
+			]
+		},
+		make: {
+			operations: [
+				{
+					class: "Make.Generate.Package"
+				},
+				{
+					class: "Make.Task",
+					name: "install"
+				},
+				{
+					class: "Make.Task",
+					name: "browserify"
+				},
+				{
+					class: "Make.Task",
+					name: "webpack"
+				},
+				{
+					class: "Make.Task",
+					name: "ddtx"
+				}
+			]
+		},
+		install: {
+			operations: [
+				{
+					class: "Make.Generate.Package"
+				},
+				{
+					class: "Make.Folder.Copy",
+					source: "%SOURCEDIR%/client/units/res/",
+					destination: "%INSTALLDIR%/%PACKAGENAME%/units/"
+				},
+				{
+					class: "Make.File.Javascript",
+					source: "%SOURCEDIR%/client/units/pages/Test_Pages_Units_Index.js",
+					destination: "%INSTALLDIR%/%PACKAGENAME%/units/js/Test_Pages_Units_Index.js",
+					runDirectives: true,
+					keepComments: true,
+					keepSpaces: true,
+					variables: {
+						debug: true,
+						autoAdd: true
+					}
+				},
+				{
+					class: "Make.File.Javascript",
+					source: "%SOURCEDIR%/client/units/pages/Test_Pages_Units_Index.js",
+					destination: "%INSTALLDIR%/%PACKAGENAME%/units/js/Test_Pages_Units_Index.min.js",
+					runDirectives: true
+				},
+				{
+					class: "Make.Folder.Copy",
+					source: "%SOURCEDIR%/client/widgets/res/",
+					destination: "%INSTALLDIR%/%PACKAGENAME%/widgets/"
+				},
+				{
+					class: "Make.File.Javascript",
+					source: "%SOURCEDIR%/client/widgets/pages/Test_Pages_Widgets_CrossRealm.js",
+					destination: "%INSTALLDIR%/%PACKAGENAME%/widgets/js/Test_Pages_Widgets_CrossRealm.js",
+					runDirectives: true,
+					keepComments: true,
+					keepSpaces: true,
+					variables: {
+						debug: true,
+						autoAdd: true
+					}
+				},
+				{
+					class: "Make.File.Javascript",
+					source: "%SOURCEDIR%/client/widgets/pages/Test_Pages_Widgets_CrossRealm.js",
+					destination: "%INSTALLDIR%/%PACKAGENAME%/widgets/js/Test_Pages_Widgets_CrossRealm.min.js",
+					runDirectives: true
+				},
+				{
+					class: "Make.File.Javascript",
+					source: "%SOURCEDIR%/client/widgets/pages/Test_Pages_Widgets_Index.js",
+					destination: "%INSTALLDIR%/%PACKAGENAME%/widgets/js/Test_Pages_Widgets_Index.js",
+					runDirectives: true,
+					keepComments: true,
+					keepSpaces: true,
+					variables: {
+						debug: true,
+						autoAdd: true
+					}
+				},
+				{
+					class: "Make.File.Javascript",
+					source: "%SOURCEDIR%/client/widgets/pages/Test_Pages_Widgets_Index.js",
+					destination: "%INSTALLDIR%/%PACKAGENAME%/widgets/js/Test_Pages_Widgets_Index.min.js",
+					runDirectives: true
+				},
+				{
+					class: "Make.Folder.Create",
+					destination: "%INSTALLDIR%/%PACKAGENAME%/browserify/"
+				},
+				{
+					class: "Make.Browserify.Bundle",
+					source: "%SOURCEDIR%/client/browserify/main.js",
+					destination: "%INSTALLDIR%/%PACKAGENAME%/browserify/bundle.js"
+				},
+				{
+					class: "Make.Browserify.Bundle",
+					source: "%SOURCEDIR%/client/browserify/main.js",
+					destination: "%INSTALLDIR%/%PACKAGENAME%/browserify/bundle.min.js",
+					minify: true
+				},
+				{
+					class: "Make.Folder.Create",
+					destination: "%INSTALLDIR%/%PACKAGENAME%/webpack/"
+				},
+				{
+					class: "Make.Webpack.Bundle",
+					source: "%SOURCEDIR%/client/webpack/main.js",
+					destination: "%INSTALLDIR%/%PACKAGENAME%/webpack/bundle.js"
+				},
+				{
+					class: "Make.File.Javascript",
+					source: "%INSTALLDIR%/%PACKAGENAME%/webpack/bundle.js",
+					destination: "%INSTALLDIR%/%PACKAGENAME%/webpack/bundle.min.js"
+				}
+			]
+		},
+		browserify: {
+			operations: [
+				{
+					class: "Make.Generate.Package"
+				}
+			]
+		},
+		webpack: {
+			operations: [
+				{
+					class: "Make.Generate.Package"
+				}
+			]
+		}
+	}
 }

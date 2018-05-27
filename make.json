@@ -227,15 +227,15 @@
 					variables: {
 						serverSide: true
 					}
+				},
+				{
+					class: "Doodad.Templates.Html.Make.Compile",
+					source: "%SOURCEDIR%/server/webpack/pages/Test_Pages_Webpack_Index.ddt",
+					destination: "%BUILDDIR%/server/webpack/pages/Test_Pages_Webpack_Index.ddtx",
+					variables: {
+						serverSide: true
+					}
 				}
-				//{
-				//	class: "Doodad.Templates.Html.Make.Compile",
-				//	source: "%SOURCEDIR%/server/webpack/pages/Test_Pages_Webpack_Index.ddt",
-				//	destination: "%BUILDDIR%/server/webpack/pages/Test_Pages_Webpack_Index.ddtx",
-				//	variables: {
-				//		serverSide: true
-				//	}
-				//}
 			]
 		},
 		make: {
@@ -251,10 +251,10 @@
 					class: "Make.Task",
 					name: "browserify"
 				},
-				//{
-				//	class: "Make.Task",
-				//	name: "webpack"
-				//},
+				{
+					class: "Make.Task",
+					name: "webpack"
+				},
 				{
 					class: "Make.Task",
 					name: "ddtx"
@@ -344,21 +344,21 @@
 					source: "%SOURCEDIR%/client/browserify/main.js",
 					destination: "%INSTALLDIR%/%PACKAGENAME%/browserify/bundle.min.js",
 					minify: true
+				},
+				{
+					class: "Make.Folder.Create",
+					destination: "%INSTALLDIR%/%PACKAGENAME%/webpack/"
+				},
+				{
+					class: "Make.Webpack.Bundle",
+					source: "%SOURCEDIR%/client/webpack/main.js",
+					destination: "%INSTALLDIR%/%PACKAGENAME%/webpack/bundle.js"
+				},
+				{
+					class: "Make.File.Javascript",
+					source: "%INSTALLDIR%/%PACKAGENAME%/webpack/bundle.js",
+					destination: "%INSTALLDIR%/%PACKAGENAME%/webpack/bundle.min.js"
 				}
-				//{
-				//	class: "Make.Folder.Create",
-				//	destination: "%INSTALLDIR%/%PACKAGENAME%/webpack/"
-				//},
-				//{
-				//	class: "Make.Webpack.Bundle",
-				//	source: "%SOURCEDIR%/client/webpack/main.js",
-				//	destination: "%INSTALLDIR%/%PACKAGENAME%/webpack/bundle.js"
-				//},
-				//{
-				//	class: "Make.File.Javascript",
-				//	source: "%INSTALLDIR%/%PACKAGENAME%/webpack/bundle.js",
-				//	destination: "%INSTALLDIR%/%PACKAGENAME%/webpack/bundle.min.js"
-				//}
 			]
 		},
 		browserify: {
@@ -367,13 +367,13 @@
 					class: "Make.Generate.Package"
 				}
 			]
+		},
+		webpack: {
+			operations: [
+				{
+					class: "Make.Generate.Package"
+				}
+			]
 		}
-		//webpack: {
-		//	operations: [
-		//		{
-		//			class: "Make.Generate.Package"
-		//		}
-		//	]
-		//}
 	}
 }

@@ -486,14 +486,14 @@ module.exports = function(root, options, _shared) {
 											},
 										],
 									},
-									//'/webpack': {
-									//	handlers: [
-									//		{
-									//			handler: server.Http.RedirectHandler,
-									//			targetUrl: 'index.ddtx',
-									//		},
-									//	],
-									//},
+									'/webpack': {
+										handlers: [
+											{
+												handler: server.Http.RedirectHandler,
+												targetUrl: 'index.ddtx',
+											},
+										],
+									},
 									'/units/index.ddtx': {
 										handlers: [
 											{
@@ -546,19 +546,19 @@ module.exports = function(root, options, _shared) {
 											},
 										],
 									},
-									//'/webpack/index.ddtx': {
-									//	handlers: [
-									//		{
-									//			handler: nodejs.Server.Http.FileSystemPage,
-									//			// TODO: Auto-build
-									//			path: files.Path.parse(modules.resolve('@doodad-js/test')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/webpack/pages/Test_Pages_Webpack_Index.ddt' : './build/server/webpack/pages/Test_Pages_Webpack_Index.ddtx'), {os: 'linux'}),
-									//			showFolders: true,
-									//			mimeTypes: staticMimeTypes,
-									//			forceCaseSensitive: forceCaseSensitive,
-									//			variables: staticVariables,
-									//		},
-									//	],
-									//},
+									'/webpack/index.ddtx': {
+										handlers: [
+											{
+												handler: nodejs.Server.Http.FileSystemPage,
+												// TODO: Auto-build
+												path: files.Path.parse(modules.resolve('@doodad-js/test')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/webpack/pages/Test_Pages_Webpack_Index.ddt' : './build/server/webpack/pages/Test_Pages_Webpack_Index.ddtx'), {os: 'linux'}),
+												showFolders: true,
+												mimeTypes: staticMimeTypes,
+												forceCaseSensitive: forceCaseSensitive,
+												variables: staticVariables,
+											},
+										],
+									},
 									'/widgets/': {
 										handlers: [
 											{
@@ -589,16 +589,16 @@ module.exports = function(root, options, _shared) {
 											},
 										],
 									},
-									//'/webpack/': {
-									//	handlers: [
-									//		{
-									//			handler: server.Http.RedirectHandler,
-									//			targetUrl: '/app/@doodad-js/test/webpack/',
-									//			internal: true,
-									//			depth: Infinity,
-									//		},
-									//	],
-									//},
+									'/webpack/': {
+										handlers: [
+											{
+												handler: server.Http.RedirectHandler,
+												targetUrl: '/app/@doodad-js/test/webpack/',
+												internal: true,
+												depth: Infinity,
+											},
+										],
+									},
 									'/@doodad-js/core': {
 										handlers: [
 											{

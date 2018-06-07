@@ -215,24 +215,24 @@ Accept: application/javascript
 
 */
 
-///* CacheHandler: First request should generate the cache file and send headers and result. Subsequent requests should send the file and its headers from cache. In both case, content should be minified.
-//GET /app/lib/sax/sax.js HTTP/1.0
-//Accept: application/javascript
-//
-//*/
+/* CacheHandler: First request should generate the cache file and send headers and result. Subsequent requests should send the file and its headers from cache. In both case, content should be minified.
+GET /app/lib/sax/sax.js HTTP/1.0
+Accept: application/javascript
 
-///* CacheHandler: First request should generate the cache file and send headers and result compressed. Subsequent requests should send the file and its headers from cache. In both case, content should be minified.
-//GET /app/lib/sax/sax.js HTTP/1.0
-//Accept: application/javascript
-//Accept-Encoding: gzip
-//
-//*/
+*/
 
-///* Should send the headers only
-//HEAD /app/lib/sax/sax.js HTTP/1.0
-//Accept: application/javascript
-//
-//*/
+/* CacheHandler: First request should generate the cache file and send headers and result compressed. Subsequent requests should send the file and its headers from cache. In both case, content should be minified.
+GET /app/lib/sax/sax.js HTTP/1.0
+Accept: application/javascript
+Accept-Encoding: gzip
+
+*/
+
+/* Should send the headers only
+HEAD /app/lib/sax/sax.js HTTP/1.0
+Accept: application/javascript
+
+*/
 
 /* Should return folder's content in JSON
 GET /app/@doodad-js/locale/locales/ HTTP/1.0

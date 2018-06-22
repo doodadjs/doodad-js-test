@@ -164,11 +164,14 @@ const startup = function _startup(root, _shared) {
 const options = {
 	startup: {
 		secret: SECRET,
-		fromSource: (process.execArgv.some(arg => ['--inspect', '--inspect-brk', '--debug', '--debug-brk'].indexOf(arg.split('=')[0]) >= 0)),
 	},
 	"Doodad.Tools": {
 		logLevel: 2,
 	},
+};
+
+if (process.execArgv.some(arg => ['--inspect', '--inspect-brk', '--debug', '--debug-brk'].indexOf(arg.split('=')[0]) >= 0)) {
+	options.startup.fromSource = true;
 };
 
 require('@doodad-js/core').createRoot(null, options, startup);

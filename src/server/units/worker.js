@@ -199,7 +199,7 @@ module.exports = function(root, options, _shared) {
 
 		const staticMimeTypes = ['application/javascript; charset=utf-8', 'application/x-javascript; charset=utf-8', 'text/html; charset=utf-8', 'text/css; charset=utf-8', 'application/json; charset=utf-8', 'text/json; charset=utf-8', 'application/xml; charset=utf-8', 'text/xml; charset=utf-8', '*/*'];
 
-		const forceCaseSensitive = !tools.getOS().caseSensitive;
+		const forceCaseSensitive = !tools.getOptions().caseSensitive;
 
 		const staticVariables = {
 			modulesUri: "..",

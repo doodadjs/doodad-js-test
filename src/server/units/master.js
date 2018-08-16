@@ -85,7 +85,7 @@ module.exports = function(root, options, _shared) {
 				return Promise.try(function tryStartWorkers() {
 					if (cpus > 1) {
 						nodeCluster.setupMaster({
-							silent: true,
+							silent: true, // TODO: Find a way to be non-silent on errors only !
 						});
 
 						nodeCluster.on('exit', (worker, code, signal) => {
@@ -405,6 +405,32 @@ module.exports = function(root, options, _shared) {
 						});
 					});
 
+				const expire = root.DD_DOC(
+					{
+						author: "Claude Petit",
+						revision: 0,
+						params: {
+							name: 'keyHash',
+							type: 'string',
+							description: "Key hash.",
+						},
+						returns: 'undefined',
+						description: "Expires the specified cached object by its key hash.",
+					}, function expire(/*optional*/keyHash) {
+						// TODO: Abort and invalidate all cached objects before, and have an argument to delete the folder.
+						return Promise.try(function expirePromise() {
+							if (ready) {
+								if (cpus > 1) {
+									return messenger.callService('MyPrivateService', 'expireCached', [keyHash])
+										.then(mapWorkers);
+								} else {
+									return nodejs.Server.Http.CacheHandler.$expire(keyHash);
+								};
+							};
+							return undefined;
+						});
+					});
+
 				const term = new nodejs.Terminal.Ansi.Javascript(0, {
 					infoColor: 'Green',
 					warnColor: 'Yellow',
@@ -429,6 +455,7 @@ module.exports = function(root, options, _shared) {
 						run,
 						cancel,
 						clearCache,
+						expire,
 					},
 				});
 
@@ -475,5 +502,10 @@ module.exports = function(root, options, _shared) {
 			module: '@doodad-js/terminal',
 		},
 	], tools.depthExtend(15, options, {startup: {secret: _shared.SECRET}}))
-		.then(startup);
+		.then(startup)
+		.catch(function(err) {
+			if (!err.bubble) {
+				console.error(err.stack);
+			};
+		});
 };

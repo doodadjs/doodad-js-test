@@ -142,6 +142,10 @@ module.exports = function(root, options, _shared) {
 						};
 						return undefined;
 					}),
+
+					expireCached: server.Ipc.CALLABLE(function expireCached(request, keyHash) {
+						return nodejs.Server.Http.CacheHandler.$expire(keyHash);
+					}),
 				}));
 
 			root.REGISTER(doodad.Object.$extend(
@@ -876,18 +880,19 @@ module.exports = function(root, options, _shared) {
 			request.response.onStatus.attach(null, onstatus);
 		};
 
-		const service = new nodejs.Server.Http.Server(handlers, {messenger: messenger /*, validHosts: ['www.doodad-js.local']*/});
-		service.onError.attach(null, onerror);
-		service.onNewRequest.attach(null, onrequest);
-		service.listen({
+		// TODO: Combine HTTP and HTTPS servers
+		const server1 = new nodejs.Server.Http.Server(handlers, {messenger: messenger /*, validHosts: ['www.doodad-js.local']*/});
+		server1.onError.attach(null, onerror);
+		server1.onNewRequest.attach(null, onrequest);
+		server1.listen({
 			target: options.listeningAddress,
 			port: options.listeningPort,
 		});
 
-		const service2 = new nodejs.Server.Http.Server(handlers, {messenger: messenger /*, validHosts: ['www.doodad-js.local']*/});
-		service2.onError.attach(null, onerror);
-		service2.onNewRequest.attach(null, onrequest);
-		service2.listen({
+		const server2 = new nodejs.Server.Http.Server(handlers, {messenger: messenger /*, validHosts: ['www.doodad-js.local']*/});
+		server2.onError.attach(null, onerror);
+		server2.onNewRequest.attach(null, onrequest);
+		server2.listen({
 			protocol: 'https',
 			certFile: currentPath.combine('www.doodad-js.local.crt'),
 			keyFile: currentPath.combine('www.doodad-js.local.key'),

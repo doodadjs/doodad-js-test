@@ -460,7 +460,10 @@ module.exports = function(root, options, _shared) {
 				});
 
 				nodejs.Console.capture(function(name, args) {
-					term.consoleWrite(name, args);
+					const msg = tools.reduce(args, function(result, val) {
+						return result + ' ' + nodeUtil.format(val);
+					}, '');
+					term.consoleWrite(name, [msg.slice(1)]);
 				});
 
 				term.listen();
@@ -501,7 +504,7 @@ module.exports = function(root, options, _shared) {
 		{
 			module: '@doodad-js/terminal',
 		},
-	], tools.depthExtend(15, options, {startup: {secret: _shared.SECRET}}))
+	], [options, {startup: {secret: _shared.SECRET}}])
 		.then(startup)
 		.catch(function(err) {
 			if (!err.bubble) {

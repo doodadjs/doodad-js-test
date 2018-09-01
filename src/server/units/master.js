@@ -62,7 +62,7 @@ module.exports = function(root, options, _shared) {
 					module: '@doodad-js/safeeval',
 					path: 'test/safeeval_test.js',
 				},
-			], tools.depthExtend(15, options, {startup: {secret: _shared.SECRET}}))
+			], [options, {startup: {secret: _shared.SECRET}}])
 				.then(function(dummy) {
 					const test = doodad.Test;
 					if (toolsOptions.logLevel > tools.LogLevels.Info) {

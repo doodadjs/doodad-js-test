@@ -460,10 +460,7 @@ module.exports = function(root, options, _shared) {
 				});
 
 				nodejs.Console.capture(function(name, args) {
-					const msg = tools.reduce(args, function(result, val) {
-						return result + ' ' + nodeUtil.format(val);
-					}, '');
-					term.consoleWrite(name, [msg.slice(1)]);
+					term.consoleWrite(name, [nodeUtil.format(...args)]);
 				});
 
 				term.listen();

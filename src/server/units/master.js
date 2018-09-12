@@ -270,11 +270,11 @@ module.exports = function(root, options, _shared) {
 												if (code === 0) {
 													resolve();
 												} else {
-													throw new types.Error("Failed to start browser. Please manually navigate to ' ~0~ '.", [url]);
+													reject(new types.Error("Failed to start browser. Please manually navigate to ' ~0~ '.", [url]));
 												};
 											});
 											child.on('error', function(err) {
-												throw new types.Error("Failed to start browser. Please manually navigate to ' ~0~ '.", [url]);
+												reject(new types.Error("Failed to start browser. Please manually navigate to ' ~0~ '.", [url]));
 											});
 										};
 									});

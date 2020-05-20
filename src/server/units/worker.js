@@ -146,6 +146,14 @@ module.exports = function(root, options, _shared) {
 					expireCached: server.Ipc.CALLABLE(function expireCached(request, keyHash) {
 						return nodejs.Server.Http.CacheHandler.$expire(keyHash);
 					}),
+
+					enableCache: server.Ipc.CALLABLE(function enableCache() {
+						return nodejs.Server.Http.CacheHandler.$enable();
+					}),
+
+					disableCache: server.Ipc.CALLABLE(function disableCache() {
+						return nodejs.Server.Http.CacheHandler.$disable();
+					}),
 				}));
 
 			root.REGISTER(doodad.Object.$extend(

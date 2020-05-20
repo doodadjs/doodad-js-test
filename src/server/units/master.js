@@ -405,6 +405,54 @@ module.exports = function(root, options, _shared) {
 						});
 					});
 
+				const enableCache = root.DD_DOC(
+					{
+						author: "Claude Petit",
+						revision: 0,
+						params: null,
+						returns: 'undefined',
+						description: 'Enables the cache.',
+					}, function enableCache() {
+						return Promise.try(function enableCachePromise() {
+							if (ready) {
+								if (cpus > 1) {
+									return messenger.callService('MyPrivateService', 'enableCache', null, {
+										ttl: 500, // ms
+										retryDelay: 100, // ms
+										timeout: TIMEOUT,
+									});
+								} else {
+									return nodejs.Server.Http.CacheHandler.$enable();
+								};
+							};
+							return undefined;
+						});
+					});
+
+				const disableCache = root.DD_DOC(
+					{
+						author: "Claude Petit",
+						revision: 0,
+						params: null,
+						returns: 'undefined',
+						description: 'Disables the cache.',
+					}, function disableCache() {
+						return Promise.try(function statsPromise() {
+							if (ready) {
+								if (cpus > 1) {
+									return messenger.callService('MyPrivateService', 'disableCache', null, {
+										ttl: 500, // ms
+										retryDelay: 100, // ms
+										timeout: TIMEOUT,
+									});
+								} else {
+									return nodejs.Server.Http.CacheHandler.$disable();
+								};
+							};
+							return undefined;
+						});
+					});
+
 				const expire = root.DD_DOC(
 					{
 						author: "Claude Petit",
@@ -455,6 +503,8 @@ module.exports = function(root, options, _shared) {
 						run,
 						cancel,
 						clearCache,
+						enableCache,
+						disableCache,
 						expire,
 					},
 				});

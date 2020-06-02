@@ -174,7 +174,12 @@ if (process.execArgv.some(arg => ['--inspect', '--inspect-brk', '--debug', '--de
 	options.startup.fromSource = true;
 };
 
-require('@doodad-js/core').createRoot(null, options, startup);
+require('@doodad-js/core')
+	.createRoot(null, options, startup)
+	.catch(function(err) {
+		console.error(err.stack);
+		process.exit(1);
+	});
 
 /* Cross-Origin (simple request) : Should return an index file with appropriated headers
 GET /app/@doodad-js/test/ HTTP/1.0

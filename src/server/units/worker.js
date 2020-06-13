@@ -147,11 +147,11 @@ module.exports = function(root, options, _shared) {
 						return nodejs.Server.Http.CacheHandler.$expire(keyHash);
 					}),
 
-					enableCache: server.Ipc.CALLABLE(function enableCache() {
+					enableCache: server.Ipc.CALLABLE(function enableCache(request) {
 						return nodejs.Server.Http.CacheHandler.$enable();
 					}),
 
-					disableCache: server.Ipc.CALLABLE(function disableCache() {
+					disableCache: server.Ipc.CALLABLE(function disableCache(request) {
 						return nodejs.Server.Http.CacheHandler.$disable();
 					}),
 				}));

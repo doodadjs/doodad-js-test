@@ -437,7 +437,7 @@ module.exports = function(root, options, _shared) {
 						returns: 'undefined',
 						description: 'Disables the cache.',
 					}, function disableCache() {
-						return Promise.try(function statsPromise() {
+						return Promise.try(function disableCachePromise() {
 							if (ready) {
 								if (cpus > 1) {
 									return messenger.callService('MyPrivateService', 'disableCache', null, {

@@ -179,35 +179,35 @@ module.exports = function(root, options, _shared) {
 			console.warn("The library 'sax' is not available. Some features, like page templates, will be disabled.");
 		};
 
-		let momentPath;
-		try {
-			momentPath = files.Path.parse(modules.resolve('moment/package.json'))
-				.set({file: ''})
-				.combine('./min/', {os: 'linux'});
-			nodeFs.statSync(momentPath.toString());
-		} catch(ex) {
-			console.warn("The library 'moment' is not available. Serving the library to the client browser will be disabled.");
-		};
+		//let momentPath;
+		//try {
+		//	momentPath = files.Path.parse(modules.resolve('moment/package.json'))
+		//		.set({file: ''})
+		//		.combine('./min/', {os: 'linux'});
+		//	nodeFs.statSync(momentPath.toString());
+		//} catch(ex) {
+		//	console.warn("The library 'moment' is not available. Serving the library to the client browser will be disabled.");
+		//};
 
-		let momentTzPath;
-		try {
-			momentTzPath = files.Path.parse(modules.resolve('moment-timezone/package.json'))
-				.set({file: ''})
-				.combine('./builds/', {os: 'linux'});
-			nodeFs.statSync(momentTzPath.toString());
-		} catch(ex) {
-			console.warn("The library 'moment-timezone' is not available. Serving the library to the client browser will be disabled.");
-		};
+		//let momentTzPath;
+		//try {
+		//	momentTzPath = files.Path.parse(modules.resolve('moment-timezone/package.json'))
+		//		.set({file: ''})
+		//		.combine('./builds/', {os: 'linux'});
+		//	nodeFs.statSync(momentTzPath.toString());
+		//} catch(ex) {
+		//	console.warn("The library 'moment-timezone' is not available. Serving the library to the client browser will be disabled.");
+		//};
 
-		let momentTzDataPath;
-		try {
-			momentTzDataPath = files.Path.parse(modules.resolve('moment-timezone/package.json'))
-				.set({file: ''})
-				.combine('./data/packed/', {os: 'linux'});
-			nodeFs.statSync(momentTzPath.toString());
-		} catch(ex) {
-			console.warn("The data of the library 'moment-timezone' are not available. Serving the library's data to the client browser will be disabled.");
-		};
+		//let momentTzDataPath;
+		//try {
+		//	momentTzDataPath = files.Path.parse(modules.resolve('moment-timezone/package.json'))
+		//		.set({file: ''})
+		//		.combine('./data/packed/', {os: 'linux'});
+		//	nodeFs.statSync(momentTzPath.toString());
+		//} catch(ex) {
+		//	console.warn("The data of the library 'moment-timezone' are not available. Serving the library's data to the client browser will be disabled.");
+		//};
 
 		const staticMimeTypes = ['application/javascript; charset=utf-8', 'application/x-javascript; charset=utf-8', 'text/html; charset=utf-8', 'text/css; charset=utf-8', 'application/json; charset=utf-8', 'text/json; charset=utf-8', 'application/xml; charset=utf-8', 'text/xml; charset=utf-8', '*/*'];
 
@@ -215,7 +215,7 @@ module.exports = function(root, options, _shared) {
 
 		const staticVariables = {
 			modulesUri: "..",
-			momentDataUri: "/app/lib/moment-timezone/data/",
+			momentTzDataUri: "../@doodad-js/dates/lib/moment-timezone/data/",
 		};
 
 		const handlers = [
@@ -791,42 +791,41 @@ module.exports = function(root, options, _shared) {
 											},
 										],
 									},
-									'/lib/moment': momentPath && {
-										handlers: [
-											{
-												handler: nodejs.Server.Http.FileSystemPage,
-												path: momentPath,
-												showFolders: true,
-												mimeTypes: staticMimeTypes,
-												forceCaseSensitive: forceCaseSensitive,
-												variables: staticVariables,
-											},
-										],
-									},
-									'/lib/moment-timezone': momentTzPath && {
-										handlers: [
-											{
-												handler: nodejs.Server.Http.FileSystemPage,
-												path: momentTzPath,
-												showFolders: true,
-												mimeTypes: staticMimeTypes,
-												forceCaseSensitive: forceCaseSensitive,
-												variables: staticVariables,
-											},
-										],
-									},
-									'/lib/moment-timezone/data': momentTzDataPath && {
-										handlers: [
-											{
-												handler: nodejs.Server.Http.FileSystemPage,
-												path: momentTzDataPath,
-												showFolders: true,
-												mimeTypes: staticMimeTypes,
-												forceCaseSensitive: forceCaseSensitive,
-												variables: staticVariables,
-											},
-										],
-									},
+									//'/lib/moment': momentPath && {
+									//	handlers: [
+									//		{
+									//			handler: nodejs.Server.Http.FileSystemPage,
+									//			path: momentPath,
+									//			showFolders: true,
+									//			mimeTypes: staticMimeTypes,
+									//			forceCaseSensitive: forceCaseSensitive,
+									//			variables: staticVariables,
+									//		},
+									//	],
+									//},
+									//'/lib/moment-timezone': momentTzPath && {
+									//	handlers: [
+									//		{
+									//			handler: nodejs.Server.Http.FileSystemPage,
+									//			showFolders: true,
+									//			mimeTypes: staticMimeTypes,
+									//			forceCaseSensitive: forceCaseSensitive,
+									//			variables: staticVariables,
+									//		},
+									//	],
+									//},
+									//'/lib/moment-timezone/data': momentTzDataPath && {
+									//	handlers: [
+									//		{
+									//			handler: nodejs.Server.Http.FileSystemPage,
+									//			path: momentTzDataPath,
+									//			showFolders: true,
+									//			mimeTypes: staticMimeTypes,
+									//			forceCaseSensitive: forceCaseSensitive,
+									//			variables: staticVariables,
+									//		},
+									//	],
+									//},
 								}),
 							},
 						],
@@ -915,6 +914,14 @@ module.exports = function(root, options, _shared) {
 		},
 		{
 			module: '@doodad-js/http_jsonrpc',
+		},
+		{
+			module: "@doodad-js/core",
+			path: (root.getOptions().fromSource ? "src/common/Templates_Html.js" : "build/common/Templates_Html.min.js"),
+		},
+		{
+			module: "@doodad-js/dates",
+			path: (root.getOptions().fromSource ? "src/common/Templates_Html.js" : "build/common/Templates_Html.min.js"),
 		},
 	], [options, {startup: {secret: _shared.SECRET}}])
 		.then(startup);

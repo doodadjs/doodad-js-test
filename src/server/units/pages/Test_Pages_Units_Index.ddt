@@ -43,7 +43,7 @@
   <t:modules>
     <t:options>
       <t:option module="Doodad.Modules" key="modulesUri" t:value="modulesUri" />
-      <t:option module="Doodad.Tools.Dates.Moment" key="dataUri" t:value="momentDataUri" />
+      <t:option module="Doodad.Tools.Dates.Moment" key="tzDataUri" t:value="momentTzDataUri" />
     </t:options>
 
     <t:load module="@doodad-js/safeeval" />
@@ -60,16 +60,6 @@
 
     <body>
       <img id="loading" src="img/loading.gif" />
-
-      <!-- TODO: Auto-load with "doodad-js" -->
-      <script async="async" t:src="modulesUri + '/@doodad-js/core/lib/uuid/uuid.min.js'" />
-
-      <!-- TODO: Auto-load with "doodad-js" -->
-      <script async="async" t:src="modulesUri + '/@doodad-js/core/lib/json5/json5.min.js'" />
-
-      <!-- TODO: Auto-load with "doodad-js-dates" -->
-      <script t:src="modulesUri + '/lib/moment/moment.min.js'" />
-      <script t:src="modulesUri + '/lib/moment-timezone/moment-timezone.min.js'" />
     </body>
   </t:html>
 </t:ddt>

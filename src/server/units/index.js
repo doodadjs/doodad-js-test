@@ -177,6 +177,7 @@ if (process.execArgv.some(arg => ['--inspect', '--inspect-brk', '--debug', '--de
 require('@doodad-js/core')
 	.createRoot(null, options, startup)
 	.catch(function(err) {
+		/* eslint no-console: "off" */
 		console.error(err.stack);
 		process.exit(1);
 	});

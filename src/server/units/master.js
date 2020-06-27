@@ -85,7 +85,7 @@ module.exports = function(root, options, _shared) {
 				return Promise.try(function tryStartWorkers() {
 					if (cpus > 1) {
 						nodeCluster.setupMaster({
-							silent: true, // TODO: Find a way to be non-silent on errors only !
+							silent: false, // TODO: Find a way to be non-silent on errors only !
 						});
 
 						nodeCluster.on('exit', (worker, code, signal) => {

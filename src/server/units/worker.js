@@ -26,8 +26,8 @@
 
 /* eslint no-console: "off" */
 
-const nodeCluster = require('cluster'),
-	nodeFs = require('fs');
+const nodeCluster = require('cluster');
+//nodeFs = require('fs');
 
 module.exports = function(root, options, _shared) {
 	const doodad = root.Doodad,
@@ -169,15 +169,15 @@ module.exports = function(root, options, _shared) {
 
 		const currentPath = files.Path.parse(__dirname);
 
-		let saxPath;
-		try {
-			saxPath = files.Path.parse(modules.resolve('sax/package.json'))
-				.set({file: ''})
-				.combine('./lib/', {os: 'linux'});
-			nodeFs.statSync(saxPath.toString());
-		} catch(ex) {
-			console.warn("The library 'sax' is not available. Some features, like page templates, will be disabled.");
-		};
+		//let saxPath;
+		//try {
+		//	saxPath = files.Path.parse(modules.resolve('sax/package.json'))
+		//		.set({file: ''})
+		//		.combine('./lib/', {os: 'linux'});
+		//	nodeFs.statSync(saxPath.toString());
+		//} catch(ex) {
+		//	console.warn("The library 'sax' is not available. Some features, like page templates, will be disabled.");
+		//};
 
 		//let momentPath;
 		//try {
@@ -780,17 +780,17 @@ module.exports = function(root, options, _shared) {
 											},
 										],
 									},
-									'/lib/sax': saxPath && {
-										handlers: [
-											{
-												handler: nodejs.Server.Http.JavascriptFileSystemPage,
-												path: saxPath,
-												showFolders: true,
-												mimeTypes: staticMimeTypes,
-												forceCaseSensitive: forceCaseSensitive,
-											},
-										],
-									},
+									//'/lib/sax': saxPath && {
+									//	handlers: [
+									//		{
+									//			handler: nodejs.Server.Http.JavascriptFileSystemPage,
+									//			path: saxPath,
+									//			showFolders: true,
+									//			mimeTypes: staticMimeTypes,
+									//			forceCaseSensitive: forceCaseSensitive,
+									//		},
+									//	],
+									//},
 									//'/lib/moment': momentPath && {
 									//	handlers: [
 									//		{

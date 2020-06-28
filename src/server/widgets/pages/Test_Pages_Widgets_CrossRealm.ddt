@@ -55,11 +55,6 @@
     </head>
 
     <body>
-      <!-- TODO: Auto-load with "doodad-js" -->
-      <!--<script async="async" t:src="modulesUri + '/@doodad-js/core/lib/uuid/uuid.min.js'" />-->
-
-      <!-- TODO: Auto-load with "doodad-js" -->
-      <!--<script async="async" t:src="modulesUri + '/@doodad-js/core/lib/json5/json5.min.js'" />-->
     </body>
   </t:html>
 </t:ddt>

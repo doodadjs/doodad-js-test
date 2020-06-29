@@ -8,10 +8,10 @@
 		"http://www.doodad-js.local/schemas/ddt ../../../../../../@doodad-js/templates/src/common/res/schemas/ddt/ddt.xsd"
 
 	type="Test.Pages.Units.Index"
-  defaultIntegrity="auto"
-  
-  t:bootTemplateUrl="modulesUri + '/@doodad-js/templates/Boot.min.js'"
-  t:doodadPackageUrl="modulesUri + '/@doodad-js/core/core.js'"
+	defaultIntegrity="auto"
+
+	t:bootTemplateUrl="modulesUri.combine('@doodad-js/templates/Boot.min.js')"
+	t:doodadPackageUrl="modulesUri.combine('@doodad-js/core/core.js')"
 >
 <!--
 	 doodad-js  -  Object-oriented programming framework
@@ -38,6 +38,11 @@
 		limitations under the License.
 -->
 
+<!--
+	t:bootTemplateUrl="modulesUri + '/@doodad-js/templates/Boot.min.js'"
+	t:doodadPackageUrl="modulesUri + '/@doodad-js/core/core.js'"
+-->
+
 <!--  <t:variable name="debug" expr="root.getOptions().debug" /> -->
 
   <t:modules>
@@ -51,6 +56,12 @@
     <t:load module="@doodad-js/dates" />
 
     <t:load path="js/Test_Pages_Units_Index.js" />
+
+	<!-- TODO: -->
+    <!--t:load server="true" module="@doodad-js/core" t:path="root.getOptions().fromSource ? 'src/common/Templates_Html.js' : 'build/common/Templates_Html.min.js'" />-->
+    <!--t:load server="true" module="@doodad-js/dates" t:path="root.getOptions().fromSource ? 'src/common/Templates_Html.js' : 'build/common/Templates_Html.min.js'" />-->
+    <t:load build="true" module="@doodad-js/core" path="src/common/Templates_Html.js" />
+    <t:load build="true" module="@doodad-js/dates" path="src/common/Templates_Html.js" />
   </t:modules>
 
   <t:html>

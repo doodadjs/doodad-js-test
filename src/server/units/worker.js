@@ -214,8 +214,8 @@ module.exports = function(root, options, _shared) {
 		const forceCaseSensitive = !tools.getOptions().caseSensitive;
 
 		const staticVariables = {
-			modulesUri: "..",
-			momentTzDataUri: "../@doodad-js/dates/lib/moment-timezone/data/",
+			modulesUri: "/app/",
+			momentTzDataUri: "/app/@doodad-js/dates/lib/moment-timezone/data/",
 		};
 
 		const handlers = [
@@ -914,14 +914,6 @@ module.exports = function(root, options, _shared) {
 		},
 		{
 			module: '@doodad-js/http_jsonrpc',
-		},
-		{
-			module: "@doodad-js/core",
-			path: (root.getOptions().fromSource ? "src/common/Templates_Html.js" : "build/common/Templates_Html.min.js"),
-		},
-		{
-			module: "@doodad-js/dates",
-			path: (root.getOptions().fromSource ? "src/common/Templates_Html.js" : "build/common/Templates_Html.min.js"),
 		},
 	], [options, {startup: {secret: _shared.SECRET}}])
 		.then(startup);

@@ -50,7 +50,7 @@
     <t:load path="js/Test_Pages_Widgets_CrossRealm.js" />
 
 	<!-- TODO: -->
-    <!--t:load server="true" module="@doodad-js/core" t:path="root.getOptions().fromSource ? 'src/common/Templates_Html.js' : 'build/common/Templates_Html.min.js'" />-->
+    <!--t:load build="true" module="@doodad-js/core" t:path="root.getOptions().fromSource ? 'src/common/Templates_Html.js' : 'build/common/Templates_Html.min.js'" />-->
     <t:load build="true" module="@doodad-js/core" path="src/common/Templates_Html.js" />
   </t:modules>
 

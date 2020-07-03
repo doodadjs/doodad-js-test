@@ -57,11 +57,8 @@
 
     <t:load path="js/Test_Pages_Units_Index.js" />
 
-	<!-- TODO: -->
-    <!--t:load build="true" module="@doodad-js/core" t:path="root.getOptions().fromSource ? 'src/common/Templates_Html.js' : 'build/common/Templates_Html.min.js'" />-->
-    <!--t:load build="true" module="@doodad-js/dates" t:path="root.getOptions().fromSource ? 'src/common/Templates_Html.js' : 'build/common/Templates_Html.min.js'" />-->
-    <t:load build="true" module="@doodad-js/core" path="src/common/Templates_Html.js" />
-    <t:load build="true" module="@doodad-js/dates" path="src/common/Templates_Html.js" />
+    <t:load build="true" module="@doodad-js/core" path="common/res/Templates_Html.js" />
+    <t:load build="true" module="@doodad-js/dates" path="common/res/Templates_Html.js" />
   </t:modules>
 
   <t:html>

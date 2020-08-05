@@ -313,22 +313,16 @@ exports.add = function add(modules) {
 							.then(function(dummy) {
 								const Promise = types.getPromise();
 								const oldRunPromise = __Internal__.runPromise;
-								return Promise.try(function() {
-									__Internal__.runPromise = Promise.resolve();
-									const promise = then();
-									if (types.isPromise(promise)) {
-										return __Internal__.runPromise
-											.then(function() {
-												return promise;
-											});
-									};
-									return undefined;
-								}).nodeify(function(err, dummy) {
-									__Internal__.runPromise = oldRunPromise;
-									if (err) {
-										throw err;
-									};
-								});
+								__Internal__.runPromise = Promise.resolve();
+								return Promise.try(then)
+									.nodeify(function(err, dummy) {
+										const current = __Internal__.runPromise;
+										__Internal__.runPromise = oldRunPromise;
+										if (err) {
+											throw err;
+										};
+										return current;
+									});
 							});
 					},
 

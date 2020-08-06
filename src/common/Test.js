@@ -316,10 +316,12 @@ exports.add = function add(modules) {
 								__Internal__.runPromise = Promise.resolve();
 								return Promise.try(then)
 									.nodeify(function(err, dummy) {
-										const current = __Internal__.runPromise;
+										let current = __Internal__.runPromise;
 										__Internal__.runPromise = oldRunPromise;
 										if (err) {
-											throw err;
+											current = current.then(function() {
+												throw err;
+											});
 										};
 										return current;
 									});

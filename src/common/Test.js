@@ -319,7 +319,7 @@ exports.add = function add(modules) {
 										let current = __Internal__.runPromise;
 										__Internal__.runPromise = oldRunPromise;
 										if (err) {
-											current = current.then(function() {
+											current = current.nodeify(function(err2, dummy2) {
 												throw err;
 											});
 										};

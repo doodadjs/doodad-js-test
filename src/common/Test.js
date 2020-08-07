@@ -669,7 +669,15 @@ exports.add = function add(modules) {
 					if ((unit !== test) && unit.run) {
 						retVal = unit.run(root, options);
 					};
-					return Promise.all([retVal, __Internal__.runPromise])
+					return Promise.resolve(retVal)
+						.nodeify(function(err, dummy) {
+							if (err) {
+								__Internal__.runPromise = __Internal__.runPromise.nodeify(function(err2, dummy2) {
+									throw err;
+								});
+							};
+							return __Internal__.runPromise;
+						})
 						.nodeify(function(err, dummy) {
 							__Internal__.runPromise = null; // free memory
 							if (html) {

@@ -606,7 +606,7 @@ exports.add = function add(modules) {
 				__Internal__.runPromise = __Internal__.runPromise
 					.nodeify(function(err, dummy) {
 						if (finalizers) {
-							let promise = (err ? Promise.reject(err) : Promise.resolve(dummy));
+							let promise = (err ? Promise.reject(err) : Promise.resolve());
 							const len = finalizers.length;
 							for (let i = 0; i < len; i++) {
 								promise = promise.nodeify(finalizers[i]);
@@ -665,10 +665,11 @@ exports.add = function add(modules) {
 						stream.print(unit.DD_FULL_NAME);
 					};
 					__Internal__.runPromise = Promise.resolve();
+					let retVal;
 					if ((unit !== test) && unit.run) {
-						unit.run(root, options);
+						retVal = unit.run(root, options);
 					};
-					return __Internal__.runPromise
+					return Promise.all([retVal, __Internal__.runPromise])
 						.nodeify(function(err, dummy) {
 							__Internal__.runPromise = null; // free memory
 							if (html) {

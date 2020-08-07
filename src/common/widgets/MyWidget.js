@@ -143,7 +143,7 @@ exports.add = function add(modules) {
 
 						// Test RENAME
 						functionToRename: doodad.RENAME_OVERRIDE(function renamedFunction() {
-							return this._super() + " ,2";
+							return this._super() + ",2";
 						}),
 
 						acquire: doodad.OVERRIDE(function acquire() {

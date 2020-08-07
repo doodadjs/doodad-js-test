@@ -110,12 +110,6 @@ exports.add = function add(modules) {
 						doodad.PUBLIC(1)
 					),
 
-					// Test private
-					myPrivateAttr: doodad.PRIVATE("private"),
-					myPrivateFn: doodad.PRIVATE(function() {
-						return "private";
-					}),
-
 					// Test RENAME
 					functionToRename: doodad.PUBLIC(function() {
 						return "1";
@@ -145,20 +139,6 @@ exports.add = function add(modules) {
 							tools.alert('click');
 							//console.log(tools.getStackTrace());
 							//throw new Error("error");
-							/*
-								try {
-									this.myPrivateFn();
-									console.log('private method from inside ok :)');
-								} catch(ex) {
-									console.log('private method from inside failed :(');
-								};
-								try {
-									this.myPrivateAttr;
-									console.log('private attribute from inside ok :)');
-								} catch(ex) {
-									console.log('private attribute from inside failed :(');
-								};
-							*/
 						}),
 
 						// Test RENAME
@@ -210,20 +190,6 @@ exports.add = function add(modules) {
 							/* Test "EXTERNAL"
 								this.destroy();
 							*/
-							/*
-								try {
-									this.myPrivateFn();
-									console.log('private method from outside failed :(');
-								} catch(ex) {
-									console.log('private method from outside ok :)');
-								};
-								try {
-									this.myPrivateAttr;
-									console.log('private attribute from outside failed :(');
-								} catch(ex) {
-									console.log('private attribute from outside ok :)');
-								};
-							*/
 
 							//throw new types.Error("test");
 
@@ -250,14 +216,6 @@ exports.add = function add(modules) {
 							}) :
 							doodad.PUBLIC(2)
 						),
-
-						// Test private override
-						/*
-							myPrivateAttr: "private overridden",
-							myPrivateFn: doodad.OVERRIDE(function() {
-								return "private overriden";
-							}),
-						*/
 
 						// Test RENAME (must respect the contract)
 						functionToRename: doodad.OVERRIDE(function functionToRename() {

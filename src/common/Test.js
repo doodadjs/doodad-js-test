@@ -740,7 +740,7 @@ exports.add = function add(modules) {
 						failedRuns: failedRuns,
 						currentRun: null,
 						currentFailed: 0,
-						move: function(scroll) {
+						move: function() {
 							if (this.popup.parentNode) {
 								this.popup.parentNode.removeChild(this.popup);
 							};
@@ -756,15 +756,14 @@ exports.add = function add(modules) {
 									this.failedOf.textContent = 'Failure ' + (this.currentFailed + 1) + ' of ' + this.failedRuns.length + '. Total is ' + this.runElements.length + '.';
 								};
 							};
-							let url = tools.getCurrentLocation();
-							url = url.toString({
-								anchor: 'failedBookmark',
-							});
-							tools.setCurrentLocation(url, true, true);
-							if (scroll && failedToolbar) {
-								if (failedToolbar.scrollIntoView) {
-									failedToolbar.scrollIntoView(true);
-								};
+							if (failedToolbar && failedToolbar.scrollIntoView) {
+								failedToolbar.scrollIntoView();
+							} else {
+								let url = tools.getCurrentLocation();
+								url = url.toString({
+									anchor: 'failedBookmark',
+								});
+								tools.setCurrentLocation(url, true, true);
 							};
 						},
 						click: types.bind(state, function(ev) { // JS click
@@ -805,7 +804,7 @@ exports.add = function add(modules) {
 										this.currentFailed = this.failedRuns.length - 1;
 									};
 								};
-								this.move(true);
+								this.move();
 								ev.preventDefault();
 								return false;
 							} catch(ex) {
@@ -841,7 +840,7 @@ exports.add = function add(modules) {
 										this.currentFailed = 0;
 									};
 								};
-								this.move(true);
+								this.move();
 								ev.preventDefault();
 								return false;
 							} catch(ex) {
@@ -855,7 +854,7 @@ exports.add = function add(modules) {
 						first: function(ev) {
 							try {
 								this.currentFailed = 0;
-								this.move(true);
+								this.move();
 							} catch(ex) {
 								if (!ex.bubble) {
 									io.stderr.write(ex);
@@ -866,7 +865,7 @@ exports.add = function add(modules) {
 						last: function(ev) {
 							try {
 								this.currentFailed = this.failedRuns.length - 1;
-								this.move(true);
+								this.move();
 							} catch(ex) {
 								if (!ex.bubble) {
 									io.stderr.write(ex);
@@ -901,7 +900,7 @@ exports.add = function add(modules) {
 				};
 
 				if (test.FAILED_TESTS) {
-					state.move(true);
+					state.move();
 
 					io.stdin.onReady.attach(state, __Internal__.showFailsOnReady);
 					io.stdin.listen();

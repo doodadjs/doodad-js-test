@@ -888,13 +888,13 @@ exports.add = function add(modules) {
 					const runElement = runElements[i],
 						resultElement = runElement.getElementsByClassName('result')[0];
 					runElement.setAttribute('index', i);
-					if (resultElement.className.indexOf('error') >= 0) {
+					if (test.FAILED_TESTS && (resultElement.className.indexOf('error') >= 0)) {
 						runElement.setAttribute('failedIndex', failedRuns.length);
 						failedRuns.push(runElement);
 					} else {
 						runElement.removeAttribute('failedIndex');
 					};
-					if (state) {
+					if (test.FAILED_TESTS) {
 						runElement.onclick = state.click;
 					};
 					runElement.className = runElement.className.replace('bindMe', '');

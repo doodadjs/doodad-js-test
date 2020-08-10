@@ -493,6 +493,7 @@ module.exports = function(root, options, _shared) {
 						io: doodad.IO,
 						nodejs: doodad.NodeJs,
 						Promise: Promise,
+						SECRET: _shared.SECRET,
 					},
 					commands: {
 						stats,

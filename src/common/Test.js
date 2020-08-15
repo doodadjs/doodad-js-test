@@ -253,11 +253,9 @@ exports.add = function add(modules) {
 				} else if (mode === 'compare') {
 					success =
 						(
-							success
-							&&
+							success &&
 							(
-								(resultValue === expectedValue)
-								||
+								(resultValue === expectedValue) ||
 								// Patch for NaN. See "types.isNaN".
 								/* eslint no-self-compare: "off" */
 								((resultValue !== resultValue) && (expectedValue !== expectedValue))
@@ -370,14 +368,10 @@ exports.add = function add(modules) {
 										(types.get(options, 'not', false) ? 'Not ' : '') +
 										(types.get(options, 'contains', false) ? 'Contains ' : '') +
 										(
-											(mode === 'isinstance')
-												?
-												('Instance Of ' + (isEval && types.isString(expected) ? expected : (types.isFunction(expected) ? types.getFunctionName(expected) : types.getFunctionName(expected.constructor))))
-												:
-												(mode === 'is')
-													?
-													('Is ' + (isEval && types.isString(expected) ? expected : (types.isFunction(expected) ? types.getFunctionName(expected) : types.getFunctionName(expected.constructor))))
-													:
+											(mode === 'isinstance') ?
+												('Instance Of ' + (isEval && types.isString(expected) ? expected : (types.isFunction(expected) ? types.getFunctionName(expected) : types.getFunctionName(expected.constructor)))) :
+												(mode === 'is') ?
+													('Is ' + (isEval && types.isString(expected) ? expected : (types.isFunction(expected) ? types.getFunctionName(expected) : types.getFunctionName(expected.constructor)))) :
 													((mode === 'compare') ? 'Equals ' : '') +
 												(isEval && types.isString(expected) ? expected : tools.toSource(expected, types.get(options, 'depth', 0), sourceOpts))
 										);
@@ -540,8 +534,7 @@ exports.add = function add(modules) {
 										resultStr +=
 												((mode === 'isinstance') ?
 													'Instance Of ' + (types.isFunction(result) ? result.name : (types.isObjectLike(result) ? result.constructor.name : '????')) +
-													' (' + tools.toSource(result, types.get(options, 'depth', 0), sourceOpts) + ')'
-													:
+													' (' + tools.toSource(result, types.get(options, 'depth', 0), sourceOpts) + ')'	:
 													tools.toSource(result, types.get(options, 'depth', 0), sourceOpts)
 												);
 										result = types.toObject(result);

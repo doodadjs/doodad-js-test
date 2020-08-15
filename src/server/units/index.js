@@ -170,7 +170,7 @@ const options = {
 	},
 };
 
-if (process.execArgv.some(arg => ['--inspect', '--inspect-brk', '--debug', '--debug-brk'].indexOf(arg.split('=')[0]) >= 0)) {
+if (process.execArgv.some((arg) => ['--inspect', '--inspect-brk', '--debug', '--debug-brk'].indexOf(arg.split('=')[0]) >= 0)) {
 	options.startup.fromSource = true;
 };
 

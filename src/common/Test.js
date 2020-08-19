@@ -362,7 +362,7 @@ exports.add = function add(modules) {
 								let sourceOpts;
 
 								sourceOpts = {};
-								sourceOpts.depth = types.get(options, 'depth', 0)
+								sourceOpts.depth = types.get(options, 'depth', 0);
 
 								const mode = types.get(options, 'mode', null),
 									isEval = types.get(options, 'eval', false);

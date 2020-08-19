@@ -362,6 +362,8 @@ exports.add = function add(modules) {
 								let sourceOpts;
 
 								sourceOpts = {};
+								sourceOpts.depth = types.get(options, 'depth', 0)
+
 								const mode = types.get(options, 'mode', null),
 									isEval = types.get(options, 'eval', false);
 								const expectedStr = "Expected: " +
@@ -373,7 +375,7 @@ exports.add = function add(modules) {
 												(mode === 'is') ?
 													('Is ' + (isEval && types.isString(expected) ? expected : (types.isFunction(expected) ? types.getFunctionName(expected) : types.getFunctionName(expected.constructor)))) :
 													((mode === 'compare') ? 'Equals ' : '') +
-												(isEval && types.isString(expected) ? expected : tools.toSource(expected, types.get(options, 'depth', 0), sourceOpts))
+												(isEval && types.isString(expected) ? expected : tools.toSource(expected, sourceOpts))
 										);
 								const expectedCls = 'expected';
 
@@ -413,7 +415,8 @@ exports.add = function add(modules) {
 													return val;
 												} else {
 													sourceOpts = {};
-													return tools.toSource(val, types.get(options, 'depth', 0), sourceOpts);
+													sourceOpts.depth = types.get(options, 'depth', 0);
+													return tools.toSource(val, sourceOpts);
 												};
 											}).join(', ') +
 											");");
@@ -531,11 +534,12 @@ exports.add = function add(modules) {
 										if (!types.get(options, 'showFunctions', false)) {
 											sourceOpts.includeFunctions = false;
 										};
+										sourceOpts.depth = types.get(options, 'depth', 0);
 										resultStr +=
 												((mode === 'isinstance') ?
 													'Instance Of ' + (types.isFunction(result) ? result.name : (types.isObjectLike(result) ? result.constructor.name : '????')) +
-													' (' + tools.toSource(result, types.get(options, 'depth', 0), sourceOpts) + ')'	:
-													tools.toSource(result, types.get(options, 'depth', 0), sourceOpts)
+													' (' + tools.toSource(result, sourceOpts) + ')'	:
+													tools.toSource(result, sourceOpts)
 												);
 										result = types.toObject(result);
 									};

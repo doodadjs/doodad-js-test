@@ -117,10 +117,10 @@ const startup = function _startup(root, _shared) {
 
 	addSearchPaths(root);
 
-	const cachePath = files.Path.parse(tools.Files.getTempFolder()).combine('./nodesjs/doodad-js/', {os: 'linux'});
+	const cachePath = files.Path.parse(tools.Files.getTempFolder()).combine('./nodejs/doodad-js/', {os: 'linux'});
 
 	const options = {
-		cachePath: cachePath,
+		cachePath,
 		listeningAddress: '0.0.0.0',
 		listeningPort: 8080,
 		listeningSSLPort: 8181,

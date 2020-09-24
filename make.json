@@ -279,8 +279,7 @@
 					keepComments: true,
 					keepSpaces: true,
 					variables: {
-						debug: true,
-						autoAdd: true
+						debug: true
 					}
 				},
 				{
@@ -302,8 +301,7 @@
 					keepComments: true,
 					keepSpaces: true,
 					variables: {
-						debug: true,
-						autoAdd: true
+						debug: true
 					}
 				},
 				{
@@ -320,8 +318,7 @@
 					keepComments: true,
 					keepSpaces: true,
 					variables: {
-						debug: true,
-						autoAdd: true
+						debug: true
 					}
 				},
 				{

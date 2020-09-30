@@ -872,6 +872,7 @@ module.exports = function(root, options, _shared) {
 									return stream.writeAsync(types.toString(status));
 								});
 						};
+						return undefined;
 					})
 					.then(function(dummy) {})
 					.catch(function(ex) {

@@ -463,8 +463,8 @@ module.exports = function(root, options, _shared) {
 								handler: nodejs.Server.Http.CacheHandler,
 								mimeTypes: ['application/javascript; charset=utf-8', 'application/x-javascript; charset=utf-8', 'text/html; charset=utf-8'],
 								cachePath: options.cachePath,
-								verbs: ['GET', 'HEAD'],
-								//verbs: ['GET'],
+								//verbs: ['GET', 'HEAD'],
+								verbs: ['GET'],
 							},
 							{
 								handler: nodejs.Server.Http.CompressionHandler,
@@ -866,10 +866,12 @@ module.exports = function(root, options, _shared) {
 				ev.preventDefault();
 				ev.data.promise = ev.data.promise
 					.then(function(dummy) {
-						return response.getStream({contentType: 'text/plain', encoding: 'utf-8'});
-					})
-					.then(function(stream) {
-						return stream.writeAsync(types.toString(status));
+						if (!response.headersSent) {
+							return response.getStream({contentType: 'text/plain', encoding: 'utf-8'})
+								.then(function(stream) {
+									return stream.writeAsync(types.toString(status));
+								});
+						};
 					})
 					.then(function(dummy) {})
 					.catch(function(ex) {

@@ -28,7 +28,6 @@
 
 const nodeOs = require('os'),
 	nodeCluster = require('cluster'),
-	nodeChildProcess = require('child_process'),
 	nodeUtil = require('util');
 
 module.exports = function(root, options, _shared) {
@@ -37,6 +36,7 @@ module.exports = function(root, options, _shared) {
 		modules = doodad.Modules,
 		types = doodad.Types,
 		tools = doodad.Tools,
+		nodejs = doodad.NodeJs,
 
 		Promise = types.getPromise();
 
@@ -110,8 +110,6 @@ module.exports = function(root, options, _shared) {
 			};
 
 			let ready = false;
-
-			const nodejs = doodad.NodeJs;
 
 			if (process.stdout.isTTY && process.stdin.setRawMode) {
 				process.stdin.setRawMode(true);
@@ -259,11 +257,11 @@ module.exports = function(root, options, _shared) {
 										// Reference: http://www.dwheeler.com/essays/open-files-urls.html
 										let child = null;
 										if (os.name === 'win32') {
-											child = nodeChildProcess.spawn("start", [url], {shell: true});
+											child = nodejs.spawn("start", [url], {shell: true});
 										} else if (os.name === 'darwin') {
-											child = nodeChildProcess.spawn("open", [url]);
+											child = nodejs.spawn("open", [url]);
 										} else {
-											child = nodeChildProcess.spawn("xdg-open", [url]);
+											child = nodejs.spawn("xdg-open", [url]);
 										};
 										if (child) {
 											child.on('exit', function(code, signal) {

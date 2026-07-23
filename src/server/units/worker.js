@@ -167,13 +167,13 @@ module.exports = function(root, options, _shared) {
 				}));
 		};
 
-		const currentPath = files.Path.parse(__dirname);
+		const currentPath = files.parsePath(__dirname);
 
 		//let saxPath;
 		//try {
-		//	saxPath = files.Path.parse(modules.resolve('sax/package.json'))
+		//	saxPath = files.parsePath(modules.resolve('sax/package.json'))
 		//		.set({file: ''})
-		//		.combine('./lib/', {os: 'linux'});
+		//		.combine('lib/', {os: 'linux'});
 		//	nodeFs.statSync(saxPath.toString());
 		//} catch(ex) {
 		//	console.warn("The library 'sax' is not available. Some features, like page templates, will be disabled.");
@@ -181,9 +181,9 @@ module.exports = function(root, options, _shared) {
 
 		//let momentPath;
 		//try {
-		//	momentPath = files.Path.parse(modules.resolve('moment/package.json'))
+		//	momentPath = files.parsePath(modules.resolve('moment/package.json'))
 		//		.set({file: ''})
-		//		.combine('./min/', {os: 'linux'});
+		//		.combine('min/', {os: 'linux'});
 		//	nodeFs.statSync(momentPath.toString());
 		//} catch(ex) {
 		//	console.warn("The library 'moment' is not available. Serving the library to the client browser will be disabled.");
@@ -191,9 +191,9 @@ module.exports = function(root, options, _shared) {
 
 		//let momentTzPath;
 		//try {
-		//	momentTzPath = files.Path.parse(modules.resolve('moment-timezone/package.json'))
+		//	momentTzPath = files.parsePath(modules.resolve('moment-timezone/package.json'))
 		//		.set({file: ''})
-		//		.combine('./builds/', {os: 'linux'});
+		//		.combine('builds/', {os: 'linux'});
 		//	nodeFs.statSync(momentTzPath.toString());
 		//} catch(ex) {
 		//	console.warn("The library 'moment-timezone' is not available. Serving the library to the client browser will be disabled.");
@@ -201,9 +201,9 @@ module.exports = function(root, options, _shared) {
 
 		//let momentTzDataPath;
 		//try {
-		//	momentTzDataPath = files.Path.parse(modules.resolve('moment-timezone/package.json'))
+		//	momentTzDataPath = files.parsePath(modules.resolve('moment-timezone/package.json'))
 		//		.set({file: ''})
-		//		.combine('./data/packed/', {os: 'linux'});
+		//		.combine('data/packed/', {os: 'linux'});
 		//	nodeFs.statSync(momentTzPath.toString());
 		//} catch(ex) {
 		//	console.warn("The data of the library 'moment-timezone' are not available. Serving the library's data to the client browser will be disabled.");
@@ -511,7 +511,7 @@ module.exports = function(root, options, _shared) {
 											{
 												handler: nodejs.Server.Http.FileSystemPage,
 												// TODO: Auto-build
-												path: files.Path.parse(modules.resolve('@doodad-js/test')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/units/pages/Test_Pages_Units_Index.ddt' : './build/server/units/pages/Test_Pages_Units_Index.ddtx'), {os: 'linux'}),
+												path: files.parsePath(modules.resolve('@doodad-js/test')).set({file: ''}).combine((root.getOptions().fromSource ? 'src/server/units/pages/Test_Pages_Units_Index.ddt' : 'build/server/units/pages/Test_Pages_Units_Index.ddtx')),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,
@@ -524,7 +524,7 @@ module.exports = function(root, options, _shared) {
 											{
 												handler: nodejs.Server.Http.FileSystemPage,
 												// TODO: Auto-build
-												path: files.Path.parse(modules.resolve('@doodad-js/test')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/widgets/pages/Test_Pages_Widgets_Index.ddt' : './build/server/widgets/pages/Test_Pages_Widgets_Index.ddtx'), {os: 'linux'}),
+												path: files.parsePath(modules.resolve('@doodad-js/test')).set({file: ''}).combine((root.getOptions().fromSource ? 'src/server/widgets/pages/Test_Pages_Widgets_Index.ddt' : 'build/server/widgets/pages/Test_Pages_Widgets_Index.ddtx')),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,
@@ -537,7 +537,7 @@ module.exports = function(root, options, _shared) {
 											{
 												handler: nodejs.Server.Http.FileSystemPage,
 												// TODO: Auto-build
-												path: files.Path.parse(modules.resolve('@doodad-js/test')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/widgets/pages/Test_Pages_Widgets_CrossRealm.ddt' : './build/server/widgets/pages/Test_Pages_Widgets_CrossRealm.ddtx'), {os: 'linux'}),
+												path: files.parsePath(modules.resolve('@doodad-js/test')).set({file: ''}).combine((root.getOptions().fromSource ? 'src/server/widgets/pages/Test_Pages_Widgets_CrossRealm.ddt' : 'build/server/widgets/pages/Test_Pages_Widgets_CrossRealm.ddtx')),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,
@@ -550,7 +550,7 @@ module.exports = function(root, options, _shared) {
 											{
 												handler: nodejs.Server.Http.FileSystemPage,
 												// TODO: Auto-build
-												path: files.Path.parse(modules.resolve('@doodad-js/test')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/browserify/pages/Test_Pages_Browserify_Index.ddt' : './build/server/browserify/pages/Test_Pages_Browserify_Index.ddtx'), {os: 'linux'}),
+												path: files.parsePath(modules.resolve('@doodad-js/test')).set({file: ''}).combine((root.getOptions().fromSource ? 'src/server/browserify/pages/Test_Pages_Browserify_Index.ddt' : 'build/server/browserify/pages/Test_Pages_Browserify_Index.ddtx')),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,
@@ -563,7 +563,7 @@ module.exports = function(root, options, _shared) {
 											{
 												handler: nodejs.Server.Http.FileSystemPage,
 												// TODO: Auto-build
-												path: files.Path.parse(modules.resolve('@doodad-js/test')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/webpack/pages/Test_Pages_Webpack_Index.ddt' : './build/server/webpack/pages/Test_Pages_Webpack_Index.ddtx'), {os: 'linux'}),
+												path: files.parsePath(modules.resolve('@doodad-js/test')).set({file: ''}).combine((root.getOptions().fromSource ? 'src/server/webpack/pages/Test_Pages_Webpack_Index.ddt' : 'build/server/webpack/pages/Test_Pages_Webpack_Index.ddtx')),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,
@@ -615,7 +615,7 @@ module.exports = function(root, options, _shared) {
 										handlers: [
 											{
 												handler: nodejs.Server.Http.FileSystemPage,
-												path: files.Path.parse(modules.resolve('@doodad-js/core')).set({file: null}).combine('./dist/@doodad-js/core/', {os: 'linux'}),
+												path: files.parsePath(modules.resolve('@doodad-js/core')).set({file: ''}).combine('dist/@doodad-js/core/'),
 												showFolders: true,
 												//mimeTypes: ['application/javascript; charset=utf-8', 'application/x-javascript; charset=utf-8'],  // TEST FILTER ON FOLDER DISPLAY
 												mimeTypes: staticMimeTypes,
@@ -628,7 +628,7 @@ module.exports = function(root, options, _shared) {
 										handlers: [
 											{
 												handler: nodejs.Server.Http.FileSystemPage,
-												path: files.Path.parse(modules.resolve('@doodad-js/dates')).set({file: null}).combine('./dist/@doodad-js/dates/', {os: 'linux'}),
+												path: files.parsePath(modules.resolve('@doodad-js/dates')).set({file: ''}).combine('dist/@doodad-js/dates/'),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,
@@ -640,7 +640,7 @@ module.exports = function(root, options, _shared) {
 										handlers: [
 											{
 												handler: nodejs.Server.Http.FileSystemPage,
-												path: files.Path.parse(modules.resolve('@doodad-js/io')).set({file: null}).combine('./dist/@doodad-js/io/', {os: 'linux'}),
+												path: files.parsePath(modules.resolve('@doodad-js/io')).set({file: ''}).combine('dist/@doodad-js/io/'),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,
@@ -652,7 +652,7 @@ module.exports = function(root, options, _shared) {
 										handlers: [
 											{
 												handler: nodejs.Server.Http.FileSystemPage,
-												path: files.Path.parse(modules.resolve('@doodad-js/locale')).set({file: null}).combine('./dist/@doodad-js/locale/', {os: 'linux'}),
+												path: files.parsePath(modules.resolve('@doodad-js/locale')).set({file: ''}).combine('dist/@doodad-js/locale/'),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,
@@ -664,7 +664,7 @@ module.exports = function(root, options, _shared) {
 										handlers: [
 											{
 												handler: nodejs.Server.Http.FileSystemPage,
-												path: files.Path.parse(modules.resolve('@doodad-js/mime')).set({file: null}).combine('./dist/@doodad-js/mime/', {os: 'linux'}),
+												path: files.parsePath(modules.resolve('@doodad-js/mime')).set({file: ''}).combine('dist/@doodad-js/mime/'),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,
@@ -676,7 +676,7 @@ module.exports = function(root, options, _shared) {
 										handlers: [
 											{
 												handler: nodejs.Server.Http.FileSystemPage,
-												path: files.Path.parse(modules.resolve('@doodad-js/minifiers')).set({file: null}).combine('./dist/@doodad-js/minifiers/', {os: 'linux'}),
+												path: files.parsePath(modules.resolve('@doodad-js/minifiers')).set({file: ''}).combine('dist/@doodad-js/minifiers/'),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,
@@ -688,7 +688,7 @@ module.exports = function(root, options, _shared) {
 										handlers: [
 											{
 												handler: nodejs.Server.Http.FileSystemPage,
-												path: files.Path.parse(modules.resolve('@doodad-js/templates')).set({file: null}).combine('./dist/@doodad-js/templates/', {os: 'linux'}),
+												path: files.parsePath(modules.resolve('@doodad-js/templates')).set({file: ''}).combine('dist/@doodad-js/templates/'),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,
@@ -700,7 +700,7 @@ module.exports = function(root, options, _shared) {
 										handlers: [
 											{
 												handler: nodejs.Server.Http.JavascriptFileSystemPage,
-												path: files.Path.parse(modules.resolve('@doodad-js/templates')).set({file: null}).combine((root.getOptions().fromSource ? './src/server/res/js/Boot.templ.js' : './build/server/res/js/Boot.templ.js'), {os: 'linux'}),
+												path: files.parsePath(modules.resolve('@doodad-js/templates')).set({file: ''}).combine((root.getOptions().fromSource ? 'src/server/res/js/Boot.templ.js' : 'build/server/res/js/Boot.templ.js')),
 												showFolders: false,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,
@@ -712,7 +712,7 @@ module.exports = function(root, options, _shared) {
 										handlers: [
 											{
 												handler: nodejs.Server.Http.FileSystemPage,
-												path: files.Path.parse(modules.resolve('@doodad-js/test')).set({file: null}).combine('./dist/@doodad-js/test/', {os: 'linux'}),
+												path: files.parsePath(modules.resolve('@doodad-js/test')).set({file: ''}).combine('dist/@doodad-js/test/'),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,
@@ -724,7 +724,7 @@ module.exports = function(root, options, _shared) {
 										handlers: [
 											{
 												handler: nodejs.Server.Http.FileSystemPage,
-												path: files.Path.parse(modules.resolve('@doodad-js/widgets')).set({file: null}).combine('./dist/@doodad-js/widgets/', {os: 'linux'}),
+												path: files.parsePath(modules.resolve('@doodad-js/widgets')).set({file: ''}).combine('dist/@doodad-js/widgets/'),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,
@@ -736,7 +736,7 @@ module.exports = function(root, options, _shared) {
 										handlers: [
 											{
 												handler: nodejs.Server.Http.FileSystemPage,
-												path: files.Path.parse(modules.resolve('@doodad-js/xml')).set({file: null}).combine('./dist/@doodad-js/xml/', {os: 'linux'}),
+												path: files.parsePath(modules.resolve('@doodad-js/xml')).set({file: ''}).combine('dist/@doodad-js/xml/'),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,
@@ -748,7 +748,7 @@ module.exports = function(root, options, _shared) {
 										handlers: [
 											{
 												handler: nodejs.Server.Http.FileSystemPage,
-												path: files.Path.parse(modules.resolve('@doodad-js/loader')).set({file: null}).combine('./dist/@doodad-js/loader/', {os: 'linux'}),
+												path: files.parsePath(modules.resolve('@doodad-js/loader')).set({file: ''}).combine('dist/@doodad-js/loader/'),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,
@@ -760,7 +760,7 @@ module.exports = function(root, options, _shared) {
 										handlers: [
 											{
 												handler: nodejs.Server.Http.FileSystemPage,
-												path: files.Path.parse(modules.resolve('@doodad-js/safeeval')).set({file: null}).combine('./dist/@doodad-js/safeeval/', {os: 'linux'}),
+												path: files.parsePath(modules.resolve('@doodad-js/safeeval')).set({file: ''}).combine('dist/@doodad-js/safeeval/'),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,
@@ -772,7 +772,7 @@ module.exports = function(root, options, _shared) {
 										handlers: [
 											{
 												handler: nodejs.Server.Http.FileSystemPage,
-												path: files.Path.parse(modules.resolve('@doodad-js/unicode')).set({file: null}).combine('./dist/@doodad-js/unicode/', {os: 'linux'}),
+												path: files.parsePath(modules.resolve('@doodad-js/unicode')).set({file: ''}).combine('dist/@doodad-js/unicode/'),
 												showFolders: true,
 												mimeTypes: staticMimeTypes,
 												forceCaseSensitive: forceCaseSensitive,

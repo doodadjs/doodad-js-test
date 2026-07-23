@@ -37,7 +37,7 @@ const addSearchPaths = function _addSearchPaths(root) {
 	// Add Node packages search paths for the application
 	const paths = require.main.paths;
 	for (let i = 0; i < paths.length; i++) {
-		const path = files.Path.parse(paths[i], {file: ''});
+		const path = files.parsePath(paths[i], {isFolder: true});
 
 		let folders = null;
 
@@ -59,7 +59,7 @@ const addSearchPaths = function _addSearchPaths(root) {
 			for (let j = 0; j < folders.length; j++) {
 				const folder = folders[j];
 				if (!folder.isFile) {
-					name = folder.path.combine('node_modules').toString();
+					name = folder.path.combine('node_modules/').toApiString();
 					try {
 						nodeFs.statSync(name);
 						modules.addSearchPath(name);

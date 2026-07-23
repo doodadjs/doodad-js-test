@@ -48,7 +48,7 @@ const addSearchPaths = function _addSearchPaths(root) {
 				if ((depth < 1) && folder.name.startsWith('@')) {
 					scanFolder(folder.path, depth + 1);
 				} else {
-					const name = folder.path.combine('node_modules').toApiString();
+					const name = folder.path.combine('node_modules/').toApiString();
 					nodeFs.statSync(name);
 					modules.addSearchPath(name);
 				};
@@ -64,7 +64,7 @@ const addSearchPaths = function _addSearchPaths(root) {
 	// Add Node packages search paths for the application
 	const paths = require.main.paths;
 	for (let i = 0; i < paths.length; i++) {
-		const path = files.Path.parse(paths[i], {file: ''});
+		const path = files.parsePath(paths[i], {isFolder: true});
 
 		try {
 			scanFolder(path, 0);
@@ -117,7 +117,7 @@ const startup = function _startup(root, _shared) {
 
 	addSearchPaths(root);
 
-	const cachePath = files.Path.parse(tools.Files.getTempFolder()).combine('./nodejs/doodad-js/', {os: 'linux'});
+	const cachePath = files.parsePath(tools.Files.getTempFolder()).combine('nodejs/doodad-js/');
 
 	const options = {
 		cachePath,
@@ -166,7 +166,7 @@ const options = {
 		secret: SECRET,
 	},
 	"Doodad.Tools": {
-		logLevel: 2,
+		logLevel: process.env.NODE_ENV === 'production' ? 3 : 1,
 	},
 };
 

@@ -155,10 +155,10 @@ const startup = function _startup(root, _shared) {
 		}));
 
 	if (nodeCluster.isMaster) {
-		return require('./master.js')(root, options, _shared);
+		return require('./master')(root, options, _shared);
 	};
 
-	return require('./worker.js')(root, options, _shared);
+	return require('./worker')(root, options, _shared);
 };
 
 const options = {

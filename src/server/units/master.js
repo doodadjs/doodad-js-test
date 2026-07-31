@@ -101,7 +101,7 @@ module.exports = function(root, options, _shared) {
 					} else {
 						options.noCluster = true;
 						/* eslint global-require: "off" */
-						return require('./worker.js')(root, options, _shared);
+						return require('./worker')(root, options, _shared);
 
 					};
 

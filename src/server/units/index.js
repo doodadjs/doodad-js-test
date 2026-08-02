@@ -86,8 +86,6 @@ const addSearchPaths = function _addSearchPaths(root) {
 };
 
 const startup = function _startup(root, _shared) {
-	/* eslint global-require: "off" */
-
 	const doodad = root.Doodad,
 		types = doodad.Types,
 		tools = doodad.Tools,
@@ -177,7 +175,6 @@ if (process.execArgv.some((arg) => ['--inspect', '--inspect-brk', '--debug', '--
 require('@doodad-js/core')
 	.createRoot(null, options, startup)
 	.catch(function(err) {
-		/* eslint no-console: "off" */
 		console.error(err.stack);
 		process.exit(1);
 	});

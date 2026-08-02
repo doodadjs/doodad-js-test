@@ -24,8 +24,6 @@
 
 "use strict";
 
-/* eslint no-console: "off" */
-
 const nodeCluster = require('cluster');
 //nodeFs = require('fs');
 

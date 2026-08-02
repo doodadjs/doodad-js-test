@@ -24,8 +24,6 @@
 	//	limitations under the License.
 //! END_REPLACE()
 
-/* eslint no-alert: "off" */
-
 //! IF_SET("mjs")
 //! ELSE()
 	"use strict";

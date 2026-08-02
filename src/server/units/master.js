@@ -24,8 +24,6 @@
 
 "use strict";
 
-/* eslint no-console: "off" */
-
 const nodeOs = require('os'),
 	nodeCluster = require('cluster'),
 	nodeUtil = require('util');
@@ -100,7 +98,6 @@ module.exports = function(root, options, _shared) {
 
 					} else {
 						options.noCluster = true;
-						/* eslint global-require: "off" */
 						return require('./worker')(root, options, _shared);
 
 					};
@@ -255,7 +252,7 @@ module.exports = function(root, options, _shared) {
 										url += '/';
 										const os = tools.getOS();
 										// Reference: http://www.dwheeler.com/essays/open-files-urls.html
-										let child = null;
+										let child;
 										if (os.name === 'win32') {
 											child = nodejs.spawn("start", [url], {shell: true});
 										} else if (os.name === 'darwin') {

@@ -62,7 +62,7 @@ exports.add = function add(modules) {
 			tools.complete(_shared.Natives, {
 				windowParseInt: global.parseInt,
 
-				/* eslint no-restricted-properties: "off" */
+				// eslint disable-next-line no-restricted-properties
 				windowIsNaN: global.isNaN,
 			});
 
@@ -257,7 +257,6 @@ exports.add = function add(modules) {
 							(
 								(resultValue === expectedValue) ||
 								// Patch for NaN. See "types.isNaN".
-								/* eslint no-self-compare: "off" */
 								((resultValue !== resultValue) && (expectedValue !== expectedValue))
 							)
 						);

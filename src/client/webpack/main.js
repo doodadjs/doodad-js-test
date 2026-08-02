@@ -1,3 +1,5 @@
+/* eslint strict: "off" */
+
 // doodad-js - Object-oriented programming framework
 // File: main.js - Module startup file for 'webpack'.
 // Project home: https://github.com/doodadjs/
@@ -19,10 +21,6 @@
 //	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //	See the License for the specific language governing permissions and
 //	limitations under the License.
-
-/* eslint strict: "off" */
-/* eslint global-require: "off" */
-/* eslint no-alert: "off" */
 
 window.onload = function() {
 	"use strict";
